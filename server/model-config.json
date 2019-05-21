@@ -1,0 +1,68 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../node_modules/loopback-ds-timestamp-mixin",
+      "../node_modules/loopback-ds-user-mixin",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "User": {
+    "dataSource": "db"
+  },
+  "AccessToken": {
+    "dataSource": "db",
+    "public": false
+  },
+  "ACL": {
+    "dataSource": "db",
+    "public": false
+  },
+  "RoleMapping": {
+    "dataSource": "db",
+    "public": false,
+    "options": {
+      "strictObjectIDCoercion": true
+    }
+  },
+  "Role": {
+    "dataSource": "db",
+    "public": false
+  },
+  "BaseModel": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "LeadSource": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "LeadStatus": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "LeadIndustry": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "Lead": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "Event": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "Note": {
+    "dataSource": "everyday",
+    "public": true
+  }
+}
