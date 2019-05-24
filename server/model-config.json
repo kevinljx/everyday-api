@@ -73,5 +73,9 @@
   "Company": {
     "dataSource": "everyday",
     "public": true
+  },
+  "BaseUser": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
