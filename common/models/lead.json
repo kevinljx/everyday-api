@@ -6,6 +6,13 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Computed": {
+      "properties": {
+        "fullAddress": "showFullAddress"
+      }
+    }
+  },
   "properties": {
     "company": {
       "type": "string"
@@ -42,30 +49,23 @@
   "relations": {
     "status": {
       "type": "belongsTo",
-      "model": "LeadStatus",      
+      "model": "LeadStatus",
       "foreignKey": ""
     },
     "source": {
       "type": "belongsTo",
-      "model": "LeadSource",      
+      "model": "LeadSource",
       "foreignKey": ""
     },
     "industry": {
       "type": "belongsTo",
-      "model": "LeadIndustry",      
+      "model": "LeadIndustry",
       "foreignKey": ""
     },
     "events": {
       "type": "hasMany",
       "model": "Event",
       "polymorphic": "eventable"
-    }
-  },
-  "mixins": {
-    "Computed": {
-      "properties": {
-        "fullAddress": "showFullAddress"
-      }
     }
   },
   "acls": [],
