@@ -33,6 +33,9 @@
     },
     "description": {
       "type": "string"
+    },
+    "fullAddress": {
+      "type": "string"
     }
   },
   "validations": [],
@@ -56,6 +59,13 @@
       "type": "hasMany",
       "model": "Event",
       "polymorphic": "eventable"
+    }
+  },
+  "mixins": {
+    "Computed": {
+      "properties": {
+        "fullAddress": "showFullAddress"
+      }
     }
   },
   "acls": [],
