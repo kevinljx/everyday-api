@@ -17,10 +17,11 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "everyday",
+    "public": false
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "everyday",
     "public": false
   },
   "ACL": {
@@ -71,6 +72,10 @@
     "public": false
   },
   "Company": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "BaseUser": {
     "dataSource": "everyday",
     "public": true
   }
