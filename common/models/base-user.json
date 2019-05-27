@@ -21,12 +21,22 @@
       "type": "string",
       "required": true
     },
-    "mobile": {
-      "type": "string"
+    "isActive": {
+      "type": "boolean",
+      "default": true
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "company": {
+      "type": "belongsTo",
+      "model": "BaseCompany",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
+    }
+  },
   "acls": [
     {
       "accessType": "READ",

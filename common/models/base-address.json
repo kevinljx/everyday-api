@@ -15,18 +15,23 @@
     "city": {
       "type": "string"
     },
-    "state": {
-      "type": "string"
-    },
-    "country": {
-      "type": "string"
-    },
     "zip": {
       "type": "string"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "country": {
+      "type": "belongsTo",
+      "model": "BaseCountry",
+      "foreignKey": ""
+    },
+    "state": {
+      "type": "belongsTo",
+      "model": "BaseState",
+      "foreignKey": ""
+    }
+  },
   "acls": [],
   "methods": {}
 }

@@ -78,5 +78,29 @@
   "BaseUser": {
     "dataSource": "everyday",
     "public": true
+  },
+  "BaseContact": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "BaseCountry": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "BaseState": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "PricePlan": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "PaymentInfo": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "SequenceSetting": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
