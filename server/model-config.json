@@ -71,7 +71,7 @@
     "dataSource": "everyday",
     "public": false
   },
-  "Company": {
+  "BaseCompany": {
     "dataSource": "everyday",
     "public": true
   },
