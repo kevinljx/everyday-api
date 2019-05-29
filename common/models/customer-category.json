@@ -1,0 +1,25 @@
+{
+  "name": "CustomerCategory",
+  "plural": "customercategories",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "sequence": {
+      "type": "number",
+      "default": 1
+    }
+  },
+  "validations": [],
+  "relations": {
+    "parentId": {
+      "type": "belongsTo",
+      "model": "CustomerCategory",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

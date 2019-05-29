@@ -1,0 +1,114 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../node_modules/loopback-ds-timestamp-mixin",
+      "../node_modules/loopback-ds-user-mixin",
+      "../node_modules/loopback-ds-computed-mixin/lib",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "User": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "AccessToken": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "ACL": {
+    "dataSource": "db",
+    "public": false
+  },
+  "RoleMapping": {
+    "dataSource": "db",
+    "public": false,
+    "options": {
+      "strictObjectIDCoercion": true
+    }
+  },
+  "Role": {
+    "dataSource": "db",
+    "public": false
+  },
+  "BaseModel": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "LeadSource": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "LeadStatus": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "LeadIndustry": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "Lead": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "Event": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "Note": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "BaseAddress": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "BaseCompany": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "BaseUser": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "BaseContact": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "BaseCountry": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "BaseState": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "PricePlan": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "PaymentInfo": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "SequenceSetting": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "Customer": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "CustomerCategory": {
+    "dataSource": "everyday",
+    "public": true
+  }
+}

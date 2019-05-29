@@ -1,0 +1,33 @@
+{
+  "name": "SequenceSetting",
+  "plural": "sequencesettings",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "prefix": {
+      "type": "string"
+    },
+    "suffix": {
+      "type": "string"
+    },
+    "numDigits": {
+      "type": "number"
+    },
+    "nextNumber": {
+      "type": "number"
+    },
+    "resetDate": {
+      "type": "date"
+    },
+    "model": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

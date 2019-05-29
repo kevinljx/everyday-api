@@ -1,0 +1,39 @@
+{
+  "name": "BaseCountry",
+  "plural": "countries",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "code": {
+      "type": "string",
+      "required": true
+    },
+    "phoneCode": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "states": {
+      "type": "hasMany",
+      "model": "BaseState",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true,
+        "disableInclude": true
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

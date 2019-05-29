@@ -1,0 +1,41 @@
+{
+  "name": "Customer",
+  "plural": "customers",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "contact": {
+      "type": "belongsTo",
+      "model": "BaseContact",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "owner": {
+      "type": "belongsTo",
+      "model": "BaseUser",
+      "foreignKey": ""
+    },
+    "category": {
+      "type": "belongsTo",
+      "model": "CustomerCategory",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

@@ -1,0 +1,40 @@
+{
+  "name": "BaseCompany",
+  "plural": "basecompanies",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "registration": {
+      "type": "string"
+    },
+    "taxNumber": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "contact": {
+      "type": "belongsTo",
+      "model": "BaseContact",
+      "foreignKey": ""
+    },
+    "pricePlan": {
+      "type": "belongsTo",
+      "model": "PricePlan",
+      "foreignKey": ""
+    },
+    "paymentInfos": {
+      "type": "hasMany",
+      "model": "PaymentInfo",
+      "foreignKey": "",
+      "options": {
+        "disableInclude": true
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

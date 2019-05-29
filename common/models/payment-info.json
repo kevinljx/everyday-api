@@ -1,0 +1,44 @@
+{
+  "name": "PaymentInfo",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "paymentType": {
+      "type": "string",
+      "required": true
+    },
+    "payment_no": {
+      "type": "string"
+    },
+    "payment_username": {
+      "type": "string"
+    },
+    "payment_company": {
+      "type": "string"
+    },
+    "payment_expiry": {
+      "type": "date"
+    },
+    "payment_code": {
+      "type": "string"
+    },
+    "isVerified": {
+      "type": "boolean",
+      "default": false
+    },
+    "isPrimary": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
