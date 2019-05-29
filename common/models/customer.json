@@ -1,0 +1,28 @@
+{
+  "name": "Customer",
+  "plural": "customers",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "contact": {
+      "type": "belongsTo",
+      "model": "BaseContact",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "owner": {
+      "type": "belongsTo",
+      "model": "BaseUser",
+      "foreignKey": ""    
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

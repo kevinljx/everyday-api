@@ -21,8 +21,10 @@
     },
     "resetDate": {
       "type": "date"
+    },
+    "model": {
+      "type": "string"
     }
-
   },
   "validations": [],
   "relations": {},
