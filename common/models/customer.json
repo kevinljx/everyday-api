@@ -6,7 +6,12 @@
   "options": {
     "validateUpsert": true
   },
-  "properties": {},
+  "properties": {
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    }
+  },
   "validations": [],
   "relations": {
     "contact": {
@@ -20,7 +25,15 @@
     "owner": {
       "type": "belongsTo",
       "model": "BaseUser",
-      "foreignKey": ""    
+      "foreignKey": ""
+    },
+    "category": {
+      "type": "belongsTo",
+      "model": "CustomerCategory",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
     }
   },
   "acls": [],

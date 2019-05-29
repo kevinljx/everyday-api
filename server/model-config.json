@@ -106,5 +106,9 @@
   "Customer": {
     "dataSource": "everyday",
     "public": true
+  },
+  "CustomerCategory": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
