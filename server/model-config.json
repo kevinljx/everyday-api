@@ -110,5 +110,25 @@
   "CustomerCategory": {
     "dataSource": "everyday",
     "public": true
+  },
+  "Tax": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "Currency": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "CurrencyRate": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "Quotation": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "Account": {
+    "dataSource": "everyday",
+    "public": true
   }
 }

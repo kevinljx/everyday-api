@@ -1,0 +1,38 @@
+{
+  "name": "Currency",
+  "plural": "currencies",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "code": {
+      "type": "string",
+      "required": true,
+      "default": "n"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "country": {
+      "type": "belongsTo",
+      "model": "BaseCountry",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "rates": {
+      "type": "embedsMany",
+      "model": "CurrencyRate",
+      "property": "rates",
+      "options": {
+        "validate": true,
+        "forceId": false
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

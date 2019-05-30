@@ -1,0 +1,26 @@
+{
+  "name": "Tax",
+  "plural": "taxes",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "amount": {
+      "type": "number",
+      "required": true
+    },
+    "price_inclusive": {
+      "type": "boolean",
+      "default": false
+    },
+    "type": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

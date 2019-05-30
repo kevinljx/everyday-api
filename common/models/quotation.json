@@ -1,40 +1,38 @@
 {
-  "name": "Event",
-  "plural": "events",
+  "name": "Quotation",
+  "plural": "quotations",
   "base": "BaseModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "start_date": {
+    "date": {
       "type": "date",
       "required": true
     },
-    "end_date": {
+    "state": {
+      "type": "string",
+      "default": "draft"
+    },
+    "sent_date": {
       "type": "date"
     },
-    "description": {
+    "tnc": {
       "type": "string"
     },
-    "location": {
+    "currency": {
       "type": "string"
     },
-    "color": {
-      "type": "string"
+    "currency_rate": {
+      "type": "number"
     },
-    "all_day": {
-      "type": "boolean",
-      "default": false
+    "version": {
+      "type": "number"
     }
   },
   "validations": [],
-  "relations": {
-    "eventable": {
-      "type": "belongsTo",
-      "polymorphic": true
-    }
-  },
+  "relations": {},
   "acls": [],
   "methods": {}
 }

@@ -1,6 +1,6 @@
 {
-  "name": "Customer",
-  "plural": "customers",
+  "name": "Account",
+  "plural": "accounts",
   "base": "BaseModel",
   "idInjection": true,
   "options": {
@@ -14,8 +14,13 @@
   },
   "validations": [],
   "relations": {
+    "parent_id": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": ""
+    },
     "contact": {
-      "type": "embedsOne",
+      "type": "belongsTo",
       "model": "BaseContact",
       "foreignKey": "",
       "options": {
@@ -25,23 +30,15 @@
     "owner": {
       "type": "belongsTo",
       "model": "BaseUser",
-      "foreignKey": ""
-    },
-    "category": {
-      "type": "belongsTo",
-      "model": "CustomerCategory",
       "foreignKey": "",
       "options": {
         "nestRemoting": true
       }
     },
-    "account": {
-      "type": "belongsTo",
+    "subaccount": {
+      "type": "hasMany",
       "model": "Account",
-      "foreignKey": "",
-      "options": {
-        "nestRemoting": true
-      }
+      "foreignKey": "parent_id"
     }
   },
   "acls": [],

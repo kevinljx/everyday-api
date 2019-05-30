@@ -1,0 +1,25 @@
+{
+  "name": "CurrencyRate",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "rate": {
+      "type": "number",
+      "required": true
+    },
+    "inverse_rate": {
+      "type": "number"
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
