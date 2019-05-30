@@ -14,7 +14,7 @@
     }
   },
   "properties": {
-    "company": {
+    "companyName": {
       "type": "string"
     },
     "mobile": {
@@ -69,5 +69,6 @@
     }
   },
   "acls": [],
-  "methods": {}
+  "methods": {},
+  "scope": { "include": ["status", "source", "industry", "events"] }
 }
