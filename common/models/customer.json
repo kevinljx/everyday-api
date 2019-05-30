@@ -17,15 +17,10 @@
     "contact": {
       "type": "embedsOne",
       "model": "BaseContact",
-      "foreignKey": "",
       "options": {
-        "nestRemoting": true
+        "validate": true,
+        "forceId": false
       }
-    },
-    "owner": {
-      "type": "belongsTo",
-      "model": "BaseUser",
-      "foreignKey": ""
     },
     "category": {
       "type": "belongsTo",

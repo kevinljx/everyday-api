@@ -20,19 +20,11 @@
       "foreignKey": ""
     },
     "contact": {
-      "type": "belongsTo",
+      "type": "embedsOne",
       "model": "BaseContact",
-      "foreignKey": "",
       "options": {
-        "nestRemoting": true
-      }
-    },
-    "owner": {
-      "type": "belongsTo",
-      "model": "BaseUser",
-      "foreignKey": "",
-      "options": {
-        "nestRemoting": true
+        "validate": true,
+        "forceId": false
       }
     },
     "subaccount": {

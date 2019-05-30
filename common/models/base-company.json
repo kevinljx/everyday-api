@@ -17,9 +17,12 @@
   "validations": [],
   "relations": {
     "contact": {
-      "type": "belongsTo",
+      "type": "embedsOne",
       "model": "BaseContact",
-      "foreignKey": ""
+      "options": {
+        "validate": true,
+        "forceId": false
+      }
     },
     "pricePlan": {
       "type": "belongsTo",

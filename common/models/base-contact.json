@@ -34,10 +34,6 @@
     "website": {
       "type": "string"
     },
-    "isActive": {
-      "type": "boolean",
-      "default": true
-    },
     "isCompany": {
       "type": "boolean",
       "default": true

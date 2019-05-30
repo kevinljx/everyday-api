@@ -35,6 +35,14 @@
       "options": {
         "nestRemoting": true
       }
+    },
+    "contact": {
+      "type": "embedsOne",
+      "model": "BaseContact",
+      "options": {
+        "validate": true,
+        "forceId": false
+      }
     }
   },
   "acls": [
