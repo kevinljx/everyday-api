@@ -11,6 +11,9 @@
       "type": "date",
       "required": true
     },
+    "quote_days": {
+      "type": "number"
+    },
     "state": {
       "type": "string",
       "default": "draft"
