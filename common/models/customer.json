@@ -37,6 +37,11 @@
       "options": {
         "nestRemoting": true
       }
+    },
+    "notes": {
+      "type": "hasMany",
+      "model": "Note",
+      "polymorphic": "noteable"
     }
   },
   "acls": [],

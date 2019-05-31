@@ -13,6 +13,14 @@
       }
     }
   },
+  "scope": {
+    "include": [
+      "status",
+      "source",
+      "industry",
+      "events"
+    ]
+  },
   "properties": {
     "companyName": {
       "type": "string"
@@ -47,6 +55,14 @@
   },
   "validations": [],
   "relations": {
+    "contact": {
+      "type": "embedsOne",
+      "model": "BaseContact",
+      "options": {
+        "validate": true,
+        "forceId": false
+      }
+    },
     "status": {
       "type": "belongsTo",
       "model": "LeadStatus",
@@ -66,9 +82,13 @@
       "type": "hasMany",
       "model": "Event",
       "polymorphic": "eventable"
+    },
+    "notes": {
+      "type": "hasMany",
+      "model": "Note",
+      "polymorphic": "noteable"
     }
   },
   "acls": [],
-  "methods": {},
-  "scope": { "include": ["status", "source", "industry", "events"] }
+  "methods": {}
 }

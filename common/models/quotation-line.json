@@ -1,0 +1,43 @@
+{
+  "name": "QuotationLine",
+  "plural": "quotationlines",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "num": {
+      "type": "number",
+      "default": 1
+    },
+    "quantity": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "discount": {
+      "type": "number"
+    },
+    "unit_price": {
+      "type": "number",
+      "required": true
+    },
+    "subtotal": {
+      "type": "number"
+    },
+    "tax_amount": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "tax": {
+      "type": "belongsTo",
+      "model": "Tax",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

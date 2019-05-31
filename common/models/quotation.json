@@ -29,10 +29,62 @@
     },
     "version": {
       "type": "number"
+    },
+    "subtotal": {
+      "type": "number"
+    },
+    "tax_amount": {
+      "type": "number"
+    },
+    "discount_total": {
+      "type": "number"
+    },
+    "total": {
+      "type": "number"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "account": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": ""
+    },
+    "attn_to": {
+      "type": "belongsTo",
+      "model": "Customer",
+      "foreignKey": ""
+    },
+    "tax": {
+      "type": "belongsTo",
+      "model": "Tax",
+      "foreignKey": ""
+    },
+    "discount": {
+      "type": "belongsTo",
+      "model": "DiscountSetting",
+      "foreignKey": ""
+    },
+    "lines": {
+      "type": "embedsMany",
+      "model": "QuotationLine",
+      "property": "quotationline",
+      "options": {
+        "validate": true,
+        "forceId": false
+      }
+    },
+    "events": {
+      "type": "hasMany",
+      "model": "Event",
+      "polymorphic": "eventable"
+    },
+    "notes": {
+      "type": "hasMany",
+      "model": "Note",
+      "polymorphic": "noteable"
+    }
+  },
   "acls": [],
   "methods": {}
 }

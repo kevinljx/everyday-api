@@ -12,7 +12,12 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "noteable": {
+      "type": "belongsTo",
+      "polymorphic": true
+    }
+  },
   "acls": [],
   "methods": {}
 }

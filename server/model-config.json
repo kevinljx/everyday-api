@@ -130,5 +130,13 @@
   "Account": {
     "dataSource": "everyday",
     "public": true
+  },
+  "DiscountSetting": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "QuotationLine": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
