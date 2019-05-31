@@ -10,7 +10,7 @@ module.exports = function(server) {
   Lead.deleteAll();
 
   /**
-   * Lead Fields
+   * CRM Fields
    */
   // Lead Status
   var LeadStatus = server.models.LeadStatus;
@@ -33,6 +33,93 @@ module.exports = function(server) {
     { name: "Employee Referral", color: "#fa5779" },
     { name: "External Referral", color: "#fada57" },
     { name: "Others", color: "#fa7157" }
+  ]);
+
+  // Lead Interest Level
+  var LeadInterest = server.models.LeadInterestLevel;
+  LeadInterest.deleteAll();
+  LeadInterest.create([
+    { name: "Rare", level: 20 },
+    { name: "Medium Rare", level: 40 },
+    { name: "Medium", level: 60 },
+    { name: "Medium Well", level: 80 },
+    { name: "Well Done", level: 100 }
+  ]);
+
+  // Deal Type
+  var DealType = server.models.DealType;
+  DealType.deleteAll();
+  DealType.create([
+    { name: "Upsells", color: "#57fac1" },
+    { name: "New Business", color: "#5777fa" },
+    { name: "Existing Business", color: "#fae957" },
+    { name: "Others", color: "#caa26c" }
+  ]);
+
+  // Deal Stage
+  var DealStage = server.models.DealStage;
+  DealStage.deleteAll();
+  DealStage.create([
+    {
+      name: "Prospecting",
+      chance: 10,
+      step: 0,
+      invoice: false,
+      quotation: false,
+      description:
+        "This stage refers to any initial calls, conversations or emails with a potential lead."
+    },
+    {
+      name: "Qualification",
+      chance: 25,
+      step: 1,
+      invoice: false,
+      quotation: false,
+      description: "This stage refers to a confirmed meeting with the lead."
+    },
+    {
+      name: "Proposal",
+      chance: 50,
+      step: 2,
+      invoice: false,
+      quotation: true,
+      description:
+        "This stage refers to any discussion on budget, proposal or issue of quotations."
+    },
+    {
+      name: "Negotiation",
+      chance: 70,
+      step: 3,
+      invoice: false,
+      quotation: false,
+      description:
+        "This stage refers to any form of further negotiation portraying some form of buying signal after initial proposal stage."
+    },
+    {
+      name: "Buying Signal",
+      chance: 90,
+      step: 4,
+      invoice: false,
+      quotation: false,
+      description:
+        "This stage refers to strong buying signals from the client Eg. Verbal agreement."
+    },
+    {
+      name: "Closed Won",
+      chance: 100,
+      step: 5,
+      invoice: true,
+      quotation: false,
+      description: "This stage refers to a successful signed sales order."
+    },
+    {
+      name: "Closed Lost",
+      chance: 0,
+      step: 6,
+      invoice: false,
+      quotation: false,
+      description: "Client has declined the sales order."
+    }
   ]);
 
   // Industry

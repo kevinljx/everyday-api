@@ -1,0 +1,35 @@
+{
+  "name": "DealStage",
+  "plural": "dealstages",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "color": {
+      "type": "string"
+    },
+    "chance": {
+      "type": "number"
+    },
+    "step": {
+      "type": "number"
+    },
+    "invoice": {
+      "type": "boolean",
+      "default": false
+    },
+    "quotation": {
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

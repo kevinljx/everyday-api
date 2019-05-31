@@ -1,0 +1,27 @@
+{
+  "name": "DealHistory",
+  "plural": "dealhistories",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "amount": {
+      "type": "number"
+    },
+    "chance": {
+      "type": "number"
+    },
+    "duration": {
+      "type": "number"
+    },
+    "closedOn": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

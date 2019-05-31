@@ -138,5 +138,21 @@
   "QuotationLine": {
     "dataSource": "everyday",
     "public": true
+  },
+  "DealStage": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "LeadInterestLevel": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "DealType": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "DealHistory": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
