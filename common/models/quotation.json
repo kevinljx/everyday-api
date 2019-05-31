@@ -44,6 +44,15 @@
     },
     "total": {
       "type": "number"
+    },
+    "shipping_cost": {
+      "type": "number"
+    },
+    "custinfo": {
+      "type": "string"
+    },
+    "shipinfo": {
+      "type": "string"
     }
   },
   "validations": [],
@@ -56,6 +65,11 @@
     "attn_to": {
       "type": "belongsTo",
       "model": "Customer",
+      "foreignKey": ""
+    },
+    "ship_to": {
+      "type": "belongsTo",
+      "model": "Account",
       "foreignKey": ""
     },
     "tax": {
