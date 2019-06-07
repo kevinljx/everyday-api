@@ -1,0 +1,38 @@
+{
+  "name": "AccessRight",
+  "plural": "accessrights",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "categoryName": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string",
+      "required": true
+    },
+    "method": {
+      "type": "string",
+      "required": true,
+      "default": "read"
+    },
+    "editable": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

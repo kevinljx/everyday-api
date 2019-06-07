@@ -1,6 +1,7 @@
 {
-  "name": "PricePlan",
-  "base": "PersistedModel",
+  "name": "AccessGroup",
+  "plural": "accessgroups",
+  "base": "BaseModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -9,26 +10,18 @@
     "name": {
       "type": "string",
       "required": true
-    },
-    "duration": {
-      "type": "number",
-      "required": true,
-      "default": 1
-    },
-    "amount": {
-      "type": "number",
-      "required": true
     }
   },
   "validations": [],
   "relations": {
-    "accessRights": {
-      "type": "hasAndBelongsToMany",
-      "model": "AccessRight",
+    "roles": {
+      "type": "hasMany",
+      "model": "AccessRole",
       "foreignKey": "",
       "options": {
         "nestRemoting": true
-      }
+      },
+      "through": "AccessGroupRole"
     }
   },
   "acls": [],

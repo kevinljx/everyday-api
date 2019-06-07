@@ -1,6 +1,7 @@
 {
-  "name": "PricePlan",
-  "base": "PersistedModel",
+  "name": "AccessRole",
+  "plural": "accessroles",
+  "base": "BaseModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -8,15 +9,6 @@
   "properties": {
     "name": {
       "type": "string",
-      "required": true
-    },
-    "duration": {
-      "type": "number",
-      "required": true,
-      "default": 1
-    },
-    "amount": {
-      "type": "number",
       "required": true
     }
   },
