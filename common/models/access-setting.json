@@ -1,0 +1,25 @@
+{
+  "name": "AccessSetting",
+  "plural": "accesssettings",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "BaseUser",
+      "foreignKey": ""
+    },
+    "grouprole": {
+      "type": "belongsTo",
+      "model": "AccessGroupRole",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

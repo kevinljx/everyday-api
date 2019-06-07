@@ -1,0 +1,26 @@
+{
+  "name": "AccessGroupRole",
+  "plural": "accessgrouproles",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "hidden": [
+    "isDefault"
+  ],
+  "properties": {
+    "tier": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "isDefault": {
+      "type": "boolean"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

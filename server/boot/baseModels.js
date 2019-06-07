@@ -6,6 +6,287 @@ module.exports = function(server) {
    * DEVELOPMENT ONLY
    * ==================================
    */
+
+  /*
+  Access Rights. Create default access rights
+  */
+  var AccessRight = server.models.AccessRight;
+  AccessRight.deleteAll();
+  var AccessRole = server.models.AccessRole;
+  AccessRole.deleteAll();
+  AccessRight.create([
+    {name: "Access Group Role", description: "Access to roles inside a group.", categoryName: "Access", model: "AccessGroupRole", method: "create" },
+    {name: "Access Group Role", categoryName: "Access", model: "AccessGroupRole", method: "read", editable: false },
+    {name: "Access Group Role", categoryName: "Access", model: "AccessGroupRole", method: "update" },
+    {name: "Access Group Role", categoryName: "Access", model: "AccessGroupRole", method: "delete" },
+    {name: "Access Group", description: "Creating groups limit the information to only users in that group.", categoryName: "Access", model: "AccessGroup", method: "create" },
+    {name: "Access Group", categoryName: "Access", model: "AccessGroup", method: "read", editable: false },
+    {name: "Access Group", categoryName: "Access", model: "AccessGroup", method: "update" },
+    {name: "Access Group", categoryName: "Access", model: "AccessGroup", method: "delete" },
+    {name: "Access Role", description: "Roles allow access rights to be grouped together", categoryName: "Access", model: "AccessRole", method: "create" },
+    {name: "Access Role", categoryName: "Access", model: "AccessRole", method: "read", editable: false },
+    {name: "Access Role", categoryName: "Access", model: "AccessRole", method: "update" },
+    {name: "Access Role", categoryName: "Access", model: "AccessRole", method: "delete" },
+    {name: "Access Setting", description: "Assign groups and roles to users.", categoryName: "Access", model: "AccessSetting", method: "create" },
+    {name: "Access Setting", categoryName: "Access", model: "AccessSetting", method: "read", editable: false },
+    {name: "Access Setting", categoryName: "Access", model: "AccessSetting", method: "update" },
+    {name: "Access Setting", categoryName: "Access", model: "AccessSetting", method: "delete" },
+    {name: "Company Info", description: "Company info", categoryName: "Company", model: "BaseCompany", method: "create", editable: false },
+    {name: "Company Info", categoryName: "Company", model: "BaseCompany", method: "read", editable: false },
+    {name: "Company Info", categoryName: "Company", model: "BaseCompany", method: "update" },
+    {name: "Company Info", categoryName: "Company", model: "BaseCompany", method: "delete", editable: false },
+    {name: "Contact Address", description: "Address info for contacts", categoryName: "Contacts", model: "BaseAddress", method: "create" },
+    {name: "Contact Address", categoryName: "Contacts", model: "BaseAddress", method: "read", editable: false },
+    {name: "Contact Address", categoryName: "Contacts", model: "BaseAddress", method: "update" },
+    {name: "Contact Address", categoryName: "Contacts", model: "BaseAddress", method: "delete"},
+    {name: "Contact Info", description: "Basic info for contacts", categoryName: "Contacts", model: "BaseContact", method: "create" },
+    {name: "Contact Info", categoryName: "Contacts", model: "BaseContact", method: "read", editable: false },
+    {name: "Contact Info", categoryName: "Contacts", model: "BaseContact", method: "update" },
+    {name: "Contact Info", categoryName: "Contacts", model: "BaseContact", method: "delete"},
+    {name: "Customer info", description: "Customers", categoryName: "Contacts", model: "Customer", method: "create" },
+    {name: "Customer Info", categoryName: "Contacts", model: "Customer", method: "read" },
+    {name: "Customer Info", categoryName: "Contacts", model: "Customer", method: "update" },
+    {name: "Customer Info", categoryName: "Contacts", model: "Customer", method: "delete"},
+    {name: "Customer Category", description: "Customers", categoryName: "Contacts", model: "CustomerCategory", method: "create" },
+    {name: "Customer Category", categoryName: "Contacts", model: "CustomerCategory", method: "read", editable: false },
+    {name: "Customer Category", categoryName: "Contacts", model: "CustomerCategory", method: "update" },
+    {name: "Customer Category", categoryName: "Contacts", model: "CustomerCategory", method: "delete"},
+    {name: "Account info", description: "Accounts", categoryName: "Contacts", model: "Account", method: "create" },
+    {name: "Account Info", categoryName: "Contacts", model: "Account", method: "read" },
+    {name: "Account Info", categoryName: "Contacts", model: "Account", method: "update" },
+    {name: "Account Info", categoryName: "Contacts", model: "Account", method: "delete"},
+    {name: "User", description: "User info and rights", categoryName: "User", model: "BaseUser", method: "create" },
+    {name: "User", categoryName: "User", model: "BaseUser", method: "read", editable: false },
+    {name: "User", categoryName: "User", model: "BaseUser", method: "update" },
+    {name: "User", categoryName: "User", model: "BaseUser", method: "delete"},
+    {name: "Event", description: "Events & Reminders", categoryName: "General", model: "Event", method: "create" },
+    {name: "Event", categoryName: "General", model: "Event", method: "read", editable: false },
+    {name: "Event", categoryName: "General", model: "Event", method: "update" },
+    {name: "Event", categoryName: "General", model: "Event", method: "delete"},
+    {name: "Note", description: "Notes", categoryName: "General", model: "Note", method: "create" },
+    {name: "Note", categoryName: "General", model: "Note", method: "read", editable: false },
+    {name: "Note", categoryName: "General", model: "Note", method: "update" },
+    {name: "Note", categoryName: "General", model: "Note", method: "delete"},
+    {name: "Sequence Setting", description: "Number sequences settings", categoryName: "Setting", model: "SequenceSetting", method: "create" },
+    {name: "Sequence Setting", categoryName: "Setting", model: "SequenceSetting", method: "read", editable: false },
+    {name: "Sequence Setting", categoryName: "Setting", model: "SequenceSetting", method: "update" },
+    {name: "Sequence Setting", categoryName: "Setting", model: "SequenceSetting", method: "delete"},
+    {name: "Currency", description: "Currency list", categoryName: "Accounting", model: "Currency", method: "create" },
+    {name: "Currency", categoryName: "Accounting", model: "Currency", method: "read", editable: false },
+    {name: "Currency", categoryName: "Accounting", model: "Currency", method: "update" },
+    {name: "Currency", categoryName: "Accounting", model: "Currency", method: "delete"},
+    {name: "Currency Rate", description: "Currency rate tables", categoryName: "Accounting", model: "CurrencyRate", method: "create" },
+    {name: "Currency Rate", categoryName: "Accounting", model: "CurrencyRate", method: "read", editable: false },
+    {name: "Currency Rate", categoryName: "Accounting", model: "CurrencyRate", method: "update" },
+    {name: "Currency Rate", categoryName: "Accounting", model: "CurrencyRate", method: "delete"},
+    {name: "Discount Setting", description: "Discount settings", categoryName: "Accounting", model: "DiscountSetting", method: "create" },
+    {name: "Discount Setting", categoryName: "Accounting", model: "DiscountSetting", method: "read", editable: false },
+    {name: "Discount Setting", categoryName: "Accounting", model: "DiscountSetting", method: "update" },
+    {name: "Discount Setting", categoryName: "Accounting", model: "DiscountSetting", method: "delete"},
+    {name: "Quotation Line", description: "Quotation Line", categoryName: "Accounting", model: "QuotationLine", method: "create" },
+    {name: "Quotation Line", categoryName: "Accounting", model: "QuotationLine", method: "read", editable: false },
+    {name: "Quotation Line", categoryName: "Accounting", model: "QuotationLine", method: "update" },
+    {name: "Quotation Line", categoryName: "Accounting", model: "QuotationLine", method: "delete"},
+    {name: "Quotation", description: "Quotation", categoryName: "Accounting", model: "Quotation", method: "create" },
+    {name: "Quotation", categoryName: "Accounting", model: "Quotation", method: "read" },
+    {name: "Quotation", categoryName: "Accounting", model: "Quotation", method: "update" },
+    {name: "Quotation", categoryName: "Accounting", model: "Quotation", method: "delete"},
+    {name: "Tax", description: "Taxes", categoryName: "Accounting", model: "Tax", method: "create" },
+    {name: "Tax", categoryName: "Accounting", model: "Tax", method: "read", editable: false },
+    {name: "Tax", categoryName: "Accounting", model: "Tax", method: "update" },
+    {name: "Tax", categoryName: "Accounting", model: "Tax", method: "delete"},
+    {name: "Lead Industry", description: "List of industries for lead", categoryName: "Lead", model: "LeadIndustry", method: "create" },
+    {name: "Lead Industry", categoryName: "Lead", model: "LeadIndustry", method: "read", editable: false },
+    {name: "Lead Industry", categoryName: "Lead", model: "LeadIndustry", method: "update" },
+    {name: "Lead Industry", categoryName: "Lead", model: "LeadIndustry", method: "delete"},
+    {name: "Lead Source", description: "List of sources for lead", categoryName: "Lead", model: "LeadSource", method: "create" },
+    {name: "Lead Source", categoryName: "Lead", model: "LeadSource", method: "read", editable: false },
+    {name: "Lead Source", categoryName: "Lead", model: "LeadSource", method: "update" },
+    {name: "Lead Source", categoryName: "Lead", model: "LeadSource", method: "delete"},
+    {name: "Lead Status", description: "List of status for lead", categoryName: "Lead", model: "LeadStatus", method: "create" },
+    {name: "Lead Status", categoryName: "Lead", model: "LeadStatus", method: "read", editable: false },
+    {name: "Lead Status", categoryName: "Lead", model: "LeadStatus", method: "update" },
+    {name: "Lead Status", categoryName: "Lead", model: "LeadStatus", method: "delete"},
+    {name: "Lead", description: "Leads", categoryName: "Lead", model: "Lead", method: "create" },
+    {name: "Lead", categoryName: "Lead", model: "Lead", method: "read", editable: false },
+    {name: "Lead", categoryName: "Lead", model: "Lead", method: "update" },
+    {name: "Lead", categoryName: "Lead", model: "Lead", method: "delete"},
+
+  ], function(err, accrights) {
+    if (err) throw err; 
+    //create default roles
+    AccessRole.create([
+      {name: "Company Admin", userId: "default"},
+      {name: "Basic User", userId: "default"},
+      {name: "Sales Manager", userId: "default"},
+      {name: "Salesperson", userId: "default"},
+      {name: "Accounts Manager", userId: "default"},
+      {name: "Basic Account", userId: "default"},
+    ], function(err, roles){
+      if (err) throw err;
+      
+      //company admin
+      roles[0].accessRights.add(accrights[0]);
+      roles[0].accessRights.add(accrights[1]);
+      roles[0].accessRights.add(accrights[2]);
+      roles[0].accessRights.add(accrights[3]);
+      roles[0].accessRights.add(accrights[4]);
+      roles[0].accessRights.add(accrights[5]);
+      roles[0].accessRights.add(accrights[6]);
+      roles[0].accessRights.add(accrights[7]);
+      roles[0].accessRights.add(accrights[8]);
+      roles[0].accessRights.add(accrights[9]);
+      roles[0].accessRights.add(accrights[10]);
+      roles[0].accessRights.add(accrights[11]);
+      roles[0].accessRights.add(accrights[12]);
+      roles[0].accessRights.add(accrights[13]);
+      roles[0].accessRights.add(accrights[14]);
+      roles[0].accessRights.add(accrights[15]);
+      roles[0].accessRights.add(accrights[16]);
+      roles[0].accessRights.add(accrights[17]);
+      roles[0].accessRights.add(accrights[18]);
+      roles[0].accessRights.add(accrights[19]);
+      roles[0].accessRights.add(accrights[20]); //contact address
+      roles[0].accessRights.add(accrights[21]);
+      roles[0].accessRights.add(accrights[22]);
+      roles[0].accessRights.add(accrights[23]);
+      roles[0].accessRights.add(accrights[24]);
+      roles[0].accessRights.add(accrights[25]);
+      roles[0].accessRights.add(accrights[26]);
+      roles[0].accessRights.add(accrights[27]);
+      roles[0].accessRights.add(accrights[28]);
+      roles[0].accessRights.add(accrights[29]);
+      roles[0].accessRights.add(accrights[30]);
+      roles[0].accessRights.add(accrights[31]);
+      roles[0].accessRights.add(accrights[32]);
+      roles[0].accessRights.add(accrights[33]);
+      roles[0].accessRights.add(accrights[34]);
+      roles[0].accessRights.add(accrights[35]);
+      roles[0].accessRights.add(accrights[36]);
+      roles[0].accessRights.add(accrights[37]);
+      roles[0].accessRights.add(accrights[38]);
+      roles[0].accessRights.add(accrights[39]);
+      roles[0].accessRights.add(accrights[40]); //user
+      roles[0].accessRights.add(accrights[41]);
+      roles[0].accessRights.add(accrights[42]);
+      roles[0].accessRights.add(accrights[43]);
+      roles[0].accessRights.add(accrights[44]);
+      roles[0].accessRights.add(accrights[45]);
+      roles[0].accessRights.add(accrights[46]);
+      roles[0].accessRights.add(accrights[47]);
+      roles[0].accessRights.add(accrights[48]);
+      roles[0].accessRights.add(accrights[49]);
+      roles[0].accessRights.add(accrights[50]);
+      roles[0].accessRights.add(accrights[51]);
+      roles[0].accessRights.add(accrights[52]);
+      roles[0].accessRights.add(accrights[53]);
+      roles[0].accessRights.add(accrights[54]);
+      roles[0].accessRights.add(accrights[55]);
+
+      //basic user
+      roles[1].accessRights.add(accrights[1]);
+      roles[1].accessRights.add(accrights[5]);
+      roles[1].accessRights.add(accrights[9]);
+      roles[1].accessRights.add(accrights[13]);
+      roles[1].accessRights.add(accrights[17]);
+      roles[1].accessRights.add(accrights[20]); //contact address
+      roles[1].accessRights.add(accrights[21]);
+      roles[1].accessRights.add(accrights[22]);
+      roles[1].accessRights.add(accrights[23]);
+      roles[1].accessRights.add(accrights[24]);
+      roles[1].accessRights.add(accrights[25]);
+      roles[1].accessRights.add(accrights[26]);
+      roles[1].accessRights.add(accrights[27]);
+      roles[1].accessRights.add(accrights[28]);
+      roles[1].accessRights.add(accrights[29]);
+      roles[1].accessRights.add(accrights[30]);
+      roles[1].accessRights.add(accrights[31]);
+      roles[1].accessRights.add(accrights[33]);
+      roles[1].accessRights.add(accrights[36]);
+      roles[1].accessRights.add(accrights[37]);
+      roles[1].accessRights.add(accrights[38]);
+      roles[1].accessRights.add(accrights[39]);
+      roles[1].accessRights.add(accrights[41]);
+      roles[1].accessRights.add(accrights[44]);
+      roles[1].accessRights.add(accrights[45]);
+      roles[1].accessRights.add(accrights[46]);
+      roles[1].accessRights.add(accrights[47]);
+      roles[1].accessRights.add(accrights[48]);
+      roles[1].accessRights.add(accrights[49]);
+      roles[1].accessRights.add(accrights[50]);
+      roles[1].accessRights.add(accrights[51]);
+      roles[1].accessRights.add(accrights[53]);
+
+      //accounts manager
+      roles[4].accessRights.add(accrights[56]);
+      roles[4].accessRights.add(accrights[57]);
+      roles[4].accessRights.add(accrights[58]);
+      roles[4].accessRights.add(accrights[59]);
+      roles[4].accessRights.add(accrights[60]);
+      roles[4].accessRights.add(accrights[61]);
+      roles[4].accessRights.add(accrights[62]);
+      roles[4].accessRights.add(accrights[63]);
+      roles[4].accessRights.add(accrights[64]);
+      roles[4].accessRights.add(accrights[65]);
+      roles[4].accessRights.add(accrights[66]);
+      roles[4].accessRights.add(accrights[67]);
+      roles[4].accessRights.add(accrights[68]); //quotation line
+      roles[4].accessRights.add(accrights[69]);
+      roles[4].accessRights.add(accrights[70]);
+      roles[4].accessRights.add(accrights[71]);
+      roles[4].accessRights.add(accrights[72]);
+      roles[4].accessRights.add(accrights[73]);
+      roles[4].accessRights.add(accrights[74]);
+      roles[4].accessRights.add(accrights[75]);
+      roles[4].accessRights.add(accrights[76]);
+      roles[4].accessRights.add(accrights[77]);
+      roles[4].accessRights.add(accrights[78]);
+      roles[4].accessRights.add(accrights[79]);
+
+      //accounts user
+      roles[5].accessRights.add(accrights[57]);
+      roles[5].accessRights.add(accrights[61]);
+      roles[5].accessRights.add(accrights[65]);
+      roles[5].accessRights.add(accrights[68]); //quotation line
+      roles[5].accessRights.add(accrights[69]);
+      roles[5].accessRights.add(accrights[70]);
+      roles[5].accessRights.add(accrights[71]);
+      roles[5].accessRights.add(accrights[72]);
+      roles[5].accessRights.add(accrights[73]);
+      roles[5].accessRights.add(accrights[74]);
+      roles[5].accessRights.add(accrights[75]);
+      roles[5].accessRights.add(accrights[77]);
+
+      //sales manager
+      roles[2].accessRights.add(accrights[80]);
+      roles[2].accessRights.add(accrights[81]);
+      roles[2].accessRights.add(accrights[82]);
+      roles[2].accessRights.add(accrights[83]);
+      roles[2].accessRights.add(accrights[84]);
+      roles[2].accessRights.add(accrights[85]);
+      roles[2].accessRights.add(accrights[86]);
+      roles[2].accessRights.add(accrights[87]);
+      roles[2].accessRights.add(accrights[88]);
+      roles[2].accessRights.add(accrights[89]);
+      roles[2].accessRights.add(accrights[90]);
+      roles[2].accessRights.add(accrights[91]);
+      roles[2].accessRights.add(accrights[92]);
+      roles[2].accessRights.add(accrights[93]);
+      roles[2].accessRights.add(accrights[94]);
+      roles[2].accessRights.add(accrights[95]);
+
+      //sales user
+      roles[3].accessRights.add(accrights[81]);
+      roles[3].accessRights.add(accrights[85]);
+      roles[3].accessRights.add(accrights[89]);
+      roles[3].accessRights.add(accrights[92]);
+      roles[3].accessRights.add(accrights[93]);
+      roles[3].accessRights.add(accrights[94]);
+      roles[3].accessRights.add(accrights[95]);
+    });
+  });
+  
+
   var Lead = server.models.Lead;
   Lead.deleteAll();
 
@@ -276,6 +557,7 @@ module.exports = function(server) {
   ]);
 
   // Countries
+  /*
   var Country = server.models.BaseCountry;
   Country.deleteAll();
   Country.create([
@@ -718,6 +1000,7 @@ module.exports = function(server) {
     { name: "Western Sahara", code: "EH", phoneCode: "+212", language: "EN" },
     { name: "Yemen", code: "YE", phoneCode: "+967", language: "EN" },
     { name: "Zambia", code: "ZM", phoneCode: "+260", language: "EN" },
-    { name: "Zimbabwe", code: "ZW", phoneCode: "+263", language: "EN" } */
+    { name: "Zimbabwe", code: "ZW", phoneCode: "+263", language: "EN" } 
   ]);
+  */
 };

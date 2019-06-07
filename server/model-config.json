@@ -154,5 +154,25 @@
   "DealHistory": {
     "dataSource": "everyday",
     "public": true
+  },
+  "AccessRight": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "AccessRole": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "AccessGroup": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "AccessGroupRole": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "AccessSetting": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
