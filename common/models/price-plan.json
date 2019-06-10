@@ -29,6 +29,14 @@
       "options": {
         "nestRemoting": true
       }
+    },
+    "defaultRoles": {
+      "type": "hasAndBelongsToMany",
+      "model": "AccessRole",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
     }
   },
   "acls": [],

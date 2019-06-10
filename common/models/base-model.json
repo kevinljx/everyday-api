@@ -10,16 +10,13 @@
       "required": false,
       "validateUpsert": true
     },
-    "User": {
+    "Owner": {
       "required": false,
       "validateUpsert": true
     }
   },
   "properties": {
     "name": {
-      "type": "string"
-    },
-    "userId": {
       "type": "string"
     }
   },

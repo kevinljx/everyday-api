@@ -14,6 +14,8 @@ module.exports = function(server) {
   AccessRight.deleteAll();
   var AccessRole = server.models.AccessRole;
   AccessRole.deleteAll();
+  var PricePlan = server.models.PricePlan;
+  PricePlan.deleteAll();
   AccessRight.create([
     {name: "Access Group Role", description: "Access to roles inside a group.", categoryName: "Access", model: "AccessGroupRole", method: "create" },
     {name: "Access Group Role", categoryName: "Access", model: "AccessGroupRole", method: "read", editable: false },
@@ -69,7 +71,7 @@ module.exports = function(server) {
     {name: "Note", categoryName: "General", model: "Note", method: "delete"},
     {name: "Sequence Setting", description: "Number sequences settings", categoryName: "Setting", model: "SequenceSetting", method: "create" },
     {name: "Sequence Setting", categoryName: "Setting", model: "SequenceSetting", method: "read", editable: false },
-    {name: "Sequence Setting", categoryName: "Setting", model: "SequenceSetting", method: "update" },
+    {name: "Sequence Setting", categoryName: "Setting", model: "SequenceSetting", method: "update", editable: false },
     {name: "Sequence Setting", categoryName: "Setting", model: "SequenceSetting", method: "delete"},
     {name: "Currency", description: "Currency list", categoryName: "Accounting", model: "Currency", method: "create" },
     {name: "Currency", categoryName: "Accounting", model: "Currency", method: "read", editable: false },
@@ -216,6 +218,7 @@ module.exports = function(server) {
       roles[1].accessRights.add(accrights[50]);
       roles[1].accessRights.add(accrights[51]);
       roles[1].accessRights.add(accrights[53]);
+      roles[1].accessRights.add(accrights[54]);
 
       //accounts manager
       roles[4].accessRights.add(accrights[56]);
@@ -283,7 +286,118 @@ module.exports = function(server) {
       roles[3].accessRights.add(accrights[93]);
       roles[3].accessRights.add(accrights[94]);
       roles[3].accessRights.add(accrights[95]);
+
+      
+      PricePlan.create(
+        {name: "Free Trial", duration: 3, amount: 0}
+      , function(err, plan){
+        plan.accessRights.add(accrights[0]);
+        plan.accessRights.add(accrights[1]);
+        plan.accessRights.add(accrights[2]);
+        plan.accessRights.add(accrights[3]);
+        plan.accessRights.add(accrights[4]);
+        plan.accessRights.add(accrights[5]);
+        plan.accessRights.add(accrights[6]);
+        plan.accessRights.add(accrights[7]);
+        plan.accessRights.add(accrights[8]);
+        plan.accessRights.add(accrights[9]);
+        plan.accessRights.add(accrights[10]);
+        plan.accessRights.add(accrights[11]);
+        plan.accessRights.add(accrights[12]);
+        plan.accessRights.add(accrights[13]);
+        plan.accessRights.add(accrights[14]);
+        plan.accessRights.add(accrights[15]);
+        plan.accessRights.add(accrights[16]);
+        plan.accessRights.add(accrights[17]);
+        plan.accessRights.add(accrights[18]);
+        plan.accessRights.add(accrights[19]);
+        plan.accessRights.add(accrights[20]); //contact address
+        plan.accessRights.add(accrights[21]);
+        plan.accessRights.add(accrights[22]);
+        plan.accessRights.add(accrights[23]);
+        plan.accessRights.add(accrights[24]);
+        plan.accessRights.add(accrights[25]);
+        plan.accessRights.add(accrights[26]);
+        plan.accessRights.add(accrights[27]);
+        plan.accessRights.add(accrights[28]);
+        plan.accessRights.add(accrights[29]);
+        plan.accessRights.add(accrights[30]);
+        plan.accessRights.add(accrights[31]);
+        plan.accessRights.add(accrights[32]);
+        plan.accessRights.add(accrights[33]);
+        plan.accessRights.add(accrights[34]);
+        plan.accessRights.add(accrights[35]);
+        plan.accessRights.add(accrights[36]);
+        plan.accessRights.add(accrights[37]);
+        plan.accessRights.add(accrights[38]);
+        plan.accessRights.add(accrights[39]);
+        plan.accessRights.add(accrights[40]); //user
+        plan.accessRights.add(accrights[41]);
+        plan.accessRights.add(accrights[42]);
+        plan.accessRights.add(accrights[43]);
+        plan.accessRights.add(accrights[44]);
+        plan.accessRights.add(accrights[45]);
+        plan.accessRights.add(accrights[46]);
+        plan.accessRights.add(accrights[47]);
+        plan.accessRights.add(accrights[48]);
+        plan.accessRights.add(accrights[49]);
+        plan.accessRights.add(accrights[50]);
+        plan.accessRights.add(accrights[51]);
+        plan.accessRights.add(accrights[52]);
+        plan.accessRights.add(accrights[53]);
+        plan.accessRights.add(accrights[54]);
+        plan.accessRights.add(accrights[55]);
+        plan.accessRights.add(accrights[56]);
+        plan.accessRights.add(accrights[57]);
+        plan.accessRights.add(accrights[58]);
+        plan.accessRights.add(accrights[59]);
+        plan.accessRights.add(accrights[60]);
+        plan.accessRights.add(accrights[61]);
+        plan.accessRights.add(accrights[62]);
+        plan.accessRights.add(accrights[63]);
+        plan.accessRights.add(accrights[64]);
+        plan.accessRights.add(accrights[65]);
+        plan.accessRights.add(accrights[66]);
+        plan.accessRights.add(accrights[67]);
+        plan.accessRights.add(accrights[68]); //quotation line
+        plan.accessRights.add(accrights[69]);
+        plan.accessRights.add(accrights[70]);
+        plan.accessRights.add(accrights[71]);
+        plan.accessRights.add(accrights[72]);
+        plan.accessRights.add(accrights[73]);
+        plan.accessRights.add(accrights[74]);
+        plan.accessRights.add(accrights[75]);
+        plan.accessRights.add(accrights[76]);
+        plan.accessRights.add(accrights[77]);
+        plan.accessRights.add(accrights[78]);
+        plan.accessRights.add(accrights[79]);
+        plan.accessRights.add(accrights[80]);
+        plan.accessRights.add(accrights[81]);
+        plan.accessRights.add(accrights[82]);
+        plan.accessRights.add(accrights[83]);
+        plan.accessRights.add(accrights[84]);
+        plan.accessRights.add(accrights[85]);
+        plan.accessRights.add(accrights[86]);
+        plan.accessRights.add(accrights[87]);
+        plan.accessRights.add(accrights[88]);
+        plan.accessRights.add(accrights[89]);
+        plan.accessRights.add(accrights[90]);
+        plan.accessRights.add(accrights[91]);
+        plan.accessRights.add(accrights[92]);
+        plan.accessRights.add(accrights[93]);
+        plan.accessRights.add(accrights[94]);
+        plan.accessRights.add(accrights[95]);
+
+        plan.defaultRoles.add(roles[0]);
+        plan.defaultRoles.add(roles[1]);
+        plan.defaultRoles.add(roles[2]);
+        plan.defaultRoles.add(roles[3]);
+        plan.defaultRoles.add(roles[4]);
+        plan.defaultRoles.add(roles[5]);
+      });
     });
+
+    
   });
   
 

@@ -1,43 +1,56 @@
-/*
+
 module.exports = function(app) {
     var Role = app.models.Role;
-  
-    Role.registerResolver('teamMember', function(role, context, cb) {
+
+    /*
+    Role.create({
+      name: 'admin'
+     }, function(err, role) {
+      if (err) return debug(err);
+      debug(role);
+
+      // Make Bob an admin
+      role.principals.create({
+        principalType: RoleMapping.USER,
+        principalId: users[2].id
+      }, function(err, principal) {
+        if (err) return debug(err);
+        debug(principal);
+      });
+    });
+    */
+
+
+    Role.registerResolver('companySet', function(role, context, cb) {
       function reject() {
         process.nextTick(function() {
           cb(null, false);
         });
       }
-  
-      // if the target model is not project
-      if (context.modelName !== 'project') {
-        return reject();
-      }
-  
+        
       // do not allow anonymous users
       var userId = context.accessToken.userId;
       if (!userId) {
         return reject();
       }
-  
-      // check if userId is in team table for the given project id
-      context.model.findById(context.modelId, function(err, project) {
-        if (err || !project)
-          return reject();
-  
-        var Team = app.models.Team;
-        Team.count({
-          ownerId: project.ownerId,
-          memberId: userId
-        }, function(err, count) {
-          if (err) {
-            console.log(err);
-            return cb(null, false);
-          }
-  
-          cb(null, count > 0); // true = is a team member
-        });
+
+      //check user access role
+      var AccessSetting = app.models.AccessSetting;
+      AccessSetting.find({where: {userId: userId}}, function(err, settings){
+        if(err) return reject();
+        var setRoles = [];
+        for(var i=0; i < settings.length; i++){
+          setRoles.push(settings[i].grouproleId);
+        }
+        console.log(setRoles);
+
+        //check if role has the rights
+        //console.log(context.accessType);
       });
+      
+      
+      
+      cb(null, true);
+      
     });
   };
-*/
