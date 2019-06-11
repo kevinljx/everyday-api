@@ -118,11 +118,11 @@ module.exports = function(server) {
     if (err) throw err; 
     //create default roles
     AccessRole.create([
-      {name: "Company Admin", userId: "default"},
+      {name: "Company Admin", userId: "defaultAdmin"},
       {name: "Basic User", userId: "default"},
-      {name: "Sales Manager", userId: "default"},
+      {name: "Sales Manager", userId: "defaultAdmin"},
       {name: "Salesperson", userId: "default"},
-      {name: "Accounts Manager", userId: "default"},
+      {name: "Accounts Manager", userId: "defaultAdmin"},
       {name: "Basic Account", userId: "default"},
     ], function(err, roles){
       if (err) throw err;
@@ -408,6 +408,7 @@ module.exports = function(server) {
    * CRM Fields
    */
   // Lead Status
+  
   var LeadStatus = server.models.LeadStatus;
   LeadStatus.deleteAll();
   LeadStatus.create([
@@ -516,6 +517,7 @@ module.exports = function(server) {
       description: "Client has declined the sales order."
     }
   ]);
+  
 
   // Industry
   var Industry = server.models.LeadIndustry;

@@ -27,6 +27,21 @@ module.exports = function(app) {
           cb(null, false);
         });
       }
+
+      var checkCount = 0;
+      var checkSize = 0;
+      var hasRight = false;
+      function finishCheckRight(){
+        checkCount++;
+        if(checkCount == checkSize){
+          if(hasRight){
+            cb(null, true);
+          }
+          else {
+            return reject();
+          }
+        }
+      }
         
       // do not allow anonymous users
       var userId = context.accessToken.userId;
@@ -35,6 +50,7 @@ module.exports = function(app) {
       }
 
       //check user access role
+      
       var AccessSetting = app.models.AccessSetting;
       AccessSetting.find({where: {userId: userId}}, function(err, settings){
         if(err) return reject();
@@ -42,15 +58,38 @@ module.exports = function(app) {
         for(var i=0; i < settings.length; i++){
           setRoles.push(settings[i].grouproleId);
         }
-        console.log(setRoles);
+        var AccessGroupRole = app.models.AccessGroupRole;
+        AccessGroupRole.find({where: {id: {inq: setRoles}}}, function(err, grpRoles){
+          var roleIds = [];
+          for(var j=0; j < grpRoles.length; j++){
+            roleIds.push(grpRoles[j].accessRoleId)
+          }
+          //check if role has the rights
+          var AccessRole = app.models.AccessRole;
+          
+          AccessRole.find({where: {id: {inq: roleIds}}}, function(err, accRoles){
+            checkSize = accRoles.length;
+            accRoles.forEach(element => {
+              element.accessRights({where: {method: context.accessType.toLowerCase(), model: context.modelName}}, function(err, rights){
+                //{where: {and: [ {model: context.modelName}, {method: context.accessType.toLowerCase()}]}}
+                
+                if(rights.length > 0){
+                  hasRight = true;
+                }
+                finishCheckRight();
+              });
+              
+            });
+          })
+        });
 
-        //check if role has the rights
-        //console.log(context.accessType);
+
+        
       });
       
       
       
-      cb(null, true);
+      
       
     });
   };

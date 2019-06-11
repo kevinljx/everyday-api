@@ -50,12 +50,12 @@ module.exports = function(Company) {
           var companyGroup = await AccessGroup.create({name: 'Company', userId: newuser.id});
           var AccessGroupRole = Company.app.models.AccessGroupRole;
           var AccessSetting = Company.app.models.AccessSetting;
-          var pRoles = await pp.defaultRoles.find();          
-          for(var i=0; i < pRoles.length; i++){            
-            var grouprole = await AccessGroupRole.create({tier: 3, isDefault: true, accessGroupId: companyGroup.id, accessRoleId: pRoles[i].id});
+          var pRoles = await pp.defaultRoles({where: {userId: "defaultAdmin"}});          
+          pRoles.forEach(async element =>  {
+            var grouprole = await AccessGroupRole.create({tier: 3, isDefault: true, accessGroupId: companyGroup.id, accessRoleId: element.id});
             AccessSetting.create({user: newuser, grouprole: grouprole});
-          }
-
+          }); 
+                       
           //all 1st sign up stuff here
           return [1,"Account created."];
         }
