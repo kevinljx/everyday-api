@@ -8,7 +8,7 @@ module.exports = function(Accessrole) {
       for (let i = 0; i < roles.length; i++) {
         let rights = await roles[i].accessRights.find()
         var access = {
-          roleID: roles[i].id,
+          roleId: roles[i].id,
           rights: rights
         }
         roleRights.push(access)
