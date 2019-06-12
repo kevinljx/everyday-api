@@ -13,7 +13,7 @@ module.exports = function(Accessrole) {
         }
         roleRights.push(access)
       }
-      return [roleRights];
+      return roleRights;
     } catch (e) {
       console.log(e);
       throw e;
