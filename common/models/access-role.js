@@ -2,18 +2,18 @@
 
 module.exports = function(Accessrole) {
   Accessrole.getAllRoleRights = async function() {
-    var roles = await Accessrole.app.models.AccessRole.find()
-    var rolesRights = []
-    for (let i = 0; i < roles.length; i++) {
-      var rights = await roles[i].accessRights.find()
-      var accessRights = {
-        roleID: roles[i].id,
-        rights: rights
-      }
-      rolesRights.push(accessRights)
-    }
     try {
-        return [rolesRights];
+      var roles = await Accessrole.app.models.AccessRole.find()
+      var roleRights = []
+      for (let i = 0; i < roles.length; i++) {
+        let rights = await roles[i].accessRights.find()
+        var access = {
+          roleID: roles[i].id,
+          rights: rights
+        }
+        roleRights.push(access)
+      }
+      return [roleRights];
     } catch (e) {
       console.log(e);
       throw e;
@@ -22,6 +22,7 @@ module.exports = function(Accessrole) {
   
   Accessrole.remoteMethod('getAllRoleRights', {
     returns: {arg: 'data', type: 'array'},
-    http: {verb: 'get'}
+    http: {verb: 'get'},
+    description: "Get all access roles access rights data."
   });
 };
