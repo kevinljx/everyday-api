@@ -5,6 +5,16 @@ module.exports = function(Deal) {
     //check if user already signed up with same email address
     try {
       var BaseDeal = await Deal.findById(dealID);
+      // create history
+      await Deal.app.models.DealHistory.create({
+        stageName: BaseDeal.stage.name,
+        amount: BaseDeal.amount,
+        chance: BaseDeal.stage.chance,
+        duration: 10,
+        closingDate: BaseDeal.closingDate,
+        dealId: BaseDeal.id
+      });
+      // change Stage
       var deal = await BaseDeal.patchAttributes({ stageId: stageID });
       var data = await Deal.findById(deal.id);
       return data;

@@ -51,8 +51,7 @@
     },
     "history": {
       "type": "hasMany",
-      "model": "DealHistory",
-      "polymorphic": "historable"
+      "model": "DealHistory"
     },
     "events": {
       "type": "hasMany",
