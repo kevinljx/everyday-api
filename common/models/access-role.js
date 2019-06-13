@@ -22,7 +22,34 @@ module.exports = function(Accessrole) {
   
   Accessrole.remoteMethod('getAllRoleRights', {
     returns: {arg: 'data', type: 'array'},
-    http: {verb: 'get'},
+    http: {path: '/accessRights', verb: 'get'},
     description: "Get all access roles access rights data."
   });
+
+
+
+  Accessrole.patchRoleRights = async function(id, data) {
+    try {
+      var role = await Accessrole.app.models.AccessRole.findById(id)
+      var result = await role.patchAttributes({accessRights: data}, (err, instance) => {
+        if(err)
+          return err
+        return instance
+      })
+      return result;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  Accessrole.remoteMethod('patchRoleRights', {
+    accepts: [
+      {arg: 'id', type: 'string', required: true},
+      {arg: "data", type: 'array'}
+    ],
+    returns: {arg: 'data', type: 'array'},
+    http: {path: '/:id/accessRights', verb: 'patch'},
+    description: 'Put array of accessRights to related role.'
+  })
 };
