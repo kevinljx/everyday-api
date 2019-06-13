@@ -12,16 +12,11 @@
         "fullAddress": "showFullAddress",
         "name": "showFullName"
       }
-    }
+    },
+    "ShowUsers": true
   },
   "scope": {
-    "include": [
-      "parent_id",
-      "subaccount",
-      "notes",
-      "events",
-      "industry"
-    ]
+    "include": ["parent_id", "subaccount", "notes", "events", "industry"]
   },
   "properties": {
     "isActive": {
