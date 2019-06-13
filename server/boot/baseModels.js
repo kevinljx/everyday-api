@@ -113,7 +113,6 @@ module.exports = function(server) {
     {name: "Lead", categoryName: "Lead", model: "Lead", method: "read", editable: false },
     {name: "Lead", categoryName: "Lead", model: "Lead", method: "update" },
     {name: "Lead", categoryName: "Lead", model: "Lead", method: "delete"},
-
   ], function(err, accrights) {
     if (err) throw err; 
     //create default roles
