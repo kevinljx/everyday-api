@@ -13,5 +13,15 @@
     "user": "",
     "useNewUrlParser": true,
     "connector": "mongodb"
+  },
+  "accountDS": {
+    "host": "",
+    "port": 0,
+    "url": "",
+    "database": "",
+    "password": "",
+    "name": "accountDS",
+    "user": "",
+    "connector": "mongodb"
   }
 }

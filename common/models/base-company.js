@@ -2,9 +2,22 @@
 
 module.exports = function(Company) {
     
-    Company.signup = async function(email, password, priceplan, userinfo, companyinfo, paymentinfo) {
+
+    Company.signup = async function(email, password, priceplan, userInfo, companyInfo, paymentInfo) {
       //check if user already signed up with same email address
+
+      // console.log(Company)
+      console.log(email)
+      console.log(password)
+      console.log(priceplan)
+      console.log(userInfo)
+      console.log(companyInfo)
+      console.log(paymentInfo)
+
+
       var BaseUser = Company.app.models.BaseUser;
+
+      
       try {
         var users = await BaseUser.find({where: {email: email}});
         if(users.length > 0){          
@@ -18,8 +31,8 @@ module.exports = function(Company) {
             return [0, "Invalid price plan."];
           }
           //company info
-          if (companyinfo !== undefined){
-            var comp = await Company.create(companyinfo);
+          if (companyInfo !== undefined){
+            var comp = await Company.create(companyInfo);
             
           }
           else {
@@ -32,19 +45,22 @@ module.exports = function(Company) {
           }
           //user info
           var name = email;
-          if(userinfo == null){
-            userinfo = {email: email}
+          if(userInfo == null){
+            userInfo = {email: email}
           }
           else {
-            if(!userinfo.hasOwnProperty('email')){
-              userinfo.email = email;
+            if(!userInfo.hasOwnProperty('email')){
+              userInfo.email = email;
             }
-            if(userinfo.hasOwnProperty('name')){
-              name = userinfo.name;
+            if(userInfo.hasOwnProperty('name')){
+              name = userInfo.name;
             }
           }
+
+
           var newuser = await BaseUser.create({name: name, email: email, password: password, contact: userinfo, company: comp});
-          comp.paymentInfos.create(paymentinfo);
+
+          comp.paymentInfos.create(paymentInfo);
           //create default access rights
           var AccessGroup = Company.app.models.AccessGroup;
           var companyGroup = await AccessGroup.create({name: 'Company', userId: newuser.id});
@@ -66,18 +82,18 @@ module.exports = function(Company) {
       }
       
       
-      
-      
+     
     }
 
     Company.remoteMethod('signup', {
-          accepts: [{arg: 'email', type: 'string', required: true}, 
+          accepts: [
+            {arg: 'email', type: 'string', required: true}, 
             {arg: 'password', type: 'string', required:true}, 
             {arg: 'priceplan', type: 'string', required: true},
-            {arg: 'userinfo', type: 'object'},
-            {arg: 'companyinfo', type: 'object'},
-            {arg: 'paymentinfo', type: 'object'}
-            ],
+            {arg: 'userInfo', type: 'object'},
+            {arg: 'companyInfo', type: 'object'},
+            {arg: 'paymentInfo', type: 'object'}
+          ],
           returns: [{arg: 'success', type: 'number'}, {arg: 'msg', type: 'string'}]
     });
     
