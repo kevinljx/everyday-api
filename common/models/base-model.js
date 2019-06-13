@@ -1,13 +1,13 @@
 'use strict';
 
 module.exports = function(Basemodel) {
+
     
     Basemodel.observe('access', (ctx, next)=>{
-
         var token = ctx.options && ctx.options.accessToken;
         var userId = token && token.userId;
         if (!userId) return next();  // no access token, internal or test request;
-        var whereClause = {userId: userId};
+        var whereClause = {userId: {"like": userId}};
         
         //check if model is access related. to avoid circular calls
         
@@ -33,7 +33,7 @@ module.exports = function(Basemodel) {
 
         // this part is tricky because you may need to add
         // the userId filter to an existing where-clause
-
+        /*
         ctx.query = ctx.query || {};
         if (ctx.query.where) {
             if (ctx.query.where.and) {
@@ -49,6 +49,7 @@ module.exports = function(Basemodel) {
         } else {
             ctx.query.where = whereClause;
         }
+        */
         next();
     });
     
