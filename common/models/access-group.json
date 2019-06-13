@@ -1,7 +1,7 @@
 {
   "name": "AccessGroup",
   "plural": "accessgroups",
-  "base": "BaseModel",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -10,6 +10,16 @@
     "name": {
       "type": "string",
       "required": true
+    }
+  },
+  "mixins": {
+    "TimeStamp": {
+      "required": false,
+      "validateUpsert": true
+    },
+    "Owner": {
+      "required": false,
+      "validateUpsert": true
     }
   },
   "validations": [],

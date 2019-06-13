@@ -7,15 +7,19 @@ module.exports = function(Company) {
       var BaseUser = Company.app.models.BaseUser;
       try {
         var users = await BaseUser.find({where: {email: email}});
-        if(users.length > 0){          
-          return [0, "A user has already registered with this email address."];
+        if(users.length > 0){
+          var error = new Error("A user has already registered with this email address.");
+          error.status = 400;          
+          throw error;
         }
         else {
           //get priceplan
           var Priceplan = Company.app.models.PricePlan;
           var pp = await Priceplan.findOne({name: priceplan});          
           if(pp == undefined || pp == null){
-            return [0, "Invalid price plan."];
+            var error = new Error("Invalid price plan.");
+            error.status = 400;          
+            throw error;
           }
           //company info
           if (companyinfo !== undefined){
@@ -50,10 +54,21 @@ module.exports = function(Company) {
           var companyGroup = await AccessGroup.create({name: 'Company', userId: newuser.id});
           var AccessGroupRole = Company.app.models.AccessGroupRole;
           var AccessSetting = Company.app.models.AccessSetting;
-          var pRoles = await pp.defaultRoles({where: {userId: "defaultAdmin"}});          
+          var AccessRole = Company.app.models.AccessRole;
+          var pRoles = await pp.defaultRoles.find();  
+          
+          //duplicate the role for company
           pRoles.forEach(async element =>  {
-            var grouprole = await AccessGroupRole.create({tier: 3, isDefault: true, accessGroupId: companyGroup.id, accessRoleId: element.id});
-            AccessSetting.create({user: newuser, grouprole: grouprole});
+            var roleRights = await element.accessRights.find();
+            var r1 = await AccessRole.create({name: element.name, userId: newuser.id});
+            roleRights.forEach(async right1 => {
+              r1.accessRights.add(right1);
+            });
+            if(element.userId == "defaultAdmin"){
+              var grouprole = await AccessGroupRole.create({tier: 3, isDefault: true, accessGroupId: companyGroup.id, accessRoleId: r1.id});
+              AccessSetting.create({user: newuser, grouprole: grouprole});
+            }
+            
           }); 
                        
           //all 1st sign up stuff here
