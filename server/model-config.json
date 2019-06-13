@@ -174,5 +174,9 @@
   "AccessSetting": {
     "dataSource": "everyday",
     "public": true
+  },
+  "Email": {
+    "dataSource": "mail",
+    "public": true
   }
 }

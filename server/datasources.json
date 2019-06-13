@@ -14,14 +14,18 @@
     "useNewUrlParser": true,
     "connector": "mongodb"
   },
-  "accountDS": {
-    "host": "",
-    "port": 0,
-    "url": "",
-    "database": "",
-    "password": "",
-    "name": "accountDS",
-    "user": "",
-    "connector": "mongodb"
+  "mail": {
+    "connector": "mail",
+    "transports": [{
+      "type": "SMTP",
+      "host": "smtp.gmail.com",
+      "secure": true,
+      "port": 465,
+      "auth": {
+        "user": "igc14.gianjie@gmail.com",
+        "pass": "Asshole123" 
+      }
+    }]
   }
+ 
 }
