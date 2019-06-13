@@ -12,15 +12,11 @@
         "fullAddress": "showFullAddress",
         "name": "showFullName"
       }
-    }
+    },
+    "ShowUsers": true
   },
   "scope": {
-    "include": [
-      "category",
-      "account",
-      "notes",
-      "events"
-    ]
+    "include": ["category", "account", "notes", "events"]
   },
   "properties": {
     "isActive": {

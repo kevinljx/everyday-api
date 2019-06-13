@@ -6,10 +6,10 @@ module.exports = function(server) {
    * DEVELOPMENT ONLY
    * ==================================
    */
-
   /*
   Access Rights. Create default access rights
   */
+  /*
   var AccessRight = server.models.AccessRight;
   AccessRight.deleteAll();
   var AccessRole = server.models.AccessRole;
@@ -399,16 +399,14 @@ module.exports = function(server) {
 
     
   });
-  
-
-  var Lead = server.models.Lead;
-  Lead.deleteAll();
-
+  */
+  //var Lead = server.models.Lead;
+  //Lead.deleteAll();
   /**
    * CRM Fields
    */
   // Lead Status
-  
+  /*
   var LeadStatus = server.models.LeadStatus;
   LeadStatus.deleteAll();
   LeadStatus.create([
@@ -516,17 +514,17 @@ module.exports = function(server) {
       quotation: false,
       description: "Client has declined the sales order."
     }
-  ]); */
-  
-
+  ]);
+  */
   // Industry
+  /*
   var Industry = server.models.LeadIndustry;
   Industry.deleteAll();
   Industry.create([
     { name: "Accounting " },
     { name: "Airlines/Aviation" },
     { name: "Alternative Dispute Resolution" }
-    /* { name: "Alternative Medicine" },
+     { name: "Alternative Medicine" },
     { name: "Animation" },
     { name: "Apparel/Fashion" },
     { name: "Architecture/Planning" },
@@ -669,9 +667,9 @@ module.exports = function(server) {
     { name: "Wholesale" },
     { name: "Wine/Spirits" },
     { name: "Wireless" },
-    { name: "Writing/Editing" } */
+    { name: "Writing/Editing" } 
   ]);
-
+*/
   // Countries
   /*
   var Country = server.models.BaseCountry;
