@@ -9,12 +9,18 @@
   "mixins": {
     "Computed": {
       "properties": {
-        "fullAddress": "showFullAddress"
+        "fullAddress": "showFullAddress",
+        "name": "showFullName"
       }
     }
   },
   "scope": {
-    "include": ["status", "source", "industry", "events"]
+    "include": [
+      "status",
+      "source",
+      "industry",
+      "events"
+    ]
   },
   "properties": {
     "companyName": {

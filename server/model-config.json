@@ -174,5 +174,9 @@
   "AccessSetting": {
     "dataSource": "everyday",
     "public": true
+  },
+  "Deal": {
+    "dataSource": "everyday",
+    "public": true
   }
 }

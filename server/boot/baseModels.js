@@ -453,7 +453,7 @@ module.exports = function(server) {
   ]);
 
   // Deal Stage
-  var DealStage = server.models.DealStage;
+  /* var DealStage = server.models.DealStage;
   DealStage.deleteAll();
   DealStage.create([
     {
@@ -516,7 +516,7 @@ module.exports = function(server) {
       quotation: false,
       description: "Client has declined the sales order."
     }
-  ]);
+  ]); */
   
 
   // Industry

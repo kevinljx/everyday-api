@@ -1,0 +1,85 @@
+{
+  "name": "Deal",
+  "plural": "deals",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "scope": {
+    "include": [
+      "account",
+      "customer",
+      "stage",
+      "type",
+      "events",
+      "notes",
+      "source",
+      "history"
+    ]
+  },
+  "properties": {
+    "closingDate": {
+      "type": "date",
+      "required": true
+    },
+    "amount": {
+      "type": "number",
+      "required": true
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "account": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "customer": {
+      "type": "belongsTo",
+      "model": "Customer",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "history": {
+      "type": "hasMany",
+      "model": "DealHistory",
+      "polymorphic": "historable"
+    },
+    "events": {
+      "type": "hasMany",
+      "model": "Event",
+      "polymorphic": "eventable"
+    },
+    "notes": {
+      "type": "hasMany",
+      "model": "Note",
+      "polymorphic": "noteable"
+    },
+    "source": {
+      "type": "belongsTo",
+      "model": "LeadSource",
+      "foreignKey": ""
+    },
+    "type": {
+      "type": "belongsTo",
+      "model": "DealType",
+      "foreignKey": ""
+    },
+    "stage": {
+      "type": "belongsTo",
+      "model": "DealStage",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
