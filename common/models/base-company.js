@@ -75,7 +75,8 @@ module.exports = function(Company) {
         var AccessGroup = Company.app.models.AccessGroup;
         var companyGroup = await AccessGroup.create({
           name: "Company",
-          userId: newuser.id
+          userId: newuser.id,
+          editable: false
         });
         var AccessGroupRole = Company.app.models.AccessGroupRole;
         var AccessSetting = Company.app.models.AccessSetting;
@@ -87,7 +88,8 @@ module.exports = function(Company) {
           var roleRights = await element.accessRights.find();
           var r1 = await AccessRole.create({
             name: element.name,
-            userId: newuser.id
+            userId: newuser.id,
+            removable: false
           });
           roleRights.forEach(async right1 => {
             r1.accessRights.add(right1);

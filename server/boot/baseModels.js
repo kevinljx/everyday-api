@@ -117,6 +117,7 @@ module.exports = function(server) {
     if (err) throw err; 
     //create default roles
     AccessRole.create([
+      {name: "Member", userId: "default", removable: false, editable: false},
       {name: "Company Admin", userId: "defaultAdmin"},
       {name: "Basic User", userId: "default"},
       {name: "Sales Manager", userId: "defaultAdmin"},
