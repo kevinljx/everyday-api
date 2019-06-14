@@ -7,14 +7,7 @@ module.exports = function(Company) {
       //check if user already signed up with same email address
 
       // console.log(Company)
-      console.log(email)
-      console.log(password)
-      console.log(priceplan)
-      console.log(userInfo)
-      console.log(companyInfo)
-      console.log(paymentInfo)
-
-
+   
       var BaseUser = Company.app.models.BaseUser;
 
       
