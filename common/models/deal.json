@@ -6,7 +6,9 @@
   "options": {
     "validateUpsert": true
   },
-  "mixins": {},
+  "mixins": {
+    "ShowUsers": true
+  },
   "scope": {
     "include": [
       "account",

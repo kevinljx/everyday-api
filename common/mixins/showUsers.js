@@ -2,7 +2,7 @@
 module.exports = function(Model, bootOptions = {}) {
   Model.afterRemote("**", async function(ctx, modelInstance) {
     var BaseUser = Model.app.models.BaseUser;
-    if (ctx.result) {
+    if (ctx.result && ctx.result.length > 0) {
       for (var res of ctx.result) {
         if (res.userId) {
           var userobj = await BaseUser.findById(res.userId);
