@@ -1,7 +1,7 @@
 {
   "name": "AccessGroupRole",
   "plural": "accessgrouproles",
-  "base": "BaseModel",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -9,6 +9,16 @@
   "hidden": [
     "isDefault"
   ],
+  "mixins": {
+    "TimeStamp": {
+      "required": false,
+      "validateUpsert": true
+    },
+    "Owner": {
+      "required": false,
+      "validateUpsert": true
+    }
+  },
   "properties": {
     "tier": {
       "type": "number",
