@@ -10,6 +10,14 @@
     "name": {
       "type": "string",
       "required": true
+    },
+    "editable": {
+      "type": "boolean",
+      "default": true
+    },
+    "removable": {
+      "type": "boolean",
+      "default": true
     }
   },
   "mixins": {

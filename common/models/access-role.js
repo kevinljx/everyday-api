@@ -29,13 +29,12 @@ module.exports = function(Accessrole) {
   Accessrole.patchRoleRights = async function(id, data) {
     try {
       var role = await Accessrole.app.models.AccessRole.findById(id);
-      var result = await role.patchAttributes(
-        { accessRights: data },
-        (err, instance) => {
-          if (err) return err;
-          return instance;
-        }
-      );
+      await role.accessRights.remove()
+      data.forEach(async right => {
+        await role.accessRights.add(right.id)
+      });
+      var result = role.accessRights
+      console.log(role.accessRights)
       return result;
     } catch (e) {
       console.log(e);
