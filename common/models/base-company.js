@@ -1,8 +1,7 @@
 'use strict';
 
 let handlebars = require('handlebars');
-var fs = require('fs');
-
+let fs = require('fs')
 
 var readHTMLFile = function(path, callback) {
   fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
@@ -17,27 +16,14 @@ var readHTMLFile = function(path, callback) {
 };
 
 
-
-
-
-
 module.exports = function(Company) {
     
 
     Company.signup = async function(email, password, priceplan, userInfo, companyInfo, paymentInfo) {
       //check if user already signed up with same email address
 
-      // console.log(Company)
-      // console.log(email)
-      // console.log(password)
-      // console.log(priceplan)
-      // console.log(userInfo)
-      // console.log(companyInfo)
-      // console.log(paymentInfo)
-
       var BaseUser = Company.app.models.BaseUser;
 
-      
       try {
         var users = await BaseUser.find({where: {email: email}});
         if(users.length > 0){          
@@ -78,9 +64,11 @@ module.exports = function(Company) {
           }
 
 
+          console.log(comp)
           var newuser = await BaseUser.create({name: name, email: email, password: password, contact: userInfo, company: comp});
-
+ 
           comp.paymentInfos.create(paymentInfo);
+
           //create default access rights
           var AccessGroup = Company.app.models.AccessGroup;
           var companyGroup = await AccessGroup.create({name: 'Company', userId: newuser.id});
@@ -92,28 +80,34 @@ module.exports = function(Company) {
             AccessSetting.create({user: newuser, grouprole: grouprole});
           }); 
                        
-          //all 1st sign up stuff here
+          // all 1st sign up stuff here
 
-      
-          readHTMLFile(__dirname + '/Verification.html', function(err, html) {
 
-              var template = handlebars.compile(html);
-              var htmlToSend = template(template);
-
-               Company.app.models.Email.send({
-                  to: 'gianjie@ocdigitalnetwork.com',
-                  from: 'igc14.gianjie@gmail.com',
-                  subject: 'testing email',
-                  html: htmlToSend
-                }, function(err) {
-                  if (err) return console.log(err + '-> error sending email');
-                  console.log('> email successfully sent');
-              });
-          });
+          // Need to input Email as verification
           
 
 
+          // VerifyEmail
+          const HTMLTemplate = readHTMLFile(__dirname + '/Verification.html', function(err, html) {
+              var template = handlebars.compile(html);
+              var htmlToSend = template(template);
+              return htmlToSend
+          });
+        
+
+          Company.app.models.Email.send({
+            to: 'gianjie@ocdigitalnetwork.com',
+            from: 'igc14.gianjie@gmail.com',
+            subject: 'testing email',
+            html: HTMLTemplate
+          }, function(err) {
+            if (err) return console.log(err + '-> error sending email');
+            console.log('> email successfully sent');
+          });
+
+          
           return [1,"Account created."];
+
         }
       }
       catch(e){
