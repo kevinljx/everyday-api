@@ -3,11 +3,11 @@
 let handlebars = require('handlebars');
 let fs = require('fs')
 
-var readHTMLFile = function(path, callback) {
+let readHTMLFile = function(path, callback) {
   fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
       if (err) {
           throw err;
-          callback(err);
+          // callback(err);
       }
       else {
           callback(null, html);
@@ -19,14 +19,33 @@ var readHTMLFile = function(path, callback) {
 module.exports = function(Company) {
     
 
+    //   readHTMLFile(__dirname + '/Verification.html', function(err, html) {
+    //     var template = handlebars.compile(html);
+    //     /*
+    //     * replace tokenLink with the dynamic link to the user
+    //     */
+    //     var replacements = {
+    //         tokenLink: "https://www.yahoo.com"
+    //     };
+
+    //     var htmlToSend = template(replacements);
+
+    //     Company.app.models.Email.send({
+    //       to: 'gianjie@ocdigitalnetwork.com',
+    //       from: 'Everyday account team <donotreply@everyday.com.sg>',
+    //       subject: 'Verify your email address',
+    //       html: htmlToSend
+    //     }, function(err) {
+    //       if (err) return console.log(err + '-> error sending email');
+    //       console.log('> email successfully sent');
+    //     });
+    // });
+
+
+
     Company.signup = async function(email, password, priceplan, userInfo, companyInfo, paymentInfo) {
       //check if user already signed up with same email address
 
-<<<<<<< HEAD
-=======
-      // console.log(Company)
-   
->>>>>>> master
       var BaseUser = Company.app.models.BaseUser;
 
       try {
@@ -48,8 +67,7 @@ module.exports = function(Company) {
           //company info
           if (companyInfo !== undefined){
             var comp = await Company.create(companyInfo);
-            
-          }
+          } 
           else {
             var comp = await Company.create({
               name: "Company",
@@ -73,10 +91,9 @@ module.exports = function(Company) {
           }
 
 
-          console.log(comp)
           var newuser = await BaseUser.create({name: name, email: email, password: password, contact: userInfo, company: comp});
- 
-          comp.paymentInfos.create(paymentInfo);
+          
+          comp.paymentInfos.create(paymentInfo)
 
           //create default access rights
           var AccessGroup = Company.app.models.AccessGroup;
@@ -97,7 +114,6 @@ module.exports = function(Company) {
               var grouprole = await AccessGroupRole.create({tier: 3, isDefault: true, accessGroupId: companyGroup.id, accessRoleId: r1.id});
               AccessSetting.create({user: newuser, grouprole: grouprole});
             }
-            
           }); 
                        
           // all 1st sign up stuff here
@@ -105,25 +121,9 @@ module.exports = function(Company) {
 
           // Need to input Email as verification
           
-
-
           // VerifyEmail
-          const HTMLTemplate = readHTMLFile(__dirname + '/Verification.html', function(err, html) {
-              var template = handlebars.compile(html);
-              var htmlToSend = template(template);
-              return htmlToSend
-          });
+       
         
-
-          Company.app.models.Email.send({
-            to: 'gianjie@ocdigitalnetwork.com',
-            from: 'igc14.gianjie@gmail.com',
-            subject: 'testing email',
-            html: HTMLTemplate
-          }, function(err) {
-            if (err) return console.log(err + '-> error sending email');
-            console.log('> email successfully sent');
-          });
 
           
           return [1,"Account created."];
@@ -135,8 +135,6 @@ module.exports = function(Company) {
         throw e;
       }
       
-      
-     
     }
 
     Company.remoteMethod('signup', {
@@ -149,6 +147,42 @@ module.exports = function(Company) {
             {arg: 'paymentInfo', type: 'object'}
           ],
           returns: [{arg: 'success', type: 'number'}, {arg: 'msg', type: 'string'}]
+    });
+
+
+
+
+    Company.afterRemote('create', function(context, user, next) {
+
+      console.log('Company after remote create')
+
+      console.log(context)
+      console.log(user)
+      console.log(next)
+
+      // var options = {
+      //   type: 'email',
+      //   to: user.email,
+      //   from: senderAddress,
+      //   subject: 'Thanks for registering.',
+      //   template: path.resolve(__dirname, '../../server/views/verify.ejs'),
+      //   redirect: '/verified',
+      //   user: user
+      // };
+  
+      // user.verify(options, function(err, response) {
+      //   if (err) {
+      //     User.deleteById(user.id);
+      //     return next(err);
+      //   }
+      //   context.res.render('response', {
+      //     title: 'Signed up successfully',
+      //     content: 'Please check your email and click on the verification link ' +
+      //         'before logging in.',
+      //     redirectTo: '/',
+      //     redirectToLinkText: 'Log in'
+      //   });
+      // });
     });
     
 };
