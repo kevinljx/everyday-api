@@ -26,16 +26,31 @@ module.exports = function(Lead) {
     return fullName;
   };
 
-  Lead.convert = async function(leadID, dealDetails) {
+  Lead.beforeRemote("convert", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+
+  Lead.convert = async function(leadID, dealDetails, userId) {
     console.log(leadID);
     console.log(dealDetails);
+    console.log(userId);
   };
 
   Lead.remoteMethod("convert", {
     accepts: [
       { arg: "leadID", type: "string", required: true },
-      { arg: "dealDetails", type: "object", required: false }
+      { arg: "dealDetails", type: "any", required: false },
+      { arg: "userId", type: "any" }
     ],
-    returns: [{ arg: "data", type: "object" }]
+    returns: [
+      { arg: "newCust", type: "object" },
+      { arg: "newAcct", type: "object" },
+      { arg: "newDeal", type: "object" }
+    ]
   });
 };
