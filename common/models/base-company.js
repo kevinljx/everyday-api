@@ -2,8 +2,8 @@
 
 var path = require("path");
 
-module.exports = function(Company) {
-  Company.signup = async function(
+module.exports = function (Company) {
+  Company.signup = async function (
     email,
     password,
     priceplan,
@@ -222,6 +222,7 @@ module.exports = function(Company) {
       console.log(e);
       throw e;
     }
+  }
 
   Company.remoteMethod("signup", {
     accepts: [
@@ -239,7 +240,7 @@ module.exports = function(Company) {
     ]
   });
 
-  Company.afterRemote("signup", function(context, user, next) {
+  Company.afterRemote("signup", function (context, user, next) {
     var BaseUser = Company.app.models.BaseUser;
 
     var options = {
@@ -252,7 +253,7 @@ module.exports = function(Company) {
       user: BaseUser
     };
 
-    user.newuser.verify(options, function(err, response) {
+    user.newuser.verify(options, function (err, response) {
       if (err) {
         BaseUser.deleteById(user.id);
         return next(err);
@@ -262,15 +263,15 @@ module.exports = function(Company) {
 
     next();
   });
-  }
-}
 
-// Company.app.models.Email.send({
-//   to: 'gianjie@ocdigitalnetwork.com',
-//   from: 'Everyday account team <donotreply@everyday.com.sg>',
-//   subject: 'Verify your email address',
-//   html: path.resolve(__dirname, '../../server/views/verify.ejs')
-// }, function(err) {
-//   if (err) return console.log(err + '-> error sending email');
-//   console.log('> email successfully sent');
-//});
+  // Company.app.models.Email.send({
+  //   to: 'gianjie@ocdigitalnetwork.com',
+  //   from: 'Everyday account team <donotreply@everyday.com.sg>',
+  //   subject: 'Verify your email address',
+  //   html: path.resolve(__dirname, '../../server/views/verify.ejs')
+  // }, function(err) {
+  //   if (err) return console.log(err + '-> error sending email');
+  //   console.log('> email successfully sent');
+  //});
+
+}
