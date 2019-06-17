@@ -1,125 +1,169 @@
-'use strict';
+"use strict";
 
 module.exports = function(Accesssetting) {
-    
-   function userOnlyQuery(ctx, userId){
-        var whereClause = {"userId": userId};
-        var filter = ctx.args.filter || {};
-        
-        if (filter.where) {
-            if (filter.where.and) {
-                
-                filter.where.and.push(whereClause);
-                
-            } else {
-                var tmpWhere = filter.where;
-                filter.where = {};
-                filter.where.and = [tmpWhere, whereClause];
-                
-            }
-        } else {
-            filter.where = whereClause;
-        }
-        ctx.args.filter = filter;
-        
-        return ctx;
+  Accesssetting.getUserAccessSetting = async function(userId) {
+    try {
+      var userAccessSettings = await Accesssetting.app.models.AccessSetting.find(
+        { where: { userId: userId } }
+      );
+      var userGroupRoles = [];
+      var userRoles = [];
+      var userRights = [];
+      userAccessSettings.forEach(async setting => {
+        var groupRoles = await Accesssetting.app.models.AccessGroupRole.findById(
+          setting.grouproleId
+        );
+        userGroupRoles.push(groupRoles);
+      });
+      userGroupRoles.forEach(async groupRole => {
+        var roles = await Accesssetting.app.models.AccessRole.findById(
+          groupRole.accessRoleId
+        );
+        userRoles.push(roles);
+      });
+      userRoles.forEach(async role => {
+        userRights = userRights.filter(right => {
+          return role.accessRights.indexOf(right) < 0;
+        });
+        userRights.concat(role.accessRights);
+      });
 
-   }
+      return userRights;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
 
+  Accesssetting.remoteMethod("getUserAccessSetting", {
+    accepts: { arg: "id", type: "string", required: true },
+    returns: { arg: "data", type: "array" },
+    http: { path: "/:id/user/accessRights", verb: "get" },
+    description: "Find all access rights belonging to a user."
+  });
 
-   Accesssetting.beforeRemote( "**", async function( ctx) {
-       if(ctx.method.name.includes("find")) {
-            var token = ctx.req.accessToken;
-            var userId = token && token.userId;
-            if (userId){
-                ctx = userOnlyQuery(ctx, userId);
-            }
-       }
-       else if(ctx.method.name == "viewall"){
-            var token = ctx.req.accessToken;
-            var userId = token && token.userId;
-            if (userId){
-                ctx.args.userId = userId;
-            }
-       }
-        
-        return;
+  function userOnlyQuery(ctx, userId) {
+    var whereClause = { userId: userId };
+    var filter = ctx.args.filter || {};
+
+    if (filter.where) {
+      if (filter.where.and) {
+        filter.where.and.push(whereClause);
+      } else {
+        var tmpWhere = filter.where;
+        filter.where = {};
+        filter.where.and = [tmpWhere, whereClause];
+      }
+    } else {
+      filter.where = whereClause;
+    }
+    ctx.args.filter = filter;
+
+    return ctx;
+  }
+
+  Accesssetting.beforeRemote("**", async function(ctx) {
+    if (ctx.method.name.includes("find")) {
+      var token = ctx.req.accessToken;
+      var userId = token && token.userId;
+      if (userId) {
+        ctx = userOnlyQuery(ctx, userId);
+      }
+    } else if (ctx.method.name == "viewall") {
+      var token = ctx.req.accessToken;
+      var userId = token && token.userId;
+      if (userId) {
+        ctx.args.userId = userId;
+      }
+    }
+
+    return;
+  });
+
+  Accesssetting.viewall = async function(userId) {
+    //get company from user
+    var data = [];
+    var BaseUser = Accesssetting.app.models.BaseUser;
+    var AccessGroupRole = Accesssetting.app.models.AccessGroupRole;
+    var AccessGroup = Accesssetting.app.models.AccessGroup;
+    var AccessRole = Accesssetting.app.models.AccessRole;
+
+    var userobj = await BaseUser.findOne({ where: { id: userId } });
+    var companyUsers = await BaseUser.find({
+      where: { company: userobj.company }
     });
+    for (const user of companyUsers) {
+      var dataObj = { userid: user.id, username: user.name };
+      dataObj.groups = [];
 
-    
-    Accesssetting.viewall = async function(userId) {
-        //get company from user
-        var data = [];
-        var BaseUser = Accesssetting.app.models.BaseUser;
-        var AccessGroupRole = Accesssetting.app.models.AccessGroupRole;
-        var AccessGroup = Accesssetting.app.models.AccessGroup;
-        var AccessRole = Accesssetting.app.models.AccessRole;
-        
-            var userobj = await BaseUser.findOne({where: {id: userId}});
-            var companyUsers = await BaseUser.find({where: {company: userobj.company}});
-            for(const user of companyUsers){
-                var dataObj = {userid: user.id, username: user.name};
-                dataObj.groups = [];
-                
-                var settings = await Accesssetting.find({where: {userId: user.id}});
-                var setRoles = [];
-                for(var i=0; i < settings.length; i++){
-                    setRoles.push(settings[i].grouproleId);
-                }
-                var grpRoles = await AccessGroupRole.find({where: {id: {inq: setRoles}}});
-                var groupIds = [];
-                for(var j=0; j < grpRoles.length; j++){
-                    var isAdded = false;
-                    for(var k=0; k < groupIds.length; k++){
-                        if(groupIds[k] == grpRoles[j].accessGroupId){
-                            isAdded = true;
-                        }
-                    }
-                    if(!isAdded){
-                        groupIds.push(grpRoles[j].accessGroupId);
-                    }
-                }
-                var accessGroups = await AccessGroup.find({where: {id: {inq: groupIds}}});
-                for(const grp of accessGroups){
-                    
-                    dataObj.groups.push({
-                        id: grp.id,
-                        name: grp.name,
-                        roles: []
-                    });
-                }
-                var aRoles = [];
-                for(var j=0; j < grpRoles.length; j++){
-                    var isAdded = false;
-                    for(var k=0; k < aRoles.length; k++){
-                        if(aRoles[k] == grpRoles[j].accessRoleId){
-                            isAdded = true;
-                        }
-                    }
-                    if(!isAdded){
-                        aRoles.push(grpRoles[j].accessRoleId);
-                    }
-                }
-                var accessRoles = await AccessRole.find({where: {id: {inq: aRoles}}});
-                for(const rl of accessRoles){
-                    for(var i=0; i < grpRoles.length; i++){
-                        if(String(rl.id) == grpRoles[i].accessRoleId){
-                            var roleData = {id: grpRoles[i].id, name: rl.name, tier: grpRoles[i].tier};
-                            //console.log(roleData);
-                            for(var j=0; j < dataObj.groups.length; j++){
-                                if(String(dataObj.groups[j].id) == grpRoles[i].accessGroupId){
-                                    dataObj.groups[j].roles.push(roleData);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                data.push(dataObj);
+      var settings = await Accesssetting.find({ where: { userId: user.id } });
+      var setRoles = [];
+      for (var i = 0; i < settings.length; i++) {
+        setRoles.push(settings[i].grouproleId);
+      }
+      var grpRoles = await AccessGroupRole.find({
+        where: { id: { inq: setRoles } }
+      });
+      var groupIds = [];
+      for (var j = 0; j < grpRoles.length; j++) {
+        var isAdded = false;
+        for (var k = 0; k < groupIds.length; k++) {
+          if (groupIds[k] == grpRoles[j].accessGroupId) {
+            isAdded = true;
+          }
+        }
+        if (!isAdded) {
+          groupIds.push(grpRoles[j].accessGroupId);
+        }
+      }
+      var accessGroups = await AccessGroup.find({
+        where: { id: { inq: groupIds } }
+      });
+      for (const grp of accessGroups) {
+        dataObj.groups.push({
+          id: grp.id,
+          name: grp.name,
+          roles: []
+        });
+      }
+      var aRoles = [];
+      for (var j = 0; j < grpRoles.length; j++) {
+        var isAdded = false;
+        for (var k = 0; k < aRoles.length; k++) {
+          if (aRoles[k] == grpRoles[j].accessRoleId) {
+            isAdded = true;
+          }
+        }
+        if (!isAdded) {
+          aRoles.push(grpRoles[j].accessRoleId);
+        }
+      }
+      var accessRoles = await AccessRole.find({
+        where: { id: { inq: aRoles } }
+      });
+      for (const rl of accessRoles) {
+        for (var i = 0; i < grpRoles.length; i++) {
+          if (String(rl.id) == grpRoles[i].accessRoleId) {
+            var roleData = {
+              id: grpRoles[i].id,
+              name: rl.name,
+              tier: grpRoles[i].tier
+            };
+            //console.log(roleData);
+            for (var j = 0; j < dataObj.groups.length; j++) {
+              if (String(dataObj.groups[j].id) == grpRoles[i].accessGroupId) {
+                dataObj.groups[j].roles.push(roleData);
+                break;
+              }
             }
-            return data;
-        
-        /* return {
+          }
+        }
+      }
+      data.push(dataObj);
+    }
+    return data;
+
+    /* return {
             userid: userid,
             username: name,
             groups: [{
@@ -129,14 +173,7 @@ module.exports = function(Accesssetting) {
             }]
 
         } */
-        
-    }
-    
-    
-    Accesssetting.remoteMethod('viewall', {
-        accepts: {arg: 'userId', type: 'any'},
-        returns: {arg: 'data', type: 'array'}
-    });
+  };
 
     Accesssetting.observe('after save', function (ctx, next) {
         if(ctx.instance){
@@ -170,6 +207,7 @@ module.exports = function(Accesssetting) {
             next();
         }
     });
+    
 
     Accesssetting.observe('before delete', function (ctx, next) {
         //get all the access setting and group first

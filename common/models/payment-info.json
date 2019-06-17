@@ -9,6 +9,9 @@
     "name": {
       "type": "string"
     },
+    "payment_name": {
+      "type": "string"
+    },
     "paymentType": {
       "type": "string",
       "required": true

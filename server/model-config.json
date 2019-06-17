@@ -178,5 +178,9 @@
   "AccessGroupUser": {
     "dataSource": "everyday",
     "public": false
+  },
+  "Deal": {
+    "dataSource": "everyday",
+    "public": true
   }
 }

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 module.exports = function(Model, bootOptions = {}) {
     
     Model.afterRemote( "**", async function( ctx, modelInstance) {
@@ -29,6 +29,20 @@ module.exports = function(Model, bootOptions = {}) {
                 }
             }
         }
-        return;
-    });
+        if (res.createdBy) {
+          var userobj = await BaseUser.findById(res.createdBy);
+          res.creatorInfo = {
+            id: userobj.id,
+            name: userobj.name
+          };
+        }
+        if (res.updatedBy) {
+          var userobj = await BaseUser.findById(res.updatedBy);
+          res.updaterInfo = {
+            id: userobj.id,
+            name: userobj.name
+          };
+        }
+      return;
+  });
 };
