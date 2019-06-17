@@ -1,24 +1,24 @@
 
 module.exports = function(app) {
     var Role = app.models.Role;
+    var RoleMapping = app.models.RoleMapping;
 
-    /*
-    Role.create({
-      name: 'admin'
-     }, function(err, role) {
-      if (err) return debug(err);
-      debug(role);
-
-      // Make Bob an admin
-      role.principals.create({
-        principalType: RoleMapping.USER,
-        principalId: users[2].id
-      }, function(err, principal) {
-        if (err) return debug(err);
-        debug(principal);
-      });
-    });
-    */
+    
+    // Role.create({
+    //   name: 'admin'
+    //  }, function(err, role) {
+    //   if (err) return console.log(err);
+    //   console.log(role);
+    //   // Make Bob an admin
+    //   role.principals.create({
+    //     principalType: RoleMapping.USER,
+    //     principalId: role.id
+    //   }, function(err, principal) {
+    //     if (err) return console.log(err);
+    //     console.log(principal);
+    //   });
+    // });
+    
 
 
     Role.registerResolver('companySet', function(role, context, cb) {
