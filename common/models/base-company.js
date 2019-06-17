@@ -77,6 +77,7 @@ module.exports = function(Company) {
           if (userinfo.hasOwnProperty("name")) {
             name = userinfo.name;
           }
+       }
           var newuser = await BaseUser.create({name: name, email: email, password: password, contact: userinfo, company: comp});
           comp.paymentInfos.create(paymentinfo);
           //create default access rights
@@ -104,94 +105,9 @@ module.exports = function(Company) {
           //all 1st sign up stuff here
           return [1,"Account created."];
         }
-      }
-      //user info
-      var name = email;
-      if (userinfo == null) {
-        userinfo = { email: email };
-      } else {
-        if (!userinfo.hasOwnProperty("email")) {
-          userinfo.email = email;
-        }
-        if (userinfo.hasOwnProperty("name")) {
-          name = userinfo.name;
-        }
-        var newuser = await BaseUser.create({
-          name: name,
-          email: email,
-          password: password,
-          contact: userinfo,
-          company: comp
-        });
-        comp.paymentInfos.create(paymentinfo);
-        //create default access rights
-        var AccessGroup = Company.app.models.AccessGroup;
-        var companyGroup = await AccessGroup.create({
-          name: "Company",
-          userId: newuser.id,
-          editable: false
-        });
-        var AccessGroupRole = Company.app.models.AccessGroupRole;
-        var AccessSetting = Company.app.models.AccessSetting;
-        var AccessRole = Company.app.models.AccessRole;
-        var pRoles = await pp.defaultRoles.find();
 
-        //duplicate the role for company
-        pRoles.forEach(async element => {
-          var roleRights = await element.accessRights.find();
-          var r1 = await AccessRole.create({
-            name: element.name,
-            userId: newuser.id,
-            removable: false
-          });
-          roleRights.forEach(async right1 => {
-            r1.accessRights.add(right1);
-          });
-          if (element.userId == "defaultAdmin") {
-            var grouprole = await AccessGroupRole.create({
-              tier: 3,
-              isDefault: true,
-              accessGroupId: companyGroup.id,
-              accessRoleId: r1.id
-            });
-            AccessSetting.create({ user: newuser, grouprole: grouprole });
-          }
-        });
-
-        //all 1st sign up stuff here
-        return [1, "Account created."];
-      }
-      var newuser = await BaseUser.create({
-        name: name,
-        email: email,
-        password: password,
-        contact: userinfo,
-        company: comp
-      });
-      comp.paymentInfos.create(paymentinfo);
-      //create default access rights
-      var AccessGroup = Company.app.models.AccessGroup;
-      var companyGroup = await AccessGroup.create({
-        name: "Company",
-        userId: newuser.id
-      });
-      var AccessGroupRole = Company.app.models.AccessGroupRole;
-      var AccessSetting = Company.app.models.AccessSetting;
-      var pRoles = await pp.defaultRoles({
-        where: { userId: "defaultAdmin" }
-      });
-      pRoles.forEach(async element => {
-        var grouprole = await AccessGroupRole.create({
-          tier: 3,
-          isDefault: true,
-          accessGroupId: companyGroup.id,
-          accessRoleId: element.id
-        });
-        AccessSetting.create({ user: newuser, grouprole: grouprole });
-      });
-
-      //all 1st sign up stuff here
-      return [1, "Account created."];
+      
+      
     } catch (e) {
       console.log(e);
       throw e;
