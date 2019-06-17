@@ -36,17 +36,48 @@ module.exports = function(Lead) {
   });
 
   Lead.convert = async function(leadID, dealDetails, userId) {
-    console.log(leadID);
-    console.log(dealDetails);
-    console.log(userId);
+    try {
+      var lead = await Lead.findById(leadID);
+
+      // convert to customer and acct
+      var acctBaseContact = lead.baseContact;
+      acctBaseContact.name = lead.companyName;
+      delete acctBaseContact.firstName;
+      delete acctBaseContact.lastName;
+      var acct = await Lead.app.models.Account.create({
+        userId: userId,
+        industryId: lead.industryId,
+        baseContact: acctBaseContact
+      });
+
+      var cust = await Lead.app.models.Customer.create({
+        baseContact: lead.baseContact,
+        userId: userId,
+        accountId: acct.id
+      });
+
+      var newCust = await Lead.app.models.Customer.findById(cust.id);
+      var newAcct = await Lead.app.models.Account.findById(acct.id);
+
+      // new deal
+      var newDeal = null;
+
+      // delete lead instance
+
+      return [newCust, newAcct, newDeal];
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   };
 
   Lead.remoteMethod("convert", {
     accepts: [
-      { arg: "leadID", type: "string", required: true },
+      { arg: "id", type: "string", required: true },
       { arg: "dealDetails", type: "any", required: false },
       { arg: "userId", type: "any" }
     ],
+    http: { path: "/convert/:id", verb: "post" },
     returns: [
       { arg: "newCust", type: "object" },
       { arg: "newAcct", type: "object" },
