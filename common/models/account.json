@@ -6,6 +6,18 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Computed": {
+      "properties": {
+        "fullAddress": "showFullAddress",
+        "name": "showFullName"
+      }
+    },
+    "ShowUsers": true
+  },
+  "scope": {
+    "include": ["parent_id", "subaccount", "notes", "events", "industry"]
+  },
   "properties": {
     "isActive": {
       "type": "boolean",
@@ -32,10 +44,20 @@
       "model": "Account",
       "foreignKey": "parent_id"
     },
+    "industry": {
+      "type": "belongsTo",
+      "model": "LeadIndustry",
+      "foreignKey": ""
+    },
     "notes": {
       "type": "hasMany",
       "model": "Note",
       "polymorphic": "noteable"
+    },
+    "events": {
+      "type": "hasMany",
+      "model": "Event",
+      "polymorphic": "eventable"
     }
   },
   "acls": [],

@@ -7,6 +7,9 @@
     "validateUpsert": true
   },
   "properties": {
+    "stageName": {
+      "type": "string"
+    },
     "amount": {
       "type": "number"
     },
@@ -16,12 +19,17 @@
     "duration": {
       "type": "number"
     },
-    "closedOn": {
+    "closingDate": {
       "type": "date"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "deal": {
+      "type": "belongsTo",
+      "model": "Deal"
+    }
+  },
   "acls": [],
   "methods": {}
 }

@@ -65,15 +65,23 @@ module.exports = function(app) {
           }
           //check if role has the rights
           var AccessRole = app.models.AccessRole;
-          var methodName = context.accessType.toLowerCase();
-          if(context.accessType.toLowerCase() == "execute"){
-            methodName = context.method;
+          
+          var methodName = context.method.toLowerCase();
+          if(context.accessType == "READ"){
+            methodName = "read";
+          }
+          else if(methodName.includes("update")){
+            methodName = "update";
+          }
+          else if(methodName.includes("destroy")){
+            methodName = "delete";
           }
           AccessRole.find({where: {id: {inq: roleIds}}}, function(err, accRoles){
             checkSize = accRoles.length;
             accRoles.forEach(element => {
               
-              element.accessRights({where: {method: methodName, model: context.modelName}}, function(err, rights){
+              element.accessRights({where: {and: [{method: methodName}, {model: context.modelName}]}}, function(err, rights){
+                
                 if(rights.length > 0){
                   hasRight = true;
                 }

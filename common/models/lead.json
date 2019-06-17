@@ -9,9 +9,11 @@
   "mixins": {
     "Computed": {
       "properties": {
-        "fullAddress": "showFullAddress"
+        "fullAddress": "showFullAddress",
+        "name": "showFullName"
       }
-    }
+    },
+    "ShowUsers": true
   },
   "scope": {
     "include": [

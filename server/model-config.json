@@ -172,14 +172,23 @@
   },
   "AccessGroupRole": {
     "dataSource": "everyday",
-    "public": true
+    "public": false
   },
   "AccessSetting": {
     "dataSource": "everyday",
     "public": true
   },
+<<<<<<< HEAD
   "Email": {
     "dataSource": "mail",
+=======
+  "AccessGroupUser": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "Deal": {
+    "dataSource": "everyday",
+>>>>>>> dcd4acd76684e8696962a5a3439a0f5841325768
     "public": true
   }
 }
