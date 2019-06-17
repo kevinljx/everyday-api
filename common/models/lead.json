@@ -16,7 +16,12 @@
     "ShowUsers": true
   },
   "scope": {
-    "include": ["status", "source", "industry", "events"]
+    "include": [
+      "status",
+      "source",
+      "industry",
+      "events"
+    ]
   },
   "properties": {
     "companyName": {

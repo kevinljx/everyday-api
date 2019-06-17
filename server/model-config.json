@@ -77,7 +77,10 @@
   },
   "BaseUser": {
     "dataSource": "everyday",
-    "public": true
+    "public": true,
+    "options": {
+      "emailVerificationRequired": true
+    }
   },
   "BaseContact": {
     "dataSource": "everyday",
@@ -177,6 +180,10 @@
   },
   "Deal": {
     "dataSource": "everyday",
+    "public": true
+  },
+  "Email": {
+    "dataSource": "mail",
     "public": true
   }
 }
