@@ -25,4 +25,17 @@ module.exports = function(Lead) {
     var fullName = lead.baseContact.firstName + " " + lead.baseContact.lastName;
     return fullName;
   };
+
+  Lead.convert = async function(leadID, dealDetails) {
+    console.log(leadID);
+    console.log(dealDetails);
+  };
+
+  Lead.remoteMethod("convert", {
+    accepts: [
+      { arg: "leadID", type: "string", required: true },
+      { arg: "dealDetails", type: "object", required: false }
+    ],
+    returns: [{ arg: "data", type: "object" }]
+  });
 };

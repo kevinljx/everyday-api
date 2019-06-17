@@ -451,7 +451,7 @@ module.exports = function(server) {
   ]);
 
   // Deal Stage
-  /* var DealStage = server.models.DealStage;
+  var DealStage = server.models.DealStage;
   DealStage.deleteAll();
   DealStage.create([
     {
@@ -515,7 +515,7 @@ module.exports = function(server) {
       description: "Client has declined the sales order."
     }
   ]);
-  */
+*/
   // Industry
   /*
   var Industry = server.models.LeadIndustry;
@@ -523,14 +523,14 @@ module.exports = function(server) {
   Industry.create([
     { name: "Accounting " },
     { name: "Airlines/Aviation" },
-    { name: "Alternative Dispute Resolution" }
-     { name: "Alternative Medicine" },
+    { name: "Alternative Dispute Resolution" },
+    { name: "Alternative Medicine" },
     { name: "Animation" },
     { name: "Apparel/Fashion" },
     { name: "Architecture/Planning" },
     { name: "Arts/Crafts" },
     { name: "Automotive" },
-     { name: "Aviation/Aerospace" },
+    { name: "Aviation/Aerospace" },
     { name: "Banking/Mortgage" },
     { name: "Biotechnology/Greentech" },
     { name: "Broadcast Media" },
@@ -667,7 +667,7 @@ module.exports = function(server) {
     { name: "Wholesale" },
     { name: "Wine/Spirits" },
     { name: "Wireless" },
-    { name: "Writing/Editing" } 
+    { name: "Writing/Editing" }
   ]);
 */
   // Countries
@@ -675,8 +675,8 @@ module.exports = function(server) {
   var Country = server.models.BaseCountry;
   Country.deleteAll();
   Country.create([
-    { name: "Singapore", code: "SG", phoneCode: "+65", language: "EN" }
-    /* { name: "Afghanistan", code: "AF", phoneCode: "+1", language: "EN" },
+    { name: "Singapore", code: "SG", phoneCode: "+65", language: "EN" },
+    { name: "Afghanistan", code: "AF", phoneCode: "+1", language: "EN" },
     { name: "Åland Islands", code: "AX", phoneCode: "+60", language: "EN" },
     { name: "Albania", code: "AL", phoneCode: "+355", language: "EN" },
     { name: "Algeria", code: "DZ", phoneCode: "+213", language: "EN" },
@@ -1114,7 +1114,7 @@ module.exports = function(server) {
     { name: "Western Sahara", code: "EH", phoneCode: "+212", language: "EN" },
     { name: "Yemen", code: "YE", phoneCode: "+967", language: "EN" },
     { name: "Zambia", code: "ZM", phoneCode: "+260", language: "EN" },
-    { name: "Zimbabwe", code: "ZW", phoneCode: "+263", language: "EN" } 
+    { name: "Zimbabwe", code: "ZW", phoneCode: "+263", language: "EN" }
   ]);
   */
 };
