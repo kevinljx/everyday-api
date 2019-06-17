@@ -147,9 +147,21 @@ module.exports = function(Accesssetting) {
             var accessGroup = AccessGroupRole.findById(ctx.instance.grouproleId, function(err, group){
                 //get company id
                 BaseUser.findById(ctx.instance.userId, function(err, user){
-                    AccessGroupUser.create({userId: user.id, companyId: user.companyId, accessGroupId: group.accessGroupId, tier: group.tier}, function(err, item){
-                        next();
+                    //find if there is a higher tier
+                    AccessGroupUser.find({where: {and: [{userId: user.id}, {gt: {tier: group.tier-1}}, {accessGroupId: group.accessGroupId}]}}, function(err, auser){
+                        if(user.length > 0){
+                            next();
+                        }
+                        else {
+                            AccessGroupUser.destroyAll({where: {and: [{userId: user.userId}, {accessGroupId: group.accessGroupId}]}}, function(err, info){
+                                AccessGroupUser.create({userId: user.id, companyId: user.companyId, accessGroupId: group.accessGroupId, tier: group.tier}, function(err, item){
+                                    next();
+                                });
+                            })
+                            
+                        }
                     });
+                    
                 });
                 
             });
@@ -161,7 +173,38 @@ module.exports = function(Accesssetting) {
 
     Accesssetting.observe('before delete', function (ctx, next) {
         //get all the access setting and group first
-        //then delete the access group user
+        var checkCount = 0;
+        var checkSize = 0;
+        
+        function finishCheckGroup(){
+            checkCount++;
+            if(checkSize == checkCount){
+                next();
+            }
+        }
+
+        Accesssetting.find(ctx.where, function(err, settings){
+            checkSize = settings.length;
+            for(const st of settings){
+                var AccessGroupRole = Accesssetting.app.models.AccessGroupRole;
+                var AccessGroupUser = Accesssetting.app.models.AccessGroupUser;
+                AccessGroupRole.findById(st.accessroleId, function(err, arole){
+                    //then delete the access group user
+                    if(arole.accessGroupId){
+                        AccessGroupUser.destroyAll({where: {and: [{userId: st.userId}, {accessGroupId: arole.accessGroupId}]}}, function(err, info){
+                            finishCheckGroup();
+                        });
+                    }
+                    else {
+                        finishCheckGroup();
+                    }
+                
+                });
+
+            }
+            
+        });
+        
     });
     
 };

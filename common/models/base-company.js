@@ -15,7 +15,7 @@ module.exports = function(Company) {
         else {
           //get priceplan
           var Priceplan = Company.app.models.PricePlan;
-          var pp = await Priceplan.findOne({name: priceplan});          
+          var pp = await Priceplan.findOne({where: {name: priceplan}});          
           if(pp == undefined || pp == null){
             var error = new Error("Invalid price plan.");
             error.status = 400;          
@@ -23,6 +23,7 @@ module.exports = function(Company) {
           }
           //company info
           if (companyinfo !== undefined){
+            companyinfo.pricePlanId = pp.id;
             var comp = await Company.create(companyinfo);
             
           }
@@ -31,7 +32,8 @@ module.exports = function(Company) {
               name: "Company",
               contact: {
                 email: email
-              }
+              },
+              pricePlanId: pp.id
             });
           }
           //user info
@@ -51,7 +53,7 @@ module.exports = function(Company) {
           comp.paymentInfos.create(paymentinfo);
           //create default access rights
           var AccessGroup = Company.app.models.AccessGroup;
-          var companyGroup = await AccessGroup.create({name: 'Company', userId: newuser.id});
+          var companyGroup = await AccessGroup.create({name: 'Company', userId: newuser.id, editable: false});
           var AccessGroupRole = Company.app.models.AccessGroupRole;
           var AccessSetting = Company.app.models.AccessSetting;
           var AccessRole = Company.app.models.AccessRole;
@@ -60,7 +62,7 @@ module.exports = function(Company) {
           //duplicate the role for company
           pRoles.forEach(async element =>  {
             var roleRights = await element.accessRights.find();
-            var r1 = await AccessRole.create({name: element.name, userId: newuser.id});
+            var r1 = await AccessRole.create({name: element.name, userId: newuser.id, editable: false});
             roleRights.forEach(async right1 => {
               r1.accessRights.add(right1);
             });

@@ -3,37 +3,88 @@
 module.exports = function(Basemodel) {
 
     
-    Basemodel.observe('access', (ctx, next)=>{
+    Basemodel.observe('access', async function(ctx) {
         var token = ctx.options && ctx.options.accessToken;
         var userId = token && token.userId;
-        if (!userId) return next();  // no access token, internal or test request;
-        var whereClause = {userId: {"like": userId}};
+        if (!userId) return;  // no access token, internal or test request;
+        var whereClause = {userId: userId};
         
-        //check if model is access related. to avoid circular calls
-        
-            
+        var AccessSetting = Basemodel.app.models.AccessSetting;
+        //get user setting
+        var settings = await AccessSetting.find({where: {userId: userId}});
+        //get roles
+        var setRoles = settings.map(e => {return e.grouproleId}); 
+        var AccessGroupRole = Basemodel.app.models.AccessGroupRole;
+        var accessgrpRoles = await AccessGroupRole.find({where: {id: {inq: setRoles}}});
 
-            //first get user access setting
-            /*
-            var AccessSetting = app.models.AccessSetting;
-            AccessSetting.find({where: {userId: userId}}, function(err, settings){
-                for(var i=0; i < settings.length; i++){
-                    setRoles.push(settings[i].grouproleId);
-                  }
-                  var AccessGroupRole = app.models.AccessGroupRole;
-                  AccessGroupRole.find({where: {id: {inq: setRoles}}}, function(err, grpRoles){
-                    var roleIds = [];
-                    if(grpRoles.tier < 3){
-
+        var roleIds = [[], [], []];
+        var groupIds = [[], [], []];
+        for(const groupRole of accessgrpRoles){
+            roleIds[groupRole.tier-1].push(groupRole.accessRoleId);
+            groupIds[groupRole.tier-1].push(groupRole.accessGroupId);
+        }    
+        //which role has the model
+        var allOwnerIds = [];
+        //find Company Group id
+        var BaseUser = Basemodel.app.models.BaseUser;
+        var AccessRole = Basemodel.app.models.AccessRole;
+        var AccessGroup = Basemodel.app.models.AccessGroup;
+        var AccessGroupUser = Basemodel.app.models.AccessGroupUser;
+        //ignore tier 1 because can only see own
+        //console.log(ctx.Model.name);
+        var user = await BaseUser.findById(userId);
+        for(var i=1; i < roleIds.length; i++){
+            var isCompany = false;
+            if(roleIds[i].length > 0){
+                var roles = await AccessRole.find({where: {id: {inq: roleIds[i]}}});
+                for(var j=0; j < roles.length; j++){
+                    var rights = await roles[j].accessRights({where: {model: ctx.Model.name}});
+                    if(rights && rights.length > 0){
+                        var groupObj = await AccessGroup.findById(groupIds[i][j]);
+                        if(groupObj.name == "Company"){
+                            isCompany = true;
+                            break;
+                        }
+                        
+                        var groupUsers = await AccessGroupUser.find({ where: {and: [{tier: {lt: i+2}}, {accessGroupId: groupIds[i][j]}]}});
+                        var ownerIds = groupUsers.map( e => {return e.userId});
+                        allOwnerIds = allOwnerIds.concat(ownerIds);
                     }
-                  });
-            });
-            */
+                }
+                if(isCompany){
+                    var groupUsers = await AccessGroupUser.find({ where: {and: [{tier: {lt: i+2}}, {companyId: user.companyId}]}});
+                    var ownerIds = await groupUsers.map( e => {return e.userId});
+                    allOwnerIds = allOwnerIds.concat(ownerIds);
+                }
+            }
+        }
+        if(allOwnerIds.length > 0){
+            whereClause = {userId: {inq: allOwnerIds} };
+        }
         
+        /*
+        if(roleIds[2].length > 0){
+            var roles = await AccessRole.find({where: {id: {inq: roleIds[2]}}});
+            
+            for(var i=0; i < roles.length; i++){
+                var rights = await roles[i].accessRights.find({where: {model: ctx.modelName}});
+                if(rights && rights.length > 0){
+                    var groupObj = await AccessGroup.findById(groupIds[2][i]);
+                    
+                    var agroupRoles = await AccessGroupRole.find({where: {and: [ {accessGroupId: groupIds[2][i]}, {tier: {lt: 4}} ]}});
+                    var agroupRoleIds = agroupRoles.map(function (e) { return e.id; });
+                    var groupSettings = await AccessSetting.find({where: {id: {inq: agroupRoleIds}}});
+                    var ownerIds = groupSettings.map(function(e) { return e.id});
+                    allOwnerIds.concat(ownerIds);
+                   
+                }
+            }
+        }
+         */
 
         // this part is tricky because you may need to add
         // the userId filter to an existing where-clause
-        /*
+        
         ctx.query = ctx.query || {};
         if (ctx.query.where) {
             if (ctx.query.where.and) {
@@ -49,8 +100,9 @@ module.exports = function(Basemodel) {
         } else {
             ctx.query.where = whereClause;
         }
-        */
-        next();
+        console.log(ctx.query);
+        //console.log(ctx);
+       return
     });
     
 };

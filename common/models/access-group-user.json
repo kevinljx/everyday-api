@@ -1,0 +1,33 @@
+{
+  "name": "AccessGroupUser",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "tier": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "BaseUser",
+      "foreignKey": ""
+    },
+    "company": {
+      "type": "belongsTo",
+      "model": "BaseCompany",
+      "foreignKey": ""
+    },
+    "accessGroup": {
+      "type": "belongsTo",
+      "model": "AccessGroup",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

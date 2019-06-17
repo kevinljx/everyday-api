@@ -169,10 +169,14 @@
   },
   "AccessGroupRole": {
     "dataSource": "everyday",
-    "public": true
+    "public": false
   },
   "AccessSetting": {
     "dataSource": "everyday",
     "public": true
+  },
+  "AccessGroupUser": {
+    "dataSource": "everyday",
+    "public": false
   }
 }

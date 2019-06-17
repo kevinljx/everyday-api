@@ -114,6 +114,8 @@ module.exports = function(server) {
     {name: "Lead", categoryName: "Lead", model: "Lead", method: "read", editable: false },
     {name: "Lead", categoryName: "Lead", model: "Lead", method: "update" },
     {name: "Lead", categoryName: "Lead", model: "Lead", method: "delete"},
+    {name: "Access Setting", categoryName: "Access", model: "AccessSetting", method: "viewall" },
+    {name: "Access Role", categoryName: "Access", model: "AccessRole", method: "viewall" }
 
   ], function(err, accrights) {
     if (err) throw err; 
@@ -184,7 +186,8 @@ module.exports = function(server) {
       roles[0].accessRights.add(accrights[52]);
       roles[0].accessRights.add(accrights[53]);
       roles[0].accessRights.add(accrights[54]);
-      roles[0].accessRights.add(accrights[55]);
+      roles[0].accessRights.add(accrights[55]); //access setting viewall
+      roles[0].accessRights.add(accrights[56]);
 
       //basic user
       roles[1].accessRights.add(accrights[1]);
