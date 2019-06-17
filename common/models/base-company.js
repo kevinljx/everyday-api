@@ -1,54 +1,19 @@
 'use strict';
 
-let handlebars = require('handlebars');
-let fs = require('fs')
-
-let readHTMLFile = function(path, callback) {
-  fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-      if (err) {
-          throw err;
-          // callback(err);
-      }
-      else {
-          callback(null, html);
-      }
-  });
-};
+var path = require('path');
 
 
 module.exports = function(Company) {
     
 
-    //   readHTMLFile(__dirname + '/Verification.html', function(err, html) {
-    //     var template = handlebars.compile(html);
-    //     /*
-    //     * replace tokenLink with the dynamic link to the user
-    //     */
-    //     var replacements = {
-    //         tokenLink: "https://www.yahoo.com"
-    //     };
-
-    //     var htmlToSend = template(replacements);
-
-    //     Company.app.models.Email.send({
-    //       to: 'gianjie@ocdigitalnetwork.com',
-    //       from: 'Everyday account team <donotreply@everyday.com.sg>',
-    //       subject: 'Verify your email address',
-    //       html: htmlToSend
-    //     }, function(err) {
-    //       if (err) return console.log(err + '-> error sending email');
-    //       console.log('> email successfully sent');
-    //     });
-    // });
-
-
 
     Company.signup = async function(email, password, priceplan, userInfo, companyInfo, paymentInfo) {
       //check if user already signed up with same email address
-
+      console.log('initiating Company signup')
       var BaseUser = Company.app.models.BaseUser;
 
       try {
+
         var users = await BaseUser.find({where: {email: email}});
         if(users.length > 0){
           var error = new Error("A user has already registered with this email address.");
@@ -58,7 +23,9 @@ module.exports = function(Company) {
         else {
           //get priceplan
           var Priceplan = Company.app.models.PricePlan;
-          var pp = await Priceplan.findOne({name: priceplan});          
+          var pp = await Priceplan.findOne({name: priceplan});  
+          console.log('-----pp-------')
+          console.log(pp)        
           if(pp == undefined || pp == null){
             var error = new Error("Invalid price plan.");
             error.status = 400;          
@@ -76,6 +43,7 @@ module.exports = function(Company) {
               }
             });
           }
+
           //user info
           var name = email;
           if(userInfo == null){
@@ -93,7 +61,14 @@ module.exports = function(Company) {
 
           var newuser = await BaseUser.create({name: name, email: email, password: password, contact: userInfo, company: comp});
           
+          console.log('--------------------')
+          console.log('creating user with baseuser create')
+          console.log(newuser)
+          
+          console.log('--------------------')
+          console.log('creating paymentInfos')
           comp.paymentInfos.create(paymentInfo)
+          console.log('--------------------')
 
           //create default access rights
           var AccessGroup = Company.app.models.AccessGroup;
@@ -118,15 +93,13 @@ module.exports = function(Company) {
                        
           // all 1st sign up stuff here
 
-
           // Need to input Email as verification
           
           // VerifyEmail
        
-        
-
-          
-          return [1,"Account created."];
+          console.log('Success! Account Created!')
+          // Added Email as a parameter for afterRemote Method below
+          return [1 , "Account created.", newuser];
 
         }
       }
@@ -146,43 +119,49 @@ module.exports = function(Company) {
             {arg: 'companyInfo', type: 'object'},
             {arg: 'paymentInfo', type: 'object'}
           ],
-          returns: [{arg: 'success', type: 'number'}, {arg: 'msg', type: 'string'}]
+          returns: [{arg: 'success', type: 'number'}, {arg: 'msg', type: 'string'}, {arg: 'newuser', type: 'object'}]
     });
 
 
 
+    Company.afterRemote('signup', function(context, user, next) {
+        var BaseUser = Company.app.models.BaseUser;
 
-    Company.afterRemote('create', function(context, user, next) {
+        var options = {
+          type: 'email',
+          to: 'gianjie@ocdigitalnetwork.com',
+          from: 'Everyday account team <donotreply@everyday.com.sg>',
+          subject: 'Thanks For Registering.',
+          template: path.resolve(__dirname, '../../server/views/verify.ejs'),
+          redirect: '/verified',
+          user: BaseUser
+        };
+    
+     
+        user.newuser.verify(options, function(err, response) {
+          if (err) {
+            BaseUser.deleteById(user.id);
+            return next(err);
+          }
+          console.log(response)
 
-      console.log('Company after remote create')
+    
+        });
 
-      console.log(context)
-      console.log(user)
-      console.log(next)
 
-      // var options = {
-      //   type: 'email',
-      //   to: user.email,
-      //   from: senderAddress,
-      //   subject: 'Thanks for registering.',
-      //   template: path.resolve(__dirname, '../../server/views/verify.ejs'),
-      //   redirect: '/verified',
-      //   user: user
-      // };
-  
-      // user.verify(options, function(err, response) {
-      //   if (err) {
-      //     User.deleteById(user.id);
-      //     return next(err);
-      //   }
-      //   context.res.render('response', {
-      //     title: 'Signed up successfully',
-      //     content: 'Please check your email and click on the verification link ' +
-      //         'before logging in.',
-      //     redirectTo: '/',
-      //     redirectToLinkText: 'Log in'
-      //   });
-      // });
+      
+      next()
     });
     
 };
+
+
+  // Company.app.models.Email.send({
+  //   to: 'gianjie@ocdigitalnetwork.com',
+  //   from: 'Everyday account team <donotreply@everyday.com.sg>',
+  //   subject: 'Verify your email address',
+  //   html: path.resolve(__dirname, '../../server/views/verify.ejs')
+  // }, function(err) {
+  //   if (err) return console.log(err + '-> error sending email');
+  //   console.log('> email successfully sent');
+  // });
