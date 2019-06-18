@@ -448,9 +448,7 @@ module.exports = function(server) {
       { name: "Well Done", level: 100,  userId: "default" }
     ]);
   });
-  */
   
-/*
   // Deal Type
   var DealType = server.models.DealType;
   DealType.deleteAll();
