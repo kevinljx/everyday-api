@@ -27,8 +27,7 @@ module.exports = function (Company) {
         //get priceplan
         var Priceplan = Company.app.models.PricePlan;
         var pp = await Priceplan.findOne({ name: priceplan });
-        console.log("-----pp-------");
-        console.log(pp);
+     
         if (pp == undefined || pp == null) {
           var error = new Error("Invalid price plan.");
           error.status = 400;
@@ -68,14 +67,7 @@ module.exports = function (Company) {
           company: comp
         });
 
-        console.log("--------------------");
-        console.log("creating user with baseuser create");
-        console.log(newuser);
-
-        console.log("--------------------");
-        console.log("creating paymentInfos");
         comp.paymentInfos.create(paymentInfo);
-        console.log("--------------------");
 
         //create default access rights
         var AccessGroup = Company.app.models.AccessGroup;
@@ -109,19 +101,12 @@ module.exports = function (Company) {
           }
         });
 
-        // all 1st sign up stuff here
-
-        // Need to input Email as verification
-
-        // VerifyEmail
-
-        console.log("Success! Account Created!");
         // Added Email as a parameter for afterRemote Method below
         return [1, "Account created.", newuser];
       }
 
     } catch (e) {
-      console.log(e);
+      console.log(e)
       throw e;
     }
   }
@@ -151,7 +136,7 @@ module.exports = function (Company) {
       from: "Everyday account team <donotreply@everyday.com.sg>",
       subject: "Thanks For Registering.",
       template: path.resolve(__dirname, "../../server/views/verify.ejs"),
-      redirect: "/verified",
+      redirect: `/verified`,
       user: BaseUser
     };
 
@@ -160,20 +145,9 @@ module.exports = function (Company) {
         BaseUser.deleteById(user.id);
         return next(err);
       }
-      console.log(response);
     });
 
     next();
   });
-
-  // Company.app.models.Email.send({
-  //   to: 'gianjie@ocdigitalnetwork.com',
-  //   from: 'Everyday account team <donotreply@everyday.com.sg>',
-  //   subject: 'Verify your email address',
-  //   html: path.resolve(__dirname, '../../server/views/verify.ejs')
-  // }, function(err) {
-  //   if (err) return console.log(err + '-> error sending email');
-  //   console.log('> email successfully sent');
-  //});
 
 }
