@@ -178,15 +178,16 @@
     "dataSource": "everyday",
     "public": true
   },
-  "Email": {
-    "dataSource": "mail"
-  },
   "AccessGroupUser": {
     "dataSource": "everyday",
     "public": false
   },
   "Deal": {
     "dataSource": "everyday",
+    "public": true
+  },
+  "Email": {
+    "dataSource": "mail",
     "public": true
   }
 }

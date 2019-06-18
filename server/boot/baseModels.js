@@ -412,38 +412,45 @@ module.exports = function(server) {
   // Lead Status
   /*
   var LeadStatus = server.models.LeadStatus;
-  LeadStatus.deleteAll();
-  LeadStatus.create([
-    { name: "Contacted", color: "#41d617" },
-    { name: "Not Contacted", color: "#6f6f6e" },
-    { name: "Attempted to Contact", color: "#fdb14a" },
-    { name: "Contact in Future", color: "#e6e410" },
-    { name: "Junk Lead", color: "#714509" },
-    { name: "Lost Lead", color: "#d61b17" }
-  ]);
-
+  LeadStatus.deleteAll({}, function(err, info){
+    LeadStatus.create([
+      { name: "Contacted", color: "#41d617", userId: "default" },
+      { name: "Not Contacted", color: "#6f6f6e", userId: "default" },
+      { name: "Attempted to Contact", color: "#fdb14a", userId: "default" },
+      { name: "Contact in Future", color: "#e6e410", userId: "default" },
+      { name: "Junk Lead", color: "#714509", userId: "default" },
+      { name: "Lost Lead", color: "#d61b17", userId: "default" }
+    ]);
+  
+  });
+  
   // Lead Source
   var LeadSource = server.models.LeadSource;
-  LeadSource.deleteAll();
-  LeadSource.create([
-    { name: "Advertisement", color: "#a1fa57" },
-    { name: "Cold Call", color: "#57d8fa" },
-    { name: "Employee Referral", color: "#fa5779" },
-    { name: "External Referral", color: "#fada57" },
-    { name: "Others", color: "#fa7157" }
-  ]);
+  LeadSource.deleteAll({}, function(err, info){
+    LeadSource.create([
+    { name: "Advertisement", color: "#a1fa57", userId: "default"},
+    { name: "Cold Call", color: "#57d8fa", userId: "default" },
+    { name: "Employee Referral", color: "#fa5779", userId: "default" },
+    { name: "External Referral", color: "#fada57", userId: "default" },
+    { name: "Others", color: "#fa7157", userId: "default" }
+    ]);
+  });
+  
 
   // Lead Interest Level
   var LeadInterest = server.models.LeadInterestLevel;
-  LeadInterest.deleteAll();
-  LeadInterest.create([
-    { name: "Rare", level: 20 },
-    { name: "Medium Rare", level: 40 },
-    { name: "Medium", level: 60 },
-    { name: "Medium Well", level: 80 },
-    { name: "Well Done", level: 100 }
-  ]);
-
+  LeadInterest.deleteAll({}, function(err, info){
+      LeadInterest.create([
+      { name: "Rare", level: 20, userId: "default" },
+      { name: "Medium Rare", level: 40,  userId: "default"},
+      { name: "Medium", level: 60,  userId: "default" },
+      { name: "Medium Well", level: 80,  userId: "default" },
+      { name: "Well Done", level: 100,  userId: "default" }
+    ]);
+  });
+  */
+  
+/*
   // Deal Type
   var DealType = server.models.DealType;
   DealType.deleteAll();

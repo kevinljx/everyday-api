@@ -24,6 +24,10 @@
     "isActive": {
       "type": "boolean",
       "default": true
+    },
+    "isSystem": {
+      "type": "boolean",
+      "default": true
     }
   },
   "validations": [],
