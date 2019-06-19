@@ -16,9 +16,6 @@ app.get('/verified', (req, res) => {
   res.sendFile(path.resolve(__dirname, "../client/verified.html"));
 });
 
-// app.get('/logout', (req, res) => {
-
-// });
 
 app.start = function() {
   // start the web server
