@@ -60,7 +60,15 @@ module.exports = function(Lead) {
       var newAcct = await Lead.app.models.Account.findById(acct.id);
 
       // new deal
-      var newDeal = null;
+      let newDeal = null;
+      // if (
+      //   "amount" in dealDetails &&
+      //   "name" in dealDetails &&
+      //   "stageId" in dealDetails &&
+      //   "closingDate" in dealDetails
+      // ) {
+      //   console.log("true");
+      // }
 
       // delete lead instance
 

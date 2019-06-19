@@ -2,8 +2,8 @@
 
 var path = require("path");
 
-module.exports = function (Company) {
-  Company.signup = async function (
+module.exports = function(Company) {
+  Company.signup = async function(
     email,
     password,
     priceplan,
@@ -27,7 +27,7 @@ module.exports = function (Company) {
         //get priceplan
         var Priceplan = Company.app.models.PricePlan;
         var pp = await Priceplan.findOne({ name: priceplan });
-     
+
         if (pp == undefined || pp == null) {
           var error = new Error("Invalid price plan.");
           error.status = 400;
@@ -57,7 +57,6 @@ module.exports = function (Company) {
             name = userInfo.name;
           }
         }
-
 
         var newuser = await BaseUser.create({
           name: name,
@@ -104,12 +103,11 @@ module.exports = function (Company) {
         // Added Email as a parameter for afterRemote Method below
         return [1, "Account created.", newuser];
       }
-
     } catch (e) {
-      console.log(e)
+      console.log(e);
       throw e;
     }
-  }
+  };
 
   Company.remoteMethod("signup", {
     accepts: [
@@ -127,12 +125,12 @@ module.exports = function (Company) {
     ]
   });
 
-  Company.afterRemote("signup", function (context, user, next) {
+  Company.afterRemote("signup", function(context, user, next) {
     var BaseUser = Company.app.models.BaseUser;
 
     var options = {
       type: "email",
-      to: "gianjie@ocdigitalnetwork.com",
+      to: context.args.email,
       from: "Everyday account team <donotreply@everyday.com.sg>",
       subject: "Thanks For Registering.",
       template: path.resolve(__dirname, "../../server/views/verify.ejs"),
@@ -140,7 +138,7 @@ module.exports = function (Company) {
       user: BaseUser
     };
 
-    user.newuser.verify(options, function (err, response) {
+    user.newuser.verify(options, function(err, response) {
       if (err) {
         BaseUser.deleteById(user.id);
         return next(err);
@@ -149,5 +147,4 @@ module.exports = function (Company) {
 
     next();
   });
-
-}
+};
