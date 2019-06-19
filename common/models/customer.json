@@ -7,7 +7,16 @@
     "validateUpsert": true
   },
   "mixins": {
+    "Computed": {
+      "properties": {
+        "fullAddress": "showFullAddress",
+        "name": "showFullName"
+      }
+    },
     "ShowUsers": true
+  },
+  "scope": {
+    "include": ["category", "account", "notes", "events"]
   },
   "properties": {
     "isActive": {
@@ -45,6 +54,11 @@
       "type": "hasMany",
       "model": "Note",
       "polymorphic": "noteable"
+    },
+    "events": {
+      "type": "hasMany",
+      "model": "Event",
+      "polymorphic": "eventable"
     }
   },
   "acls": [],

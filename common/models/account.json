@@ -6,6 +6,25 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Computed": {
+      "properties": {
+        "fullAddress": "showFullAddress",
+        "name": "showFullName"
+      }
+    },
+    "ShowUsers": true
+  },
+  "scope": {
+    "include": [
+      "parent",
+      "subaccount",
+      "notes",
+      "events",
+      "industry",
+      "customers"
+    ]
+  },
   "properties": {
     "isActive": {
       "type": "boolean",
@@ -14,7 +33,7 @@
   },
   "validations": [],
   "relations": {
-    "parent_id": {
+    "parent": {
       "type": "belongsTo",
       "model": "Account",
       "foreignKey": ""
@@ -30,12 +49,30 @@
     "subaccount": {
       "type": "hasMany",
       "model": "Account",
-      "foreignKey": "parent_id"
+      "foreignKey": "parent"
+    },
+    "industry": {
+      "type": "belongsTo",
+      "model": "LeadIndustry",
+      "foreignKey": ""
     },
     "notes": {
       "type": "hasMany",
       "model": "Note",
       "polymorphic": "noteable"
+    },
+    "events": {
+      "type": "hasMany",
+      "model": "Event",
+      "polymorphic": "eventable"
+    },
+    "customers": {
+      "type": "hasMany",
+      "model": "Customer",
+      "foreignKey": "",
+      "options": {
+        "nestRemoting": true
+      }
     }
   },
   "acls": [],

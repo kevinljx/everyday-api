@@ -19,6 +19,7 @@
   "User": {
     "dataSource": "everyday",
     "public": false
+
   },
   "AccessToken": {
     "dataSource": "everyday",
@@ -77,7 +78,10 @@
   },
   "BaseUser": {
     "dataSource": "everyday",
-    "public": true
+    "public": true,
+    "options": {
+      "emailVerificationRequired": true
+    }
   },
   "BaseContact": {
     "dataSource": "everyday",
@@ -169,10 +173,22 @@
   },
   "AccessGroupRole": {
     "dataSource": "everyday",
-    "public": true
+    "public": false
   },
   "AccessSetting": {
     "dataSource": "everyday",
+    "public": true
+  },
+  "AccessGroupUser": {
+    "dataSource": "everyday",
+    "public": false
+  },
+  "Deal": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "Email": {
+    "dataSource": "mail",
     "public": true
   }
 }

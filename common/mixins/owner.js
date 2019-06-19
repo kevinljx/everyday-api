@@ -31,11 +31,13 @@ module.exports = function(Model, bootOptions = {}) {
         required: options.required
     });
 
+    /*
     Model.defineProperty(options.userId, {
         type: 'string',
-        required: options.required
+        required: options.required,
+        mongodb: {dataType: 'ObjectId'}
     });
-
+    */
     Model.observe('before save', function (ctx, next) {
         
         var token = ctx.options && ctx.options.accessToken;

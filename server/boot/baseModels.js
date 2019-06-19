@@ -6,11 +6,10 @@ module.exports = function(server) {
    * DEVELOPMENT ONLY
    * ==================================
    */
-
   /*
   Access Rights. Create default access rights
   */
- /*
+  /*
   var AccessRight = server.models.AccessRight;
   AccessRight.deleteAll();
   var AccessRole = server.models.AccessRole;
@@ -114,11 +113,14 @@ module.exports = function(server) {
     {name: "Lead", categoryName: "Lead", model: "Lead", method: "read", editable: false },
     {name: "Lead", categoryName: "Lead", model: "Lead", method: "update" },
     {name: "Lead", categoryName: "Lead", model: "Lead", method: "delete"},
+    {name: "Access Setting", categoryName: "Access", model: "AccessSetting", method: "viewall" },
+    {name: "Access Role", categoryName: "Access", model: "AccessRole", method: "viewall" }
 
   ], function(err, accrights) {
     if (err) throw err; 
     //create default roles
     AccessRole.create([
+      {name: "Member", userId: "default", removable: false, editable: false},
       {name: "Company Admin", userId: "defaultAdmin"},
       {name: "Basic User", userId: "default"},
       {name: "Sales Manager", userId: "defaultAdmin"},
@@ -184,7 +186,8 @@ module.exports = function(server) {
       roles[0].accessRights.add(accrights[52]);
       roles[0].accessRights.add(accrights[53]);
       roles[0].accessRights.add(accrights[54]);
-      roles[0].accessRights.add(accrights[55]);
+      roles[0].accessRights.add(accrights[55]); //access setting viewall
+      roles[0].accessRights.add(accrights[56]);
 
       //basic user
       roles[1].accessRights.add(accrights[1]);
@@ -401,48 +404,51 @@ module.exports = function(server) {
     
   });
   */
-
   //var Lead = server.models.Lead;
   //Lead.deleteAll();
-
   /**
    * CRM Fields
    */
   // Lead Status
   /*
   var LeadStatus = server.models.LeadStatus;
-  LeadStatus.deleteAll();
-  LeadStatus.create([
-    { name: "Contacted", color: "#41d617" },
-    { name: "Not Contacted", color: "#6f6f6e" },
-    { name: "Attempted to Contact", color: "#fdb14a" },
-    { name: "Contact in Future", color: "#e6e410" },
-    { name: "Junk Lead", color: "#714509" },
-    { name: "Lost Lead", color: "#d61b17" }
-  ]);
-
+  LeadStatus.deleteAll({}, function(err, info){
+    LeadStatus.create([
+      { name: "Contacted", color: "#41d617", userId: "default" },
+      { name: "Not Contacted", color: "#6f6f6e", userId: "default" },
+      { name: "Attempted to Contact", color: "#fdb14a", userId: "default" },
+      { name: "Contact in Future", color: "#e6e410", userId: "default" },
+      { name: "Junk Lead", color: "#714509", userId: "default" },
+      { name: "Lost Lead", color: "#d61b17", userId: "default" }
+    ]);
+  
+  });
+  
   // Lead Source
   var LeadSource = server.models.LeadSource;
-  LeadSource.deleteAll();
-  LeadSource.create([
-    { name: "Advertisement", color: "#a1fa57" },
-    { name: "Cold Call", color: "#57d8fa" },
-    { name: "Employee Referral", color: "#fa5779" },
-    { name: "External Referral", color: "#fada57" },
-    { name: "Others", color: "#fa7157" }
-  ]);
+  LeadSource.deleteAll({}, function(err, info){
+    LeadSource.create([
+    { name: "Advertisement", color: "#a1fa57", userId: "default"},
+    { name: "Cold Call", color: "#57d8fa", userId: "default" },
+    { name: "Employee Referral", color: "#fa5779", userId: "default" },
+    { name: "External Referral", color: "#fada57", userId: "default" },
+    { name: "Others", color: "#fa7157", userId: "default" }
+    ]);
+  });
+  
 
   // Lead Interest Level
   var LeadInterest = server.models.LeadInterestLevel;
-  LeadInterest.deleteAll();
-  LeadInterest.create([
-    { name: "Rare", level: 20 },
-    { name: "Medium Rare", level: 40 },
-    { name: "Medium", level: 60 },
-    { name: "Medium Well", level: 80 },
-    { name: "Well Done", level: 100 }
-  ]);
-
+  LeadInterest.deleteAll({}, function(err, info){
+      LeadInterest.create([
+      { name: "Rare", level: 20, userId: "default" },
+      { name: "Medium Rare", level: 40,  userId: "default"},
+      { name: "Medium", level: 60,  userId: "default" },
+      { name: "Medium Well", level: 80,  userId: "default" },
+      { name: "Well Done", level: 100,  userId: "default" }
+    ]);
+  });
+  
   // Deal Type
   var DealType = server.models.DealType;
   DealType.deleteAll();
@@ -518,8 +524,7 @@ module.exports = function(server) {
       description: "Client has declined the sales order."
     }
   ]);
-  */
-
+*/
   // Industry
   /*
   var Industry = server.models.LeadIndustry;
@@ -527,14 +532,14 @@ module.exports = function(server) {
   Industry.create([
     { name: "Accounting " },
     { name: "Airlines/Aviation" },
-    { name: "Alternative Dispute Resolution" }
-     { name: "Alternative Medicine" },
+    { name: "Alternative Dispute Resolution" },
+    { name: "Alternative Medicine" },
     { name: "Animation" },
     { name: "Apparel/Fashion" },
     { name: "Architecture/Planning" },
     { name: "Arts/Crafts" },
     { name: "Automotive" },
-     { name: "Aviation/Aerospace" },
+    { name: "Aviation/Aerospace" },
     { name: "Banking/Mortgage" },
     { name: "Biotechnology/Greentech" },
     { name: "Broadcast Media" },
@@ -671,7 +676,7 @@ module.exports = function(server) {
     { name: "Wholesale" },
     { name: "Wine/Spirits" },
     { name: "Wireless" },
-    { name: "Writing/Editing" } 
+    { name: "Writing/Editing" }
   ]);
 */
   // Countries
@@ -679,8 +684,8 @@ module.exports = function(server) {
   var Country = server.models.BaseCountry;
   Country.deleteAll();
   Country.create([
-    { name: "Singapore", code: "SG", phoneCode: "+65", language: "EN" }
-    /* { name: "Afghanistan", code: "AF", phoneCode: "+1", language: "EN" },
+    { name: "Singapore", code: "SG", phoneCode: "+65", language: "EN" },
+    { name: "Afghanistan", code: "AF", phoneCode: "+1", language: "EN" },
     { name: "Åland Islands", code: "AX", phoneCode: "+60", language: "EN" },
     { name: "Albania", code: "AL", phoneCode: "+355", language: "EN" },
     { name: "Algeria", code: "DZ", phoneCode: "+213", language: "EN" },
@@ -1118,7 +1123,7 @@ module.exports = function(server) {
     { name: "Western Sahara", code: "EH", phoneCode: "+212", language: "EN" },
     { name: "Yemen", code: "YE", phoneCode: "+967", language: "EN" },
     { name: "Zambia", code: "ZM", phoneCode: "+260", language: "EN" },
-    { name: "Zimbabwe", code: "ZW", phoneCode: "+263", language: "EN" } 
+    { name: "Zimbabwe", code: "ZW", phoneCode: "+263", language: "EN" }
   ]);
   */
 };
