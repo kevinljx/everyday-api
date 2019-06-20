@@ -7,14 +7,12 @@
 
 var loopback = require('loopback');
 var boot = require('loopback-boot');
-var path = require('path')
 var app = module.exports = loopback();
+var path = require('path');
 
 
-
-app.get('/verified', (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../client/verified.html"));
-});
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 
 app.start = function() {
