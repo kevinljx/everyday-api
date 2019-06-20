@@ -1,6 +1,6 @@
 "use strict";
 
-var path = require("path");
+const path = require("path");
 
 module.exports = function (Company) {
   Company.signup = async function (
@@ -12,7 +12,6 @@ module.exports = function (Company) {
     paymentInfo
   ) {
     //check if user already signed up with same email address
-    console.log("initiating Company signup");
     var BaseUser = Company.app.models.BaseUser;
 
     try {
@@ -163,7 +162,6 @@ module.exports = function (Company) {
         return [1, "Account created.", newuser];
       }
     } catch (e) {
-      console.log(e);
       throw e;
     }
   };
@@ -189,9 +187,10 @@ module.exports = function (Company) {
     /*
     var options = {
       type: "email",
-      to: context.args.email,
-      from: "Everyday account team <donotreply@everyday.com.sg>",
-      subject: "Thanks For Registering.",
+      // to: context.args.email,
+      to: 'gianjie@ocdigitalnetwork.com',
+      from: "Everyday <donotreply@everyday.com.sg>",
+      subject: "[Everyday] Thank you for registering",
       template: path.resolve(__dirname, "../../server/views/verify.ejs"),
       redirect: `/verified`,
       user: BaseUser
@@ -199,9 +198,11 @@ module.exports = function (Company) {
 
     user.newuser.verify(options, function (err, response) {
       if (err) {
-        BaseUser.deleteById(user.id);
+        // Prevent Spam Accounts
+        // BaseUser.deleteById(user.id);
         return next(err);
       }
+      // No error, send new user email verification
     });
     */
     next();

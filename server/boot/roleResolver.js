@@ -1,8 +1,6 @@
 
 module.exports = function(app) {
     var Role = app.models.Role;
-    var RoleMapping = app.models.RoleMapping;
-
     
     // Role.create({
     //   name: 'admin'
