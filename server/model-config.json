@@ -19,7 +19,6 @@
   "User": {
     "dataSource": "everyday",
     "public": false
-
   },
   "AccessToken": {
     "dataSource": "everyday",

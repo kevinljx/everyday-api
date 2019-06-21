@@ -2,8 +2,8 @@
 
 var path = require("path");
 
-module.exports = function(Company) {
-  Company.signup = async function(
+module.exports = function (Company) {
+  Company.signup = async function (
     email,
     password,
     priceplan,
@@ -100,6 +100,65 @@ module.exports = function(Company) {
           }
         });
 
+        //copy leads and deals stuff
+        var LeadStatus = Company.app.models.LeadStatus;
+        var LeadSource = Company.app.models.LeadSource;
+        var LeadInterest = Company.app.models.LeadInterestLevel;
+        var LeadIndustry = Company.app.models.LeadIndustry;
+        var DealType = Company.app.models.DealType;
+        var DealStage = Company.app.models.DealStage;
+        var statuses = await LeadStatus.find({ where: { userId: "default" } });
+        statuses.forEach(async element => {
+          LeadStatus.create({
+            name: element.name,
+            color: element.color,
+            userId: newuser.id
+          });
+        });
+        var sources = await LeadSource.find({ where: { userId: "default" } });
+        sources.forEach(async element => {
+          LeadSource.create({
+            name: element.name,
+            color: element.color,
+            userId: newuser.id
+          });
+        });
+        var interests = await LeadInterest.find({ where: { userId: "default" } });
+        interests.forEach(async element => {
+          LeadInterest.create({
+            name: element.name,
+            level: element.level,
+            userId: newuser.id
+          });
+        });
+        var industries = await LeadIndustry.find({ where: { userId: "default" } });
+        industries.forEach(async element => {
+          LeadIndustry.create({
+            name: element.name,
+            userId: newuser.id
+          });
+        });
+        var dealtypes = await DealType.find({ where: { userId: "default" } });
+        dealtypes.forEach(async element => {
+          DealType.create({
+            name: element.name,
+            color: element.color,
+            userId: newuser.id
+          });
+        });
+        var dealstages = await DealStage.find({ where: { userId: "default" } });
+        dealstages.forEach(async element => {
+          DealStage.create({
+            name: element.name,
+            chance: element.chance,
+            step: element.step,
+            invoice: element.invoice,
+            quotation: element.quotation,
+            description: element.description,
+            userId: newuser.id
+          });
+        });
+
         // Added Email as a parameter for afterRemote Method below
         return [1, "Account created.", newuser];
       }
@@ -125,9 +184,9 @@ module.exports = function(Company) {
     ]
   });
 
-  Company.afterRemote("signup", function(context, user, next) {
+  Company.afterRemote("signup", function (context, user, next) {
     var BaseUser = Company.app.models.BaseUser;
-
+    /*
     var options = {
       type: "email",
       to: context.args.email,
@@ -138,13 +197,13 @@ module.exports = function(Company) {
       user: BaseUser
     };
 
-    user.newuser.verify(options, function(err, response) {
+    user.newuser.verify(options, function (err, response) {
       if (err) {
         BaseUser.deleteById(user.id);
         return next(err);
       }
     });
-
+    */
     next();
   });
 };
