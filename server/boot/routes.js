@@ -6,7 +6,7 @@ module.exports = function(app) {
 
   // verified
   app.get('/verified', (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../../client/verified.html"));
+    res.sendFile(path.resolve(__dirname, "../views/verified.html"));
   });
   
 
