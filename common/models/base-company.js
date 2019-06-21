@@ -34,10 +34,12 @@ module.exports = function (Company) {
         }
         //company info
         if (companyInfo !== undefined) {
+          companyInfo.pricePlanId = pp.id;
           var comp = await Company.create(companyInfo);
         } else {
           var comp = await Company.create({
             name: "Company",
+            pricePlanId: pp.id,
             contact: {
               email: email
             }
