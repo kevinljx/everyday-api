@@ -160,7 +160,6 @@ module.exports = function (Company) {
           });
         });
 
-        // Added Email as a parameter for afterRemote Method below
         return [1, "Account created.", newuser];
       }
     } catch (e) {

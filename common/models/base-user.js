@@ -16,7 +16,6 @@ const readHTMLFile = function(path, callback) {
     });
 };
 
-
 module.exports = function (Baseuser) {
     function companyOnlyQuery(ctx, companyId) {
         var whereClause = { "companyId": companyId };

@@ -15,17 +15,25 @@
     "connector": "mongodb"
   },
   "mail": {
+    "name": "mail",
     "connector": "mail",
-    "transports": [{
-      "type": "SMTP",
-      "host": "smtp.gmail.com",
-      "secure": true,
-      "port": 465,
-      "auth": {
-        "user": "everydayocdn@gmail.com",
-        "pass": "Ocdigital" 
+    "transports": [
+      {
+        "type": "SMTP",
+        "host": "smtp.gmail.com",
+        "secure": true,
+        "port": 465,
+        "auth": {
+          "user": "everydayocdn@gmail.com",
+          "pass": "Ocdigital"
+        }
       }
-    }]
+    ]
+  },
+  "storage": {
+    "name": "storage",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "./server/storage"
   }
- 
 }
