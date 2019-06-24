@@ -8,8 +8,9 @@ function getDiffInDays(date1, date2) {
   return Math.round(difference_ms / one_day);
 }
 
-module.exports = function(Deal) {
-  Deal.updateStage = async function(dealID, stageID) {
+module.exports = function (Deal) {
+
+  Deal.updateStage = async function (dealID, stageID) {
     //check if user already signed up with same email address
     try {
       var BaseDeal = await Deal.findById(dealID);
@@ -62,4 +63,7 @@ module.exports = function(Deal) {
     ],
     returns: [{ arg: "data", type: "object" }]
   });
+
+
+
 };
