@@ -16,14 +16,7 @@
     "ShowUsers": true
   },
   "scope": {
-    "include": [
-      "parent",
-      "subaccount",
-      "notes",
-      "events",
-      "industry",
-      "customers"
-    ]
+    "include": ["parent", "subaccount", "notes", "events", "industry"]
   },
   "properties": {
     "isActive": {
@@ -71,7 +64,7 @@
       "model": "Customer",
       "foreignKey": "",
       "options": {
-        "nestRemoting": true
+        "nestRemoting": false
       }
     }
   },
