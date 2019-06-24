@@ -8,7 +8,6 @@ const readHTMLFile = function(path, callback) {
   fs.readFile(path, { encoding: "utf-8" }, function(err, html) {
     if (err) {
       throw err;
-      callback(err);
     } else {
       callback(null, html);
     }
@@ -91,29 +90,6 @@ module.exports = function(Baseuser) {
   //   });
   // });
 
-  /*
-Baseuser.observe("before delete", async function (ctx) {
-  //cannot delete if lead, deal, customer, account, quotation
-  var allusers = await Baseuser.find({ where: ctx.where });
-
-  var Lead = Baseuser.app.models.Lead;
-  var Deal = Baseuser.app.models.Deal;
-  var Customer = Baseuser.app.models.Customer;
-  var Account = Baseuser.app.models.Account;
-  var Quotation = Baseuser.app.models.Quotation;
-  for (const user of allusers) {
-    var count = await Lead.count({ userId: user.id });
-    if (count > 0) {
-      throw new Error(
-        "There is data associated with this user. User cannot be deleted."
-      );
-
-    }
-  }
-  return;
-});
-*/
-
   // render UI page after password reset
   // redirectTo actualy everyday domain website
   Baseuser.afterRemote("setPassword", function(context, user, next) {
@@ -157,4 +133,27 @@ Baseuser.observe("before delete", async function (ctx) {
       ctx.args.data.companyId = user.companyId;
     }
   });
+
+  /*
+  Baseuser.observe("before delete", async function (ctx) {
+    //cannot delete if lead, deal, customer, account, quotation
+    var allusers = await Baseuser.find({ where: ctx.where });
+
+    var Lead = Baseuser.app.models.Lead;
+    var Deal = Baseuser.app.models.Deal;
+    var Customer = Baseuser.app.models.Customer;
+    var Account = Baseuser.app.models.Account;
+    var Quotation = Baseuser.app.models.Quotation;
+    for (const user of allusers) {
+      var count = await Lead.count({ userId: user.id });
+      if (count > 0) {
+        throw new Error(
+          "There is data associated with this user. User cannot be deleted."
+        );
+
+      }
+    }
+    return;
+  });
+  */
 };
