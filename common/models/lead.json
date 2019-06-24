@@ -10,17 +10,19 @@
     "Computed": {
       "properties": {
         "fullAddress": "showFullAddress",
-        "name": "showFullName"
+        "name": "showFullName",
+        "upcomingEvents": "showUpcoming",
+        "pastEvents": "showPast"
       }
     },
-    "ShowUsers": true
+    "ShowUsers": true,
+    "DeleteHistory": true
   },
   "scope": {
     "include": [
       "status",
       "source",
-      "industry",
-      "events"
+      "industry"
     ]
   },
   "properties": {
@@ -35,6 +37,12 @@
     },
     "fullAddress": {
       "type": "string"
+    },
+    "upcomingEvents": {
+      "type": "array"
+    },
+    "pastEvents": {
+      "type": "array"
     }
   },
   "validations": [],

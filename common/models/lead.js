@@ -1,32 +1,57 @@
 "use strict";
 
-module.exports = function(Lead) {
+module.exports = function (Lead) {
   Lead.showFullAddress = function showFullAddress(lead) {
     var address = "";
-    if (lead.baseContact._address.address_1) {
-      address += lead.baseContact._address.address_1 + "\n";
+    if (lead.baseContact) {
+      if (lead.baseContact._address.address_1) {
+        address += lead.baseContact._address.address_1 + "\n";
+      }
+      if (lead.baseContact._address.address_2) {
+        address += lead.baseContact._address.address_2 + "\n";
+      }
+      if (lead.baseContact._address.state) {
+        address += lead.baseContact._address.state + ",";
+      }
+      if (lead.baseContact._address.city) {
+        address += lead.baseContact._address.city + " ";
+      }
+      if (lead.baseContact._address.zip) {
+        address += lead.baseContact._address.zip;
+      }
     }
-    if (lead.baseContact._address.address_2) {
-      address += lead.baseContact._address.address_2 + "\n";
-    }
-    if (lead.baseContact._address.state) {
-      address += lead.baseContact._address.state + ",";
-    }
-    if (lead.baseContact._address.city) {
-      address += lead.baseContact._address.city + " ";
-    }
-    if (lead.baseContact._address.zip) {
-      address += lead.baseContact._address.zip;
-    }
+
     return address;
   };
 
   Lead.showFullName = function showFullName(lead) {
-    var fullName = lead.baseContact.firstName + " " + lead.baseContact.lastName;
+    var fullName = "";
+    if (lead.baseContact) {
+      fullName = lead.baseContact.firstName + " " + lead.baseContact.lastName;
+    }
+
     return fullName;
   };
 
-  Lead.beforeRemote("convert", async function(ctx) {
+  Lead.showUpcoming = async function showUpcoming(lead) {
+    var allUpcoming = [];
+    var Event = Lead.app.models.Event;
+    const currentTime = new Date();
+    //allUpcoming = await Event.find({ where: { end_date: { gt: currentTime.toISOString() } } });
+    allUpcoming = await Event.find({ where: { and: [{ eventableId: lead.id }, { eventableType: "Lead" }, { end_date: { gt: currentTime.toISOString() } }] } });
+    return allUpcoming;
+  }
+
+  Lead.showPast = async function showPast(lead) {
+    var allPast = [];
+    var Event = Lead.app.models.Event;
+    const currentTime = new Date();
+    //allUpcoming = await Event.find({ where: { end_date: { gt: currentTime.toISOString() } } });
+    allPast = await Event.find({ where: { and: [{ eventableId: lead.id }, { eventableType: "Lead" }, { end_date: { lt: currentTime.toISOString() } }] } });
+    return allPast;
+  }
+
+  Lead.beforeRemote("convert", async function (ctx) {
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
     if (userId) {
@@ -35,7 +60,7 @@ module.exports = function(Lead) {
     return;
   });
 
-  Lead.convert = async function(leadID, dealDetails, userId) {
+  Lead.convert = async function (leadID, dealDetails, userId) {
     try {
       var lead = await Lead.findById(leadID);
 
