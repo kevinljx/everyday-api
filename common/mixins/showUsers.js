@@ -1,6 +1,6 @@
 "use strict";
-module.exports = function (Model, bootOptions = {}) {
-  Model.afterRemote("**", async function (ctx, modelInstance) {
+module.exports = function(Model, bootOptions = {}) {
+  Model.afterRemote("**", async function(ctx, modelInstance) {
     var BaseUser = Model.app.models.BaseUser;
     if (ctx.result && ctx.result.length > 0) {
       for (var res of ctx.result) {
@@ -26,8 +26,14 @@ module.exports = function (Model, bootOptions = {}) {
           };
         }
       }
-    }
-    else {
+    } else {
+      if (ctx.result.userId) {
+        var userobj = await BaseUser.findById(ctx.result.userId);
+        ctx.result.userInfo = {
+          id: userobj.id,
+          name: userobj.name
+        };
+      }
       if (ctx.result.createdBy) {
         var userobj = await BaseUser.findById(ctx.result.createdBy);
         ctx.result.creatorInfo = {

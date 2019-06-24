@@ -42,7 +42,7 @@
     },
     "isCompany": {
       "type": "boolean",
-      "default": true
+      "default": false
     },
     "info": {
       "type": "string"
