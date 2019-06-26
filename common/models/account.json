@@ -10,18 +10,28 @@
     "Computed": {
       "properties": {
         "fullAddress": "showFullAddress",
-        "name": "showFullName"
+        "name": "showFullName",
+        "customers": "showAllCustomer"
       }
     },
     "ShowUsers": true
   },
   "scope": {
-    "include": ["parent", "subaccount", "notes", "events", "industry"]
+    "include": [
+      "parent",
+      "subaccount",
+      "notes",
+      "events",
+      "industry"
+    ]
   },
   "properties": {
     "isActive": {
       "type": "boolean",
       "default": true
+    },
+    "customers": {
+      "type": "array"
     }
   },
   "validations": [],

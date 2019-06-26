@@ -1,28 +1,33 @@
 "use strict";
 
-module.exports = function(Customer) {
+module.exports = function (Customer) {
   Customer.showFullAddress = function showFullAddress(cust) {
     var address = "";
-    if (cust.baseContact._address.address_1) {
-      address += cust.baseContact._address.address_1 + "\n";
-    }
-    if (cust.baseContact._address.address_2) {
-      address += cust.baseContact._address.address_2 + "\n";
-    }
-    if (cust.baseContact._address.state) {
-      address += cust.baseContact._address.state + ",";
-    }
-    if (cust.baseContact._address.city) {
-      address += cust.baseContact._address.city + " ";
-    }
-    if (cust.baseContact._address.zip) {
-      address += cust.baseContact._address.zip;
+    if (cust.baseContact && cust.baseContact._address) {
+      if (cust.baseContact._address.address_1) {
+        address += cust.baseContact._address.address_1 + "\n";
+      }
+      if (cust.baseContact._address.address_2) {
+        address += cust.baseContact._address.address_2 + "\n";
+      }
+      if (cust.baseContact._address.state) {
+        address += cust.baseContact._address.state + ",";
+      }
+      if (cust.baseContact._address.city) {
+        address += cust.baseContact._address.city + " ";
+      }
+      if (cust.baseContact._address.zip) {
+        address += cust.baseContact._address.zip;
+      }
     }
     return address;
   };
 
   Customer.showFullName = function showFullName(cust) {
-    var fullName = cust.baseContact.firstName + " " + cust.baseContact.lastName;
+    var fullName = "";
+    if (cust.baseContact) {
+      fullName = cust.baseContact.firstName + " " + cust.baseContact.lastName;
+    }
     return fullName;
   };
 
