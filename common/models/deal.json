@@ -31,7 +31,7 @@
       "type": "number",
       "required": true
     },
-    "description": {
+    "info": {
       "type": "string"
     }
   },

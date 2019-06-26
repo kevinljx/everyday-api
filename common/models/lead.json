@@ -19,11 +19,7 @@
     "DeleteHistory": true
   },
   "scope": {
-    "include": [
-      "status",
-      "source",
-      "industry"
-    ]
+    "include": ["status", "source", "industry", "notes"]
   },
   "properties": {
     "companyName": {

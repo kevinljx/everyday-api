@@ -10,18 +10,15 @@
     "Computed": {
       "properties": {
         "fullAddress": "showFullAddress",
-        "name": "showFullName"
+        "name": "showFullName",
+        "accountInfo": "showAccountInfo"
       }
     },
-    "ShowUsers": true
+    "ShowUsers": true,
+    "DeleteHistory": true
   },
   "scope": {
-    "include": [
-      "category",
-      "account",
-      "notes",
-      "events"
-    ]
+    "include": ["category", "notes", "events"]
   },
   "properties": {
     "isActive": {
@@ -52,7 +49,7 @@
       "model": "Account",
       "foreignKey": "",
       "options": {
-        "nestRemoting": true
+        "nestRemoting": false
       }
     },
     "notes": {

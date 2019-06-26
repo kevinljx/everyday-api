@@ -25,4 +25,11 @@ module.exports = function(Customer) {
     var fullName = cust.baseContact.firstName + " " + cust.baseContact.lastName;
     return fullName;
   };
+
+  Customer.showAccountInfo = async function showAccountInfo(cust) {
+    if (cust.accountId) {
+      var account = await Customer.app.models.Account.findById(cust.accountId);
+      return { id: account.id, name: account.name };
+    }
+  };
 };

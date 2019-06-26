@@ -95,6 +95,7 @@ module.exports = function(Lead) {
 
       var cust = await Lead.app.models.Customer.create({
         baseContact: lead.baseContact,
+        sourceId: lead.sourceId,
         userId: userId,
         createdBy: userId,
         updatedBy: userId,
@@ -128,7 +129,7 @@ module.exports = function(Lead) {
       }
 
       // delete lead instance
-      // Lead.destroyById(lead.id);
+      Lead.destroyById(lead.id);
       return [newCust, newAcct, newDeal];
     } catch (e) {
       console.log(e);

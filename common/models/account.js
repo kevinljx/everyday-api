@@ -24,4 +24,18 @@ module.exports = function(Account) {
   Account.showFullName = function showFullName(acct) {
     return acct.baseContact.name;
   };
+
+  Account.showAllCustomer = async function showAllCustomer(acct) {
+    console.log("here");
+    var allCustomer = await Account.app.models.Customer.find(
+      {
+        where: {
+          and: [{ accountId: acct.id }, { isActive: true }]
+        }
+      }
+      //{ fields: { id: true, name: true }, limit: 1
+    );
+    console.log(allCustomer);
+    return allCustomer;
+  };
 };
