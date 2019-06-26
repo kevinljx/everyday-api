@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function (Account) {
+module.exports = function(Account) {
   Account.showFullAddress = function showFullAddress(acct) {
     var address = "";
     if (acct.baseContact && acct.baseContact._address) {
@@ -32,16 +32,34 @@ module.exports = function (Account) {
   };
 
   Account.showAllCustomer = async function showAllCustomer(acct) {
-    console.log("here");
-    var allCustomer = await Account.app.models.Customer.find(
-      {
-        where: {
-          and: [{ accountId: acct.id }, { isActive: true }]
-        },
-        fields: { accountId: false }
+    var allCustomer = await Account.app.models.Customer.find({
+      where: {
+        and: [{ accountId: acct.id }, { isActive: true }]
+      },
+      fields: {
+        name: true,
+        id: true,
+        accountId: false,
+        baseContact: true
       }
-      //{ fields: { id: true, name: true }, limit: 1
-    );
+    });
     return allCustomer;
+  };
+  Account.showAllDeal = async function showAllDeal(acct) {
+    var allDeal = await Account.app.models.Deal.find({
+      where: {
+        and: [{ accountId: acct.id }]
+      },
+      fields: {
+        name: true,
+        stageId: true,
+        amount: true,
+        closingDate: true,
+        typeId: true,
+        sourceId: true,
+        id: true
+      }
+    });
+    return allDeal;
   };
 };

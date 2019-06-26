@@ -8,9 +8,8 @@ function getDiffInDays(date1, date2) {
   return Math.round(difference_ms / one_day);
 }
 
-module.exports = function (Deal) {
-
-  Deal.updateStage = async function (dealID, stageID) {
+module.exports = function(Deal) {
+  Deal.updateStage = async function(dealID, stageID) {
     //check if user already signed up with same email address
     try {
       var BaseDeal = await Deal.findById(dealID);
@@ -44,12 +43,13 @@ module.exports = function (Deal) {
         chance: prevStage.chance,
         duration: getDiffInDays(startTime, now),
         closingDate: BaseDeal.closingDate,
-        dealId: BaseDeal.id
+        dealId: BaseDeal.id,
+        userId: BaseDeal.userId
       });
       // change Stage
       var deal = await BaseDeal.patchAttributes({ stageId: stageID });
-      var data = await Deal.findById(deal.id);
-      return data;
+      //var data = await Deal.findById(deal.id);
+      return deal;
     } catch (e) {
       console.log(e);
       throw e;
@@ -64,6 +64,16 @@ module.exports = function (Deal) {
     returns: [{ arg: "data", type: "object" }]
   });
 
-
-
+  Deal.showCustomerInfo = async function showCustomerInfo(deal) {
+    if (deal.customerId) {
+      var customer = await Deal.app.models.Customer.findById(deal.customerId);
+      return { name: customer.name, id: customer.id };
+    }
+  };
+  Deal.showAccountInfo = async function showAccountInfo(deal) {
+    if (deal.accountId) {
+      var acct = await Deal.app.models.Account.findById(deal.accountId);
+      return { name: acct.name, id: acct.id };
+    }
+  };
 };
