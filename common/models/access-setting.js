@@ -26,7 +26,7 @@ module.exports = function (Accesssetting) {
         */
         userRights = userRights.concat(allRights);
       }
-      //console.log(userRights);
+      console.log(userRights);
       return userRights;
     } catch (e) {
       console.log(e);
