@@ -67,7 +67,9 @@ module.exports = function(Deal) {
   Deal.showCustomerInfo = async function showCustomerInfo(deal) {
     if (deal.customerId) {
       var customer = await Deal.app.models.Customer.findById(deal.customerId);
-      return { name: customer.name, id: customer.id };
+      if (customer) {
+        return { name: customer.name, id: customer.id };
+      }
     }
   };
   Deal.showAccountInfo = async function showAccountInfo(deal) {

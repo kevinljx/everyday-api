@@ -56,24 +56,17 @@ module.exports = function(Customer) {
     return allDeal;
   };
 
-  // Customer.beforeRemote("updateStatus", async function(ctx) {
-  //   var token = ctx.req.accessToken;
-  //   var userId = token && token.userId;
-  //   if (userId) {
-  //     ctx.args.userId = userId;
-  //   }
-  //   return;
-  // });
-
-  // Customer.updateStatus = async function(custId, userId) {
-  //   var cust = await Customer.findById(custId);
-  // };
-
-  // Customer.remoteMethod("updateStatus", {
-  //   accepts: [
-  //     { arg: "customerId", type: "string", required: true },
-  //     { arg: "userId", type: "any", required: true }
-  //   ],
-  //   returns: [{ arg: "data", type: "object" }]
-  // });
+  Customer.beforeRemote("deleteById", async function(ctx) {
+    var id = ctx.req.params.id;
+    var cust = await Customer.findById(id);
+    // update all deals to remove cust
+    await Customer.app.models.Deal.updateAll(
+      { customerId: cust.id },
+      { customerId: null },
+      (err, info) => {
+        if (err) throw err;
+      }
+    );
+    return;
+  });
 };
