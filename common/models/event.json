@@ -7,15 +7,21 @@
     "validateUpsert": true
   },
   "properties": {
-    "start_date": {
+    "title":{
+      "type": "string",
+      "required": true
+    },
+    "start": {
       "type": "date",
       "required": true
     },
-    "end_date": {
-      "type": "date"
+    "end": {
+      "type": "date",
+      "required": true
     },
-    "description": {
-      "type": "string"
+    "desc": {
+      "type": "string",
+      "required": true
     },
     "location": {
       "type": "string"
@@ -23,11 +29,12 @@
     "color": {
       "type": "string"
     },
-    "all_day": {
+    "allDay": {
       "type": "boolean",
       "default": false
     }
   },
+    
   "validations": [],
   "relations": {
     "eventable": {
@@ -35,6 +42,7 @@
       "polymorphic": true
     }
   },
-  "acls": [],
+  "acls":[],
+ 
   "methods": {}
 }
