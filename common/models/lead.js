@@ -76,23 +76,36 @@ module.exports = function(Lead) {
     return;
   });
 
-  Lead.convert = async function(leadID, dealDetails, userId) {
+  Lead.convert = async function(
+    leadID,
+    dealDetails,
+    existingAccountId,
+    userId
+  ) {
     try {
+      var newDeal = null;
       var lead = await Lead.findById(leadID);
 
-      // convert to customer and acct
-      var acctBaseContact = lead.baseContact;
-      acctBaseContact.name = lead.companyName;
-      delete acctBaseContact.firstName;
-      delete acctBaseContact.lastName;
-      var acct = await Lead.app.models.Account.create({
-        userId: userId,
-        createdBy: userId,
-        updatedBy: userId,
-        industryId: lead.industryId,
-        baseContact: acctBaseContact
-      });
+      var acct;
+      if (!existingAccountId) {
+        console.log("---acct dont exist");
+        // No Account Id - create new account
+        var acctBaseContact = lead.baseContact;
+        acctBaseContact.name = lead.companyName;
+        delete acctBaseContact.firstName;
+        delete acctBaseContact.lastName;
+        acct = await Lead.app.models.Account.create({
+          userId: userId,
+          createdBy: userId,
+          updatedBy: userId,
+          industryId: lead.industryId,
+          baseContact: acctBaseContact
+        });
+      } else {
+        acct = await Lead.app.models.Account.findById(existingAccountId);
+      }
 
+      // create customer
       var cust = await Lead.app.models.Customer.create({
         baseContact: lead.baseContact,
         sourceId: lead.sourceId,
@@ -101,12 +114,10 @@ module.exports = function(Lead) {
         updatedBy: userId,
         accountId: acct.id
       });
-
       var newCust = await Lead.app.models.Customer.findById(cust.id);
       var newAcct = await Lead.app.models.Account.findById(acct.id);
 
-      // new deal
-      let newDeal = null;
+      // check if new deal
       if (
         "amount" in dealDetails &&
         "name" in dealDetails &&
@@ -141,6 +152,7 @@ module.exports = function(Lead) {
     accepts: [
       { arg: "id", type: "string", required: true },
       { arg: "dealDetails", type: "any", required: false },
+      { arg: "existingAccountId", type: "string" },
       { arg: "userId", type: "any" }
     ],
     http: { path: "/convert/:id", verb: "post" },

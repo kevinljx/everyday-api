@@ -1,6 +1,13 @@
 "use strict";
 
 module.exports = function(Account) {
+  Account.beforeRemote("create", async function(ctx) {
+    if (ctx.args.data) {
+      ctx.args.data.baseContact.isCompany = true;
+    }
+    return;
+  });
+
   Account.showFullAddress = function showFullAddress(acct) {
     var address = "";
     if (acct.baseContact && acct.baseContact._address) {
@@ -62,4 +69,26 @@ module.exports = function(Account) {
     });
     return allDeal;
   };
+  Account.accountExist = async function accountExist(accountName) {
+    try {
+      var pattern = new RegExp(".*" + accountName + ".*", "i");
+      var existAccount = await Account.find({
+        where: { "baseContact.name": { like: pattern } },
+        fields: {
+          baseContact: true,
+          id: true,
+          name: true
+        }
+      });
+      return [existAccount.length, existAccount];
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+
+  Account.remoteMethod("accountExist", {
+    accepts: [{ arg: "accountName", type: "string", required: true }],
+    returns: [{ arg: "count", type: "number" }, { arg: "data", type: "array" }]
+  });
 };
