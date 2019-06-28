@@ -8,6 +8,26 @@ module.exports = function(Account) {
     return;
   });
 
+  Account.observe("before delete", async function(ctx) {
+    var allAccount = await Account.find({ where: ctx.where });
+    for (const acct of allAccount) {
+      // check customer
+      var checkCustomer = await Account.app.models.Customer.count({
+        accountId: acct.id
+      });
+      // check deal
+      var checkDeal = await Account.app.models.Deal.count({
+        accountId: acct.id
+      });
+      if (checkCustomer > 0 || checkDeal > 0) {
+        throw new Error(
+          "There is data associated with this Account. Account cannot be deleted."
+        );
+      }
+    }
+    return;
+  });
+
   Account.showFullAddress = function showFullAddress(acct) {
     var address = "";
     if (acct.baseContact && acct.baseContact._address) {

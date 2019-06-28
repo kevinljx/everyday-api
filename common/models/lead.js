@@ -92,6 +92,7 @@ module.exports = function(Lead) {
         // No Account Id - create new account
         var acctBaseContact = lead.baseContact;
         acctBaseContact.name = lead.companyName;
+        acctBaseContact.isCompany = true;
         delete acctBaseContact.firstName;
         delete acctBaseContact.lastName;
         acct = await Lead.app.models.Account.create({
