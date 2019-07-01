@@ -10,18 +10,16 @@
     "Computed": {
       "properties": {
         "fullAddress": "showFullAddress",
-        "name": "showFullName"
+        "name": "showFullName",
+        "upcomingEvents": "showUpcoming",
+        "pastEvents": "showPast"
       }
     },
-    "ShowUsers": true
+    "ShowUsers": true,
+    "DeleteHistory": true
   },
   "scope": {
-    "include": [
-      "status",
-      "source",
-      "industry",
-      "events"
-    ]
+    "include": ["status", "source", "industry", "notes"]
   },
   "properties": {
     "companyName": {
@@ -35,6 +33,12 @@
     },
     "fullAddress": {
       "type": "string"
+    },
+    "upcomingEvents": {
+      "type": "array"
+    },
+    "pastEvents": {
+      "type": "array"
     }
   },
   "validations": [],

@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function (server) {
+module.exports = function(server) {
   /**
    * ==================================
    * DEVELOPMENT ONLY
@@ -545,19 +545,20 @@ module.exports = function (server) {
     });
   */
   /*
-    // Deal Type
-    var DealType = server.models.DealType;
-    DealType.deleteAll();
+  // Deal Type
+  var DealType = server.models.DealType;
+  DealType.deleteAll({}, function(err, info) {
     DealType.create([
       { name: "Upsells", color: "#57fac1", userId: "default" },
       { name: "New Business", color: "#5777fa", userId: "default" },
       { name: "Existing Business", color: "#fae957", userId: "default" },
       { name: "Others", color: "#caa26c", userId: "default" }
     ]);
-  
-    // Deal Stage
-    var DealStage = server.models.DealStage;
-    DealStage.deleteAll();
+  });
+
+  // Deal Stage
+  var DealStage = server.models.DealStage;
+  DealStage.deleteAll({}, function(err, info) {
     DealStage.create([
       {
         name: "Prospecting",
@@ -567,7 +568,8 @@ module.exports = function (server) {
         quotation: false,
         description:
           "This stage refers to any initial calls, conversations or emails with a potential lead.",
-        userId: "default"
+        userId: "default",
+        color: "#1482af"
       },
       {
         name: "Qualification",
@@ -576,7 +578,8 @@ module.exports = function (server) {
         invoice: false,
         quotation: false,
         description: "This stage refers to a confirmed meeting with the lead.",
-        userId: "default"
+        userId: "default",
+        color: "#1482af"
       },
       {
         name: "Proposal",
@@ -586,7 +589,8 @@ module.exports = function (server) {
         quotation: true,
         description:
           "This stage refers to any discussion on budget, proposal or issue of quotations.",
-        userId: "default"
+        userId: "default",
+        color: "#1482af"
       },
       {
         name: "Negotiation",
@@ -596,7 +600,8 @@ module.exports = function (server) {
         quotation: false,
         description:
           "This stage refers to any form of further negotiation portraying some form of buying signal after initial proposal stage.",
-        userId: "default"
+        userId: "default",
+        color: "#1482af"
       },
       {
         name: "Buying Signal",
@@ -606,7 +611,8 @@ module.exports = function (server) {
         quotation: false,
         description:
           "This stage refers to strong buying signals from the client Eg. Verbal agreement.",
-        userId: "default"
+        userId: "default",
+        color: "#1482af"
       },
       {
         name: "Closed Won",
@@ -615,7 +621,8 @@ module.exports = function (server) {
         invoice: true,
         quotation: false,
         description: "This stage refers to a successful signed sales order.",
-        userId: "default"
+        userId: "default",
+        color: "#61ce61"
       },
       {
         name: "Closed Lost",
@@ -624,11 +631,12 @@ module.exports = function (server) {
         invoice: false,
         quotation: false,
         description: "Client has declined the sales order.",
-        userId: "default"
+        userId: "default",
+        color: "#d15d5d"
       }
     ]);
+  });
   */
-
   // Countries
   /*
   var Country = server.models.BaseCountry;

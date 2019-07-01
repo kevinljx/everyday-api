@@ -152,6 +152,7 @@ module.exports = function (Company) {
           DealStage.create({
             name: element.name,
             chance: element.chance,
+            color: element.color,
             step: element.step,
             invoice: element.invoice,
             quotation: element.quotation,

@@ -6,6 +6,9 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "ShowUsers": true
+  },
   "properties": {
     "content": {
       "type": "string"

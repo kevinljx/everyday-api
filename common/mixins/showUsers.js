@@ -26,6 +26,28 @@ module.exports = function(Model, bootOptions = {}) {
           };
         }
       }
+    } else {
+      if (ctx.result.userId) {
+        var userobj = await BaseUser.findById(ctx.result.userId);
+        ctx.result.userInfo = {
+          id: userobj.id,
+          name: userobj.name
+        };
+      }
+      if (ctx.result.createdBy) {
+        var userobj = await BaseUser.findById(ctx.result.createdBy);
+        ctx.result.creatorInfo = {
+          id: userobj.id,
+          name: userobj.name
+        };
+      }
+      if (ctx.result.updatedBy) {
+        var userobj = await BaseUser.findById(ctx.result.updatedBy);
+        ctx.result.updaterInfo = {
+          id: userobj.id,
+          name: userobj.name
+        };
+      }
     }
     return;
   });

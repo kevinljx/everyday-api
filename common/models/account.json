@@ -10,7 +10,8 @@
     "Computed": {
       "properties": {
         "fullAddress": "showFullAddress",
-        "name": "showFullName"
+        "name": "showFullName",
+        "customers": "showAllCustomer"
       }
     },
     "ShowUsers": true
@@ -21,14 +22,16 @@
       "subaccount",
       "notes",
       "events",
-      "industry",
-      "customers"
+      "industry"
     ]
   },
   "properties": {
     "isActive": {
       "type": "boolean",
       "default": true
+    },
+    "customers": {
+      "type": "array"
     }
   },
   "validations": [],
@@ -71,7 +74,7 @@
       "model": "Customer",
       "foreignKey": "",
       "options": {
-        "nestRemoting": true
+        "nestRemoting": false
       }
     }
   },
