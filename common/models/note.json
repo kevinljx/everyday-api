@@ -6,9 +6,7 @@
   "options": {
     "validateUpsert": true
   },
-  "mixins": {
-    "ShowUsers": true
-  },
+  "mixins": {},
   "scope": {
     "order": "createdAt DESC"
   },
