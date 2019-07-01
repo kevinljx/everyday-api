@@ -15,7 +15,6 @@
         "deals": "showAllDeal"
       }
     },
-    "ShowUsers": true,
     "DeleteHistory": true
   },
   "scope": {

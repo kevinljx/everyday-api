@@ -13,11 +13,17 @@
         "accountInfo": "showAccountInfo"
       }
     },
-    "ShowUsers": true,
     "DeleteHistory": true
   },
   "scope": {
-    "include": ["stage", "type", "events", "notes", "source", "history"]
+    "include": [
+      "stage",
+      "type",
+      "events",
+      "notes",
+      "source",
+      "history"
+    ]
   },
   "properties": {
     "closingDate": {

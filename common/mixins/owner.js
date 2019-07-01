@@ -1,9 +1,9 @@
 'use strict';
-module.exports = function(Model, bootOptions = {}) {
-  // give each dog a unique tag for tracking
-  var bootOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+module.exports = function (Model, bootOptions = {}) {
+    // give each dog a unique tag for tracking
+    var bootOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  const options = Object.assign({
+    const options = Object.assign({
         createdBy: 'createdBy',
         updatedBy: 'updatedBy',
         userId: 'userId',
@@ -38,8 +38,34 @@ module.exports = function(Model, bootOptions = {}) {
         mongodb: {dataType: 'ObjectId'}
     });
     */
+    Model.observe('loaded', async function (ctx) {
+        const BaseUser = Model.app.models.BaseUser;
+        if (ctx.data.userId != null) {
+            var userobj = await BaseUser.findById(ctx.data.userId);
+            ctx.data.userInfo = {
+                id: userobj.id,
+                name: userobj.name
+            };
+        }
+        if (ctx.data.createdBy) {
+            var userobj = await BaseUser.findById(ctx.data.createdBy);
+            ctx.data.creatorInfo = {
+                id: userobj.id,
+                name: userobj.name
+            };
+        }
+        if (ctx.data.updatedBy) {
+            var userobj = await BaseUser.findById(ctx.data.updatedBy);
+            ctx.data.updaterInfo = {
+                id: userobj.id,
+                name: userobj.name
+            };
+        }
+        return;
+    });
+
     Model.observe('before save', function (ctx, next) {
-        
+
         var token = ctx.options && ctx.options.accessToken;
         var userId = token && token.userId;
         if (ctx.options && ctx.options.skipUpdatedBy) {
@@ -62,6 +88,6 @@ module.exports = function(Model, bootOptions = {}) {
         }
         return next();
     });
- 
+
 };
 
