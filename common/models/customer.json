@@ -18,7 +18,11 @@
     "DeleteHistory": true
   },
   "scope": {
-    "include": ["category", "notes", "events"]
+    "include": [
+      "category",
+      "notes",
+      "events"
+    ]
   },
   "properties": {
     "isActive": {
