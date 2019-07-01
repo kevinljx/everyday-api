@@ -26,7 +26,10 @@ module.exports = function (Accesssetting) {
         */
         userRights = userRights.concat(allRights);
       }
+<<<<<<< HEAD
       // console.log(userRights);
+=======
+>>>>>>> remotes/origin/eugene-crm
       return userRights;
     } catch (e) {
       console.log(e);

@@ -14,8 +14,7 @@
         "customers": "showAllCustomer",
         "deals": "showAllDeal"
       }
-    },
-    "ShowUsers": true
+    }
   },
   "scope": {
     "include": ["parent", "subaccount", "notes", "events", "industry"]
