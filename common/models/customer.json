@@ -11,14 +11,18 @@
       "properties": {
         "fullAddress": "showFullAddress",
         "name": "showFullName",
-        "accountInfo": "showAccountInfo"
+        "accountInfo": "showAccountInfo",
+        "deals": "showAllDeal"
       }
     },
-    "ShowUsers": true,
     "DeleteHistory": true
   },
   "scope": {
-    "include": ["category", "notes", "events"]
+    "include": [
+      "category",
+      "notes",
+      "events"
+    ]
   },
   "properties": {
     "isActive": {

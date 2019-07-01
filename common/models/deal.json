@@ -7,13 +7,16 @@
     "validateUpsert": true
   },
   "mixins": {
-    "ShowUsers": true,
+    "Computed": {
+      "properties": {
+        "customerInfo": "showCustomerInfo",
+        "accountInfo": "showAccountInfo"
+      }
+    },
     "DeleteHistory": true
   },
   "scope": {
     "include": [
-      "account",
-      "customer",
       "stage",
       "type",
       "events",

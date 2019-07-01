@@ -9,6 +9,9 @@
   "mixins": {
     "ShowUsers": true
   },
+  "scope": {
+    "order": "createdAt DESC"
+  },
   "properties": {
     "content": {
       "type": "string"

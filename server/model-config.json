@@ -190,6 +190,10 @@
     "dataSource": "mail",
     "public": true
   },
+  "DeletedItem": {
+    "dataSource": "everyday",
+    "public": false
+  },
   "Container": {
     "dataSource": "storage",
     "public": true
