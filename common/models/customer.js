@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function (Customer) {
+module.exports = function(Customer) {
   Customer.showFullAddress = function showFullAddress(cust) {
     var address = "";
     if (cust.baseContact && cust.baseContact._address) {
@@ -37,4 +37,36 @@ module.exports = function (Customer) {
       return { id: account.id, name: account.name };
     }
   };
+
+  Customer.showAllDeal = async function showAllDeal(cust) {
+    var allDeal = await Customer.app.models.Deal.find({
+      where: {
+        and: [{ customerId: cust.id }]
+      },
+      fields: {
+        name: true,
+        stageId: true,
+        amount: true,
+        closingDate: true,
+        type: true,
+        userInfo: true,
+        id: true
+      }
+    });
+    return allDeal;
+  };
+
+  Customer.beforeRemote("deleteById", async function(ctx) {
+    var id = ctx.req.params.id;
+    var cust = await Customer.findById(id);
+    // update all deals to remove cust
+    await Customer.app.models.Deal.updateAll(
+      { customerId: cust.id },
+      { customerId: null },
+      (err, info) => {
+        if (err) throw err;
+      }
+    );
+    return;
+  });
 };

@@ -11,7 +11,8 @@
       "properties": {
         "fullAddress": "showFullAddress",
         "name": "showFullName",
-        "accountInfo": "showAccountInfo"
+        "accountInfo": "showAccountInfo",
+        "deals": "showAllDeal"
       }
     },
     "ShowUsers": true,
