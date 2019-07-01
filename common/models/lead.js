@@ -132,7 +132,7 @@ module.exports = function(Lead) {
       Lead.destroyById(lead.id);
       return [newCust, newAcct, newDeal];
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       throw e;
     }
   };

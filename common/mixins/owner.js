@@ -14,11 +14,11 @@ module.exports = function(Model, bootOptions = {}) {
 
     if (!options.validateUpsert && Model.settings.validateUpsert) {
         Model.settings.validateUpsert = false;
-        console.log(Model.pluralModelName + ' settings.validateUpsert was overriden to false');
+        // console.log(Model.pluralModelName + ' settings.validateUpsert was overriden to false');
     }
 
     if (Model.settings.validateUpsert && options.required) {
-        console.log('Upserts for ' + Model.pluralModelName + ' will fail when\n          validation is turned on and time stamps are required');
+        // console.log('Upserts for ' + Model.pluralModelName + ' will fail when\n          validation is turned on and time stamps are required');
     }
 
     Model.defineProperty(options.createdBy, {
