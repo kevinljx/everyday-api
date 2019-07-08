@@ -92,4 +92,38 @@ module.exports = function(Customer) {
     ],
     returns: [{ arg: "updatedRecords", type: "array" }]
   });
+
+  Customer.beforeRemote("formFields", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+  Customer.formFields = async function(userId) {
+    try {
+      const leadSource = await Customer.app.models.LeadSource.find({
+        where: { userId }
+      }).map(source => {
+        return { name: source.name, value: source.id };
+      });
+      const accounts = await Customer.app.models.Account.find().map(acct => {
+        return { name: acct.name, value: acct.id };
+      });
+      const users = await Customer.app.models.BaseUser.find().map(user => {
+        return { name: user.name, value: user.id };
+      });
+
+      return { leadSource, accounts, users };
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Customer.remoteMethod("formFields", {
+    accepts: [{ arg: "userId", type: "any" }],
+    http: { path: "/formFields", verb: "get" },
+    returns: [{ arg: "fields", type: "object" }]
+  });
 };

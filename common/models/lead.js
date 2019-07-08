@@ -185,4 +185,52 @@ module.exports = function(Lead) {
     ],
     returns: [{ arg: "updatedRecords", type: "array" }]
   });
+
+  Lead.beforeRemote("formFields", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+
+  Lead.formFields = async function(userId) {
+    try {
+      const leadSource = await Lead.app.models.LeadSource.find({
+        where: { userId }
+      }).map(source => {
+        return { name: source.name, value: source.id };
+      });
+      const leadStatus = await Lead.app.models.LeadStatus.find({
+        where: { userId }
+      }).map(status => {
+        return { name: status.name, value: status.id };
+      });
+      const industry = await Lead.app.models.LeadIndustry.find({
+        where: { userId }
+      }).map(ind => {
+        return { name: ind.name, value: ind.id };
+      });
+      const leadInterest = await Lead.app.models.LeadInterestLevel.find({
+        where: { userId }
+      }).map(interest => {
+        return { name: interest.name, value: interest.level };
+      });
+      const users = await Lead.app.models.BaseUser.find().map(user => {
+        return { name: user.name, value: user.id };
+      });
+
+      return { leadSource, leadStatus, industry, leadInterest, users };
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+
+  Lead.remoteMethod("formFields", {
+    accepts: [{ arg: "userId", type: "any" }],
+    http: { path: "/formFields", verb: "get" },
+    returns: [{ arg: "fields", type: "object" }]
+  });
 };
