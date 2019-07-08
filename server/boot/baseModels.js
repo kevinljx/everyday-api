@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function(server) {
+module.exports = function (server) {
   /**
    * ==================================
    * DEVELOPMENT ONLY
@@ -545,97 +545,97 @@ module.exports = function(server) {
     });
   */
   /*
-  // Deal Type
-  var DealType = server.models.DealType;
-  DealType.deleteAll({}, function(err, info) {
-    DealType.create([
-      { name: "Upsells", color: "#57fac1", userId: "default" },
-      { name: "New Business", color: "#5777fa", userId: "default" },
-      { name: "Existing Business", color: "#fae957", userId: "default" },
-      { name: "Others", color: "#caa26c", userId: "default" }
-    ]);
-  });
-
-  // Deal Stage
-  var DealStage = server.models.DealStage;
-  DealStage.deleteAll({}, function(err, info) {
-    DealStage.create([
-      {
-        name: "Prospecting",
-        chance: 10,
-        step: 0,
-        invoice: false,
-        quotation: false,
-        description:
-          "This stage refers to any initial calls, conversations or emails with a potential lead.",
-        userId: "default",
-        color: "#1482af"
-      },
-      {
-        name: "Qualification",
-        chance: 25,
-        step: 1,
-        invoice: false,
-        quotation: false,
-        description: "This stage refers to a confirmed meeting with the lead.",
-        userId: "default",
-        color: "#1482af"
-      },
-      {
-        name: "Proposal",
-        chance: 50,
-        step: 2,
-        invoice: false,
-        quotation: true,
-        description:
-          "This stage refers to any discussion on budget, proposal or issue of quotations.",
-        userId: "default",
-        color: "#1482af"
-      },
-      {
-        name: "Negotiation",
-        chance: 70,
-        step: 3,
-        invoice: false,
-        quotation: false,
-        description:
-          "This stage refers to any form of further negotiation portraying some form of buying signal after initial proposal stage.",
-        userId: "default",
-        color: "#1482af"
-      },
-      {
-        name: "Buying Signal",
-        chance: 90,
-        step: 4,
-        invoice: false,
-        quotation: false,
-        description:
-          "This stage refers to strong buying signals from the client Eg. Verbal agreement.",
-        userId: "default",
-        color: "#1482af"
-      },
-      {
-        name: "Closed Won",
-        chance: 100,
-        step: 5,
-        invoice: true,
-        quotation: false,
-        description: "This stage refers to a successful signed sales order.",
-        userId: "default",
-        color: "#61ce61"
-      },
-      {
-        name: "Closed Lost",
-        chance: 0,
-        step: 6,
-        invoice: false,
-        quotation: false,
-        description: "Client has declined the sales order.",
-        userId: "default",
-        color: "#d15d5d"
-      }
-    ]);
-  });
+    // Deal Type
+    var DealType = server.models.DealType;
+    DealType.deleteAll({}, function (err, info) {
+      DealType.create([
+        { name: "Upsells", color: "#57fac1", userId: "default" },
+        { name: "New Business", color: "#5777fa", userId: "default" },
+        { name: "Existing Business", color: "#fae957", userId: "default" },
+        { name: "Others", color: "#caa26c", userId: "default" }
+      ]);
+    });
+  
+    // Deal Stage
+    var DealStage = server.models.DealStage;
+    DealStage.deleteAll({}, function (err, info) {
+      DealStage.create([
+        {
+          name: "Prospecting",
+          chance: 10,
+          step: 0,
+          invoice: false,
+          quotation: false,
+          description:
+            "This stage refers to any initial calls, conversations or emails with a potential lead.",
+          userId: "default",
+          color: "#1482af"
+        },
+        {
+          name: "Qualification",
+          chance: 25,
+          step: 1,
+          invoice: false,
+          quotation: false,
+          description: "This stage refers to a confirmed meeting with the lead.",
+          userId: "default",
+          color: "#1482af"
+        },
+        {
+          name: "Proposal",
+          chance: 50,
+          step: 2,
+          invoice: false,
+          quotation: true,
+          description:
+            "This stage refers to any discussion on budget, proposal or issue of quotations.",
+          userId: "default",
+          color: "#1482af"
+        },
+        {
+          name: "Negotiation",
+          chance: 70,
+          step: 3,
+          invoice: false,
+          quotation: false,
+          description:
+            "This stage refers to any form of further negotiation portraying some form of buying signal after initial proposal stage.",
+          userId: "default",
+          color: "#1482af"
+        },
+        {
+          name: "Buying Signal",
+          chance: 90,
+          step: 4,
+          invoice: false,
+          quotation: false,
+          description:
+            "This stage refers to strong buying signals from the client Eg. Verbal agreement.",
+          userId: "default",
+          color: "#1482af"
+        },
+        {
+          name: "Closed Won",
+          chance: 100,
+          step: 5,
+          invoice: true,
+          quotation: false,
+          description: "This stage refers to a successful signed sales order.",
+          userId: "default",
+          color: "#61ce61"
+        },
+        {
+          name: "Closed Lost",
+          chance: 0,
+          step: 6,
+          invoice: false,
+          quotation: false,
+          description: "Client has declined the sales order.",
+          userId: "default",
+          color: "#d15d5d"
+        }
+      ]);
+    });
   */
   // Countries
   /*

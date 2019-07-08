@@ -148,7 +148,7 @@ module.exports = function(Account) {
   Account.formFields = async function(userId) {
     try {
       const industry = await Account.app.models.LeadIndustry.find({
-        where: { userId }
+        userId
       }).map(ind => {
         return { name: ind.name, value: ind.id };
       });

@@ -197,23 +197,23 @@ module.exports = function(Lead) {
 
   Lead.formFields = async function(userId) {
     try {
-      const leadSource = await Lead.app.models.LeadSource.find({
-        where: { userId }
-      }).map(source => {
-        return { name: source.name, value: source.id };
-      });
-      const leadStatus = await Lead.app.models.LeadStatus.find({
-        where: { userId }
-      }).map(status => {
-        return { name: status.name, value: status.id };
-      });
-      const industry = await Lead.app.models.LeadIndustry.find({
-        where: { userId }
-      }).map(ind => {
-        return { name: ind.name, value: ind.id };
-      });
+      const leadSource = await Lead.app.models.LeadSource.find({ userId }).map(
+        source => {
+          return { name: source.name, value: source.id };
+        }
+      );
+      const leadStatus = await Lead.app.models.LeadStatus.find({ userId }).map(
+        status => {
+          return { name: status.name, value: status.id };
+        }
+      );
+      const industry = await Lead.app.models.LeadIndustry.find({ userId }).map(
+        ind => {
+          return { name: ind.name, value: ind.id };
+        }
+      );
       const leadInterest = await Lead.app.models.LeadInterestLevel.find({
-        where: { userId }
+        userId
       }).map(interest => {
         return { name: interest.name, value: interest.level };
       });

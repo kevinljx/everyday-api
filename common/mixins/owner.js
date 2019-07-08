@@ -50,28 +50,26 @@ module.exports = function(Model, bootOptions = {}) {
     */
   Model.observe("loaded", async function(ctx) {
     const BaseUser = Model.app.models.BaseUser;
-    if (!ctx.data) {
-      if (ctx.data.userId != null) {
-        var userobj = await BaseUser.findById(ctx.data.userId);
-        ctx.data.userInfo = {
-          id: userobj.id,
-          name: userobj.name
-        };
-      }
-      if (ctx.data.createdBy) {
-        var userobj = await BaseUser.findById(ctx.data.createdBy);
-        ctx.data.creatorInfo = {
-          id: userobj.id,
-          name: userobj.name
-        };
-      }
-      if (ctx.data.updatedBy) {
-        var userobj = await BaseUser.findById(ctx.data.updatedBy);
-        ctx.data.updaterInfo = {
-          id: userobj.id,
-          name: userobj.name
-        };
-      }
+    if (ctx.data.userId != null && typeof ctx.data.userId != "string") {
+      var userobj = await BaseUser.findById(ctx.data.userId);
+      ctx.data.userInfo = {
+        id: userobj.id,
+        name: userobj.name
+      };
+    }
+    if (ctx.data.createdBy) {
+      var userobj = await BaseUser.findById(ctx.data.createdBy);
+      ctx.data.creatorInfo = {
+        id: userobj.id,
+        name: userobj.name
+      };
+    }
+    if (ctx.data.updatedBy) {
+      var userobj = await BaseUser.findById(ctx.data.updatedBy);
+      ctx.data.updaterInfo = {
+        id: userobj.id,
+        name: userobj.name
+      };
     }
     return;
   });

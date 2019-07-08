@@ -104,13 +104,15 @@ module.exports = function(Customer) {
   Customer.formFields = async function(userId) {
     try {
       const leadSource = await Customer.app.models.LeadSource.find({
-        where: { userId }
+        userId
       }).map(source => {
         return { name: source.name, value: source.id };
       });
-      const accounts = await Customer.app.models.Account.find().map(acct => {
-        return { name: acct.name, value: acct.id };
-      });
+      const accounts = await Customer.app.models.Account.find({ userId }).map(
+        acct => {
+          return { name: acct.name, value: acct.id };
+        }
+      );
       const users = await Customer.app.models.BaseUser.find().map(user => {
         return { name: user.name, value: user.id };
       });

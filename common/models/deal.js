@@ -113,26 +113,34 @@ module.exports = function(Deal) {
   });
   Deal.formFields = async function(userId) {
     try {
-      const leadSource = await Deal.app.models.LeadSource.find({
-        where: { userId }
-      }).map(source => {
-        return { name: source.name, value: source.id };
-      });
-      const dealStage = await Deal.app.models.DealStage.find().map(stage => {
-        return { name: stage.name, value: stage.id };
-      });
-      const dealType = await Deal.app.models.DealType.find().map(type => {
-        return { name: type.name, value: type.id };
-      });
+      const leadSource = await Deal.app.models.LeadSource.find({ userId }).map(
+        source => {
+          return { name: source.name, value: source.id };
+        }
+      );
+      const dealStage = await Deal.app.models.DealStage.find({ userId }).map(
+        stage => {
+          return { name: stage.name, value: stage.id };
+        }
+      );
+      const dealType = await Deal.app.models.DealType.find({ userId }).map(
+        type => {
+          return { name: type.name, value: type.id };
+        }
+      );
       const users = await Deal.app.models.BaseUser.find().map(user => {
         return { name: user.name, value: user.id };
       });
-      const accounts = await Deal.app.models.Account.find().map(acct => {
-        return { name: acct.name, value: acct.id };
-      });
-      const customers = await Deal.app.models.Customer.find().map(cust => {
-        return { name: cust.name, value: cust.id };
-      });
+      const accounts = await Deal.app.models.Account.find({ userId }).map(
+        acct => {
+          return { name: acct.name, value: acct.id };
+        }
+      );
+      const customers = await Deal.app.models.Customer.find({ userId }).map(
+        cust => {
+          return { name: cust.name, value: cust.id };
+        }
+      );
 
       return { leadSource, dealStage, dealType, users, accounts, customers };
     } catch (e) {
