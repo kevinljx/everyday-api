@@ -13,15 +13,13 @@
     },
     "quantity": {
       "type": "number",
-      "required": true,
       "default": 1
     },
     "discount": {
       "type": "number"
     },
     "unit_price": {
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "subtotal": {
       "type": "number"
