@@ -88,7 +88,6 @@ module.exports = function(Lead) {
 
       var acct;
       if (!existingAccountId) {
-        console.log("---acct dont exist");
         // No Account Id - create new account
         var acctBaseContact = lead.baseContact;
         acctBaseContact.name = lead.companyName;
@@ -162,5 +161,28 @@ module.exports = function(Lead) {
       { arg: "newAcct", type: "object" },
       { arg: "newDeal", type: "object" }
     ]
+  });
+
+  Lead.transfer = async function(leadIds, newOwner) {
+    try {
+      let updatedRecords = [];
+      for (const leadId of leadIds) {
+        await Lead.updateAll({ id: leadId }, { userId: newOwner });
+        var updatedLead = await Lead.findById(leadId);
+        updatedRecords.push(updatedLead);
+      }
+      return updatedRecords;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+
+  Lead.remoteMethod("transfer", {
+    accepts: [
+      { arg: "leadIds", type: "array", required: true },
+      { arg: "newOwner", type: "string", required: true }
+    ],
+    returns: [{ arg: "updatedRecords", type: "array" }]
   });
 };

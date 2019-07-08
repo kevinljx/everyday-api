@@ -111,4 +111,27 @@ module.exports = function(Account) {
     accepts: [{ arg: "accountName", type: "string", required: true }],
     returns: [{ arg: "count", type: "number" }, { arg: "data", type: "array" }]
   });
+
+  Account.transfer = async function(acctIds, newOwner) {
+    try {
+      let updatedRecords = [];
+      for (const acctId of acctIds) {
+        await Account.updateAll({ id: acctId }, { userId: newOwner });
+        var updatedAcct = await Account.findById(acctId);
+        updatedRecords.push(updatedAcct);
+      }
+      return updatedRecords;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+
+  Account.remoteMethod("transfer", {
+    accepts: [
+      { arg: "acctIds", type: "array", required: true },
+      { arg: "newOwner", type: "string", required: true }
+    ],
+    returns: [{ arg: "updatedRecords", type: "array" }]
+  });
 };

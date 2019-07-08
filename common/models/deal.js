@@ -78,4 +78,27 @@ module.exports = function(Deal) {
       return { name: acct.name, id: acct.id };
     }
   };
+
+  Deal.transfer = async function(dealIds, newOwner) {
+    try {
+      let updatedRecords = [];
+      for (const dealId of dealIds) {
+        await Deal.updateAll({ id: dealId }, { userId: newOwner });
+        var updatedDeal = await Deal.findById(dealId);
+        updatedRecords.push(updatedDeal);
+      }
+      return updatedRecords;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+
+  Deal.remoteMethod("transfer", {
+    accepts: [
+      { arg: "dealIds", type: "array", required: true },
+      { arg: "newOwner", type: "string", required: true }
+    ],
+    returns: [{ arg: "updatedRecords", type: "array" }]
+  });
 };
