@@ -40,7 +40,7 @@ module.exports = function (Model, bootOptions = {}) {
     */
     Model.observe('loaded', async function (ctx) {
         const BaseUser = Model.app.models.BaseUser;
-        if (ctx.data.userId != null) {
+        if (ctx.data.userId != null && typeof ctx.data.userId != "string") {
             var userobj = await BaseUser.findById(ctx.data.userId);
             ctx.data.userInfo = {
                 id: userobj.id,

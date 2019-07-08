@@ -6,7 +6,11 @@ module.exports = function (Basemodel) {
     Basemodel.observe('access', async function (ctx) {
         var token = ctx.options && ctx.options.accessToken;
         var userId = token && token.userId;
-        if (!userId) return;  // no access token, internal or test request;
+        if (!userId) {
+            if (ctx.query.userId != null) {
+                userId = ctx.query.userId;
+            }
+        }  // no access token, internal or test request;
         var whereClause = { userId: userId };
 
         var AccessSetting = Basemodel.app.models.AccessSetting;
