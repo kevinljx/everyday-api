@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function(Lead) {
+module.exports = function (Lead) {
   Lead.showFullAddress = function showFullAddress(lead) {
     var address = "";
     if (lead.baseContact) {
@@ -67,7 +67,7 @@ module.exports = function(Lead) {
     return allPast;
   };
 
-  Lead.beforeRemote("convert", async function(ctx) {
+  Lead.beforeRemote("convert", async function (ctx) {
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
     if (userId) {
@@ -76,7 +76,7 @@ module.exports = function(Lead) {
     return;
   });
 
-  Lead.convert = async function(
+  Lead.convert = async function (
     leadID,
     dealDetails,
     existingAccountId,
@@ -163,26 +163,29 @@ module.exports = function(Lead) {
     ]
   });
 
-  Lead.transfer = async function(leadIds, newOwner) {
-    try {
-      let updatedRecords = [];
-      for (const leadId of leadIds) {
-        await Lead.updateAll({ id: leadId }, { userId: newOwner });
-        var updatedLead = await Lead.findById(leadId);
-        updatedRecords.push(updatedLead);
-      }
-      return updatedRecords;
-    } catch (e) {
-      console.log(e);
-      throw e;
+  /*
+  Lead.beforeRemote("formfields", async function (ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
     }
-  };
-
-  Lead.remoteMethod("transfer", {
-    accepts: [
-      { arg: "leadIds", type: "array", required: true },
-      { arg: "newOwner", type: "string", required: true }
-    ],
-    returns: [{ arg: "updatedRecords", type: "array" }]
+    return;
   });
+
+  Lead.formfields = async function (userId) {
+    var sources = await Lead.app.models.LeadSource.find({ userId: userId });
+    var industry = await Lead.app.models.LeadIndustry.find({ userId: userId });
+    return [sources, industry];
+  }
+
+  Lead.remoteMethod("formfields", {
+    accepts: { arg: "userId", type: "any" },
+    http: { verb: "get" },
+    returns: [
+      { arg: "sources", type: "object" },
+      { arg: "industry", type: "object" }
+    ]
+  })
+  */
 };
