@@ -6,6 +6,11 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Quotation": {
+      "quoteID": "quoteID"
+    }
+  },
   "properties": {
     "date": {
       "type": "date"
@@ -15,16 +20,17 @@
     },
     "state": {
       "type": "string",
-      "default": "draft"
+      "default": "Draft"
     },
     "sent_date": {
-      "type": "date"
+      "type": "date",
+      "default": "$now"
     },
     "tnc": {
       "type": "string"
     },
     "currency": {
-      "type": "string"
+      "type": "object"
     },
     "currency_rate": {
       "type": "number"
@@ -80,15 +86,6 @@
       "type": "belongsTo",
       "model": "DiscountSetting",
       "foreignKey": ""
-    },
-    "lines": {
-      "type": "embedsMany",
-      "model": "QuotationLine",
-      "property": "quotationline",
-      "options": {
-        "validate": true,
-        "forceId": false
-      }
     },
     "events": {
       "type": "hasMany",
