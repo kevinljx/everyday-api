@@ -78,6 +78,29 @@ module.exports = function(Deal) {
       return { name: acct.name, id: acct.id };
     }
   };
+  Deal.showStageInfo = async function showStageInfo(deal) {
+    if (deal.stageId) {
+      var stage = await Deal.app.models.DealStage.findById(deal.stageId);
+      return {
+        id: stage.id,
+        name: stage.name,
+        chance: stage.chance,
+        color: stage.color
+      };
+    }
+  };
+  Deal.showSourceInfo = async function showSourceInfo(deal) {
+    if (deal.sourceId) {
+      var source = await Deal.app.models.LeadSource.findById(deal.sourceId);
+      return { id: source.id, name: source.name, color: source.color };
+    }
+  };
+  Deal.showTypeInfo = async function showTypeInfo(deal) {
+    if (deal.typeId) {
+      var type = await Deal.app.models.DealType.findById(deal.typeId);
+      return { id: type.id, name: type.name, color: type.color };
+    }
+  };
 
   // Transfer Record
   Deal.transfer = async function(dealIds, newOwner) {
@@ -152,5 +175,191 @@ module.exports = function(Deal) {
     accepts: [{ arg: "userId", type: "any" }],
     http: { path: "/formFields", verb: "get" },
     returns: [{ arg: "fields", type: "object" }]
+  });
+
+  //===============
+  // Reports
+  //===============
+
+  /**
+   * Deals by owner
+   */
+  Deal.beforeRemote("dealsByOwner", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+  Deal.dealsByOwner = async function(startDate, endDate, userId) {
+    try {
+      var data = [];
+      const companyUsers = await Deal.app.models.BaseUser.find();
+      for (let i = 0; i < companyUsers.length; i++) {
+        var userReport = {};
+        userReport.name = companyUsers[i].name;
+        var deals = await Deal.find(
+          {
+            where: {
+              and: [
+                { createdAt: { between: [startDate, endDate] } },
+                { userId: companyUsers[i].id }
+              ]
+            }
+          },
+          userId
+        ).map(deal => ({
+          name: deal.name,
+          amount: deal.amount,
+          closingDate: deal.closingDate,
+          userInfo: deal.userInfo.name,
+          stage: deal.stageInfo.name,
+          chance: deal.stageInfo.chance,
+          accountInfo: deal.accountInfo.name
+        }));
+        userReport.totalDeals = deals.length;
+        userReport.totalAmount = deals.reduce(function(a, b) {
+          return a + b["amount"];
+        }, 0);
+        userReport.deals = deals;
+        data.push(userReport);
+      }
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Deal.remoteMethod("dealsByOwner", {
+    accepts: [
+      { arg: "startDate", type: "date", required: true },
+      { arg: "endDate", type: "date", required: true },
+      { arg: "userId", type: "any" }
+    ],
+    http: { path: "/reports/dealsbyowner" },
+    returns: [{ arg: "data", type: "array" }]
+  });
+
+  /**
+   * Deals by type
+   */
+  Deal.beforeRemote("dealsByType", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+  Deal.dealsByType = async function(startDate, endDate, userId) {
+    try {
+      var data = [];
+      const type = await Deal.app.models.DealType.find({ userId });
+      for (let i = 0; i < type.length; i++) {
+        var typeReport = {};
+        typeReport.name = type[i].name;
+        typeReport.color = type[i].color;
+        var deals = await Deal.find(
+          {
+            where: {
+              and: [
+                { createdAt: { between: [startDate, endDate] } },
+                { typeId: type[i].id }
+              ]
+            }
+          },
+          userId
+        ).map(deal => ({
+          name: deal.name,
+          amount: deal.amount,
+          closingDate: deal.closingDate,
+          userInfo: deal.userInfo.name,
+          stage: deal.stageInfo.name,
+          chance: deal.stageInfo.chance,
+          accountInfo: deal.accountInfo.name
+        }));
+        typeReport.totalDeals = deals.length;
+        typeReport.totalAmount = deals.reduce(function(a, b) {
+          return a + b["amount"];
+        }, 0);
+        typeReport.deals = deals;
+        data.push(typeReport);
+      }
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Deal.remoteMethod("dealsByType", {
+    accepts: [
+      { arg: "startDate", type: "date", required: true },
+      { arg: "endDate", type: "date", required: true },
+      { arg: "userId", type: "any" }
+    ],
+    http: { path: "/reports/dealsbytype" },
+    returns: [{ arg: "data", type: "array" }]
+  });
+
+  /**
+   * Deals Pipeline
+   */
+  Deal.beforeRemote("dealsPipeline", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+  Deal.dealsPipeline = async function(startDate, endDate, userId) {
+    try {
+      var data = [];
+      const stage = await Deal.app.models.DealStage.find({ userId });
+      for (let i = 0; i < stage.length; i++) {
+        var pipelineReport = {};
+        pipelineReport.name = `${stage[i].name} - ${stage[i].chance}%`;
+        var deals = await Deal.find(
+          {
+            where: {
+              and: [
+                { createdAt: { between: [startDate, endDate] } },
+                { stageId: stage[i].id }
+              ]
+            }
+          },
+          userId
+        ).map(deal => ({
+          name: deal.name,
+          amount: deal.amount,
+          closingDate: deal.closingDate,
+          userInfo: deal.userInfo.name,
+          source: deal.sourceInfo && deal.sourceInfo.name,
+          type: deal.typeInfo && deal.typeInfo.name,
+          chance: deal.stageInfo.chance,
+          accountInfo: deal.accountInfo.name
+        }));
+        pipelineReport.totalDeals = deals.length;
+        pipelineReport.totalAmount = deals.reduce(function(a, b) {
+          return a + b["amount"];
+        }, 0);
+        pipelineReport.deals = deals;
+        data.push(pipelineReport);
+      }
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Deal.remoteMethod("dealsPipeline", {
+    accepts: [
+      { arg: "startDate", type: "date", required: true },
+      { arg: "endDate", type: "date", required: true },
+      { arg: "userId", type: "any" }
+    ],
+    http: { path: "/reports/dealspipeline" },
+    returns: [{ arg: "data", type: "array" }]
   });
 };
