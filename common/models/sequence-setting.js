@@ -1,5 +1,7 @@
 'use strict';
 
-module.exports = function(Sequencesetting) {
-    
+module.exports = function (Sequencesetting) {
+
+
+
 };

@@ -68,7 +68,7 @@ module.exports = function (app) {
         if (context.accessType == "READ") {
           methodName = "read";
         }
-        else if (methodName.includes("update")) {
+        else if (methodName.includes("update") || context.accessType == "WRITE") {
           methodName = "update";
         }
         else if (methodName.includes("destroy")) {

@@ -26,7 +26,7 @@ module.exports = function (Accesssetting) {
         */
         userRights = userRights.concat(allRights);
       }
-      console.log(userRights);
+      //console.log(userRights);
       return userRights;
     } catch (e) {
       console.log(e);
@@ -145,6 +145,7 @@ module.exports = function (Accesssetting) {
           if (String(rl.id) == grpRoles[i].accessRoleId) {
             var roleData = {
               id: grpRoles[i].id,
+              roleId: rl.id,
               name: rl.name,
               tier: grpRoles[i].tier
             };

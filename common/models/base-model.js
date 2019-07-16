@@ -10,6 +10,9 @@ module.exports = function (Basemodel) {
             if (ctx.query.userId != null) {
                 userId = ctx.query.userId;
             }
+            else {
+                return;
+            }
         }  // no access token, internal or test request;
         var whereClause = { userId: userId };
 
