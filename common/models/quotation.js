@@ -2,8 +2,6 @@
 
 module.exports = function(Quotation) {
 
-
-
     // Deep cloning the last mongo Object into object and resave as new entry
     Quotation.convert = async function (data) {
         let quotation = await Quotation.findById(data.id)
