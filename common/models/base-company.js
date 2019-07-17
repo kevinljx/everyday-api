@@ -46,8 +46,10 @@ module.exports = function (Company) {
           });
         }
 
-        //user info
-        var name = email;
+        // user info
+        // { firstName: 'Hello', lastName: 'World' }
+        var name = userInfo.lastName + " " + userInfo.firstName;
+
         if (userInfo == null) {
           userInfo = { email: email };
         } else {
@@ -55,7 +57,7 @@ module.exports = function (Company) {
             userInfo.email = email;
           }
           if (userInfo.hasOwnProperty("name")) {
-            name = userInfo.name;
+            name = userInfo.lastName + " " + userInfo.firstName;;
           }
         }
 

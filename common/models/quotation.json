@@ -11,9 +11,18 @@
       "quoteID": "quoteID"
     }
   },
+  "scope": {
+    "include": [
+      "notes"
+    ]
+  },
   "properties": {
     "date": {
       "type": "date"
+    },
+    "latest": {
+      "type": "boolean",
+      "default": true
     },
     "quote_days": {
       "type": "number"
@@ -29,6 +38,9 @@
     "tnc": {
       "type": "string"
     },
+    "quoteID": {
+      "type": "string"
+    },
     "currency": {
       "type": "object"
     },
@@ -36,7 +48,8 @@
       "type": "number"
     },
     "version": {
-      "type": "number"
+      "type": "number",
+      "default": 1
     },
     "subtotal": {
       "type": "number"
