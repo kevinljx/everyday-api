@@ -186,7 +186,7 @@ module.exports = function (Company) {
 
   Company.afterRemote("signup", function (context, user, next) {
     var BaseUser = Company.app.models.BaseUser;
-    /*
+    
     var options = {
       type: "email",
       // to: context.args.email,
@@ -206,7 +206,7 @@ module.exports = function (Company) {
       }
       // No error, send new user email verification
     });
-    */
+    
     next();
   });
 };

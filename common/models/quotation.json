@@ -8,8 +8,7 @@
   },
   "properties": {
     "date": {
-      "type": "date",
-      "required": true
+      "type": "date"
     },
     "quote_days": {
       "type": "number"
