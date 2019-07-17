@@ -12,7 +12,8 @@
         "fullAddress": "showFullAddress",
         "name": "showFullName",
         "customers": "showAllCustomer",
-        "deals": "showAllDeal"
+        "deals": "showAllDeal",
+        "industryInfo": "showIndustryInfo"
       }
     }
   },
@@ -21,8 +22,7 @@
       "parent",
       "subaccount",
       "notes",
-      "events",
-      "industry"
+      "events"
     ]
   },
   "properties": {

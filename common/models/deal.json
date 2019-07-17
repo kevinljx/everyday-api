@@ -10,18 +10,18 @@
     "Computed": {
       "properties": {
         "customerInfo": "showCustomerInfo",
-        "accountInfo": "showAccountInfo"
+        "accountInfo": "showAccountInfo",
+        "stageInfo": "showStageInfo",
+        "sourceInfo": "showSourceInfo",
+        "typeInfo": "showTypeInfo"
       }
     },
     "DeleteHistory": true
   },
   "scope": {
     "include": [
-      "stage",
-      "type",
       "events",
       "notes",
-      "source",
       "history"
     ]
   },

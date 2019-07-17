@@ -7,7 +7,7 @@
     "validateUpsert": true
   },
   "properties": {
-    "title":{
+    "title": {
       "type": "string",
       "required": true
     },
@@ -34,7 +34,6 @@
       "default": false
     }
   },
-    
   "validations": [],
   "relations": {
     "eventable": {
@@ -42,7 +41,6 @@
       "polymorphic": true
     }
   },
-  "acls":[],
- 
+  "acls": [],
   "methods": {}
 }

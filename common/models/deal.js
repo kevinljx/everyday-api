@@ -48,8 +48,8 @@ module.exports = function(Deal) {
       });
       // change Stage
       var deal = await BaseDeal.patchAttributes({ stageId: stageID });
-      //var data = await Deal.findById(deal.id);
-      return deal;
+      var data = await Deal.findById(deal.id);
+      return data;
     } catch (e) {
       console.log(e);
       throw e;
@@ -67,9 +67,7 @@ module.exports = function(Deal) {
   Deal.showCustomerInfo = async function showCustomerInfo(deal) {
     if (deal.customerId) {
       var customer = await Deal.app.models.Customer.findById(deal.customerId);
-      if (customer) {
-        return { name: customer.name, id: customer.id };
-      }
+      return { name: customer.name, id: customer.id };
     }
   };
   Deal.showAccountInfo = async function showAccountInfo(deal) {
@@ -78,8 +76,30 @@ module.exports = function(Deal) {
       return { name: acct.name, id: acct.id };
     }
   };
+  Deal.showStageInfo = async function showStageInfo(deal) {
+    if (deal.stageId) {
+      var stage = await Deal.app.models.DealStage.findById(deal.stageId);
+      return {
+        name: stage.name,
+        chance: stage.chance,
+        color: stage.color,
+        step: stage.step
+      };
+    }
+  };
+  Deal.showSourceInfo = async function showSourceInfo(deal) {
+    if (deal.sourceId) {
+      var source = await Deal.app.models.LeadSource.findById(deal.sourceId);
+      return { name: source.name, color: source.color };
+    }
+  };
+  Deal.showTypeInfo = async function showTypeInfo(deal) {
+    if (deal.typeId) {
+      var type = await Deal.app.models.DealType.findById(deal.typeId);
+      return { name: type.name, color: type.color };
+    }
+  };
 
-  // Transfer Record
   Deal.transfer = async function(dealIds, newOwner) {
     try {
       let updatedRecords = [];
@@ -94,63 +114,12 @@ module.exports = function(Deal) {
       throw e;
     }
   };
+
   Deal.remoteMethod("transfer", {
     accepts: [
       { arg: "dealIds", type: "array", required: true },
       { arg: "newOwner", type: "string", required: true }
     ],
     returns: [{ arg: "updatedRecords", type: "array" }]
-  });
-
-  // Get Form Fields
-  Deal.beforeRemote("formFields", async function(ctx) {
-    var token = ctx.req.accessToken;
-    var userId = token && token.userId;
-    if (userId) {
-      ctx.args.userId = userId;
-    }
-    return;
-  });
-  Deal.formFields = async function(userId) {
-    try {
-      const leadSource = await Deal.app.models.LeadSource.find({ userId }).map(
-        source => {
-          return { name: source.name, value: source.id };
-        }
-      );
-      const dealStage = await Deal.app.models.DealStage.find({ userId }).map(
-        stage => {
-          return { name: stage.name, value: stage.id };
-        }
-      );
-      const dealType = await Deal.app.models.DealType.find({ userId }).map(
-        type => {
-          return { name: type.name, value: type.id };
-        }
-      );
-      const users = await Deal.app.models.BaseUser.find().map(user => {
-        return { name: user.name, value: user.id };
-      });
-      const accounts = await Deal.app.models.Account.find({ userId }).map(
-        acct => {
-          return { name: acct.name, value: acct.id };
-        }
-      );
-      const customers = await Deal.app.models.Customer.find({ userId }).map(
-        cust => {
-          return { name: cust.name, value: cust.id };
-        }
-      );
-
-      return { leadSource, dealStage, dealType, users, accounts, customers };
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
-  Deal.remoteMethod("formFields", {
-    accepts: [{ arg: "userId", type: "any" }],
-    http: { path: "/formFields", verb: "get" },
-    returns: [{ arg: "fields", type: "object" }]
   });
 };

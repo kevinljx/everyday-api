@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function(Lead) {
+module.exports = function (Lead) {
   Lead.showFullAddress = function showFullAddress(lead) {
     var address = "";
     if (lead.baseContact) {
@@ -29,8 +29,25 @@ module.exports = function(Lead) {
     if (lead.baseContact) {
       fullName = lead.baseContact.firstName + " " + lead.baseContact.lastName;
     }
-
     return fullName;
+  };
+  Lead.showSourceInfo = async function showSourceInfo(lead) {
+    if (lead.sourceId) {
+      var source = await Lead.app.models.LeadSource.findById(lead.sourceId);
+      return { name: source.name, color: source.color };
+    }
+  };
+  Lead.showStatusInfo = async function showStatusInfo(lead) {
+    if (lead.statusId) {
+      var status = await Lead.app.models.LeadStatus.findById(lead.statusId);
+      return { name: status.name, color: status.color };
+    }
+  };
+  Lead.showIndustryInfo = async function showIndustryInfo(lead) {
+    if (lead.industryId) {
+      var ind = await Lead.app.models.LeadIndustry.findById(lead.industryId);
+      return ind.name;
+    }
   };
 
   Lead.showUpcoming = async function showUpcoming(lead) {
@@ -67,7 +84,7 @@ module.exports = function(Lead) {
     return allPast;
   };
 
-  Lead.beforeRemote("convert", async function(ctx) {
+  Lead.beforeRemote("convert", async function (ctx) {
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
     if (userId) {
@@ -76,7 +93,7 @@ module.exports = function(Lead) {
     return;
   });
 
-  Lead.convert = async function(
+  Lead.convert = async function (
     leadID,
     dealDetails,
     existingAccountId,
@@ -143,7 +160,7 @@ module.exports = function(Lead) {
       Lead.destroyById(lead.id);
       return [newCust, newAcct, newDeal];
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       throw e;
     }
   };
@@ -152,7 +169,7 @@ module.exports = function(Lead) {
     accepts: [
       { arg: "id", type: "string", required: true },
       { arg: "dealDetails", type: "any", required: false },
-      { arg: "existingAccountId", type: "string" },
+      { arg: "existingAccountId", type: "any" },
       { arg: "userId", type: "any" }
     ],
     http: { path: "/convert/:id", verb: "post" },
@@ -163,30 +180,8 @@ module.exports = function(Lead) {
     ]
   });
 
-  Lead.transfer = async function(leadIds, newOwner) {
-    try {
-      let updatedRecords = [];
-      for (const leadId of leadIds) {
-        await Lead.updateAll({ id: leadId }, { userId: newOwner });
-        var updatedLead = await Lead.findById(leadId);
-        updatedRecords.push(updatedLead);
-      }
-      return updatedRecords;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
-
-  Lead.remoteMethod("transfer", {
-    accepts: [
-      { arg: "leadIds", type: "array", required: true },
-      { arg: "newOwner", type: "string", required: true }
-    ],
-    returns: [{ arg: "updatedRecords", type: "array" }]
-  });
-
-  Lead.beforeRemote("formFields", async function(ctx) {
+  /*
+  Lead.beforeRemote("formfields", async function (ctx) {
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
     if (userId) {
@@ -195,42 +190,19 @@ module.exports = function(Lead) {
     return;
   });
 
-  Lead.formFields = async function(userId) {
-    try {
-      const leadSource = await Lead.app.models.LeadSource.find({ userId }).map(
-        source => {
-          return { name: source.name, value: source.id };
-        }
-      );
-      const leadStatus = await Lead.app.models.LeadStatus.find({ userId }).map(
-        status => {
-          return { name: status.name, value: status.id };
-        }
-      );
-      const industry = await Lead.app.models.LeadIndustry.find({ userId }).map(
-        ind => {
-          return { name: ind.name, value: ind.id };
-        }
-      );
-      const leadInterest = await Lead.app.models.LeadInterestLevel.find({
-        userId
-      }).map(interest => {
-        return { name: interest.name, value: interest.level };
-      });
-      const users = await Lead.app.models.BaseUser.find().map(user => {
-        return { name: user.name, value: user.id };
-      });
+  Lead.formfields = async function (userId) {
+    var sources = await Lead.app.models.LeadSource.find({ userId: userId });
+    var industry = await Lead.app.models.LeadIndustry.find({ userId: userId });
+    return [sources, industry];
+  }
 
-      return { leadSource, leadStatus, industry, leadInterest, users };
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
-
-  Lead.remoteMethod("formFields", {
-    accepts: [{ arg: "userId", type: "any" }],
-    http: { path: "/formFields", verb: "get" },
-    returns: [{ arg: "fields", type: "object" }]
-  });
+  Lead.remoteMethod("formfields", {
+    accepts: { arg: "userId", type: "any" },
+    http: { verb: "get" },
+    returns: [
+      { arg: "sources", type: "object" },
+      { arg: "industry", type: "object" }
+    ]
+  })
+  */
 };

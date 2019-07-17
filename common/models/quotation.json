@@ -19,10 +19,13 @@
   "properties": {
     "date": {
       "type": "date"
+<<<<<<< HEAD
     },
     "latest": {
       "type": "boolean",
       "default": true
+=======
+>>>>>>> 93fc3b1f765190bc46df1b074197056c63b923fe
     },
     "quote_days": {
       "type": "number"
