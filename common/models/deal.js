@@ -48,8 +48,8 @@ module.exports = function(Deal) {
       });
       // change Stage
       var deal = await BaseDeal.patchAttributes({ stageId: stageID });
-      //var data = await Deal.findById(deal.id);
-      return deal;
+      var data = await Deal.findById(deal.id);
+      return data;
     } catch (e) {
       console.log(e);
       throw e;
@@ -67,9 +67,7 @@ module.exports = function(Deal) {
   Deal.showCustomerInfo = async function showCustomerInfo(deal) {
     if (deal.customerId) {
       var customer = await Deal.app.models.Customer.findById(deal.customerId);
-      if (customer) {
-        return { name: customer.name, id: customer.id };
-      }
+      return { name: customer.name, id: customer.id };
     }
   };
   Deal.showAccountInfo = async function showAccountInfo(deal) {
@@ -78,4 +76,50 @@ module.exports = function(Deal) {
       return { name: acct.name, id: acct.id };
     }
   };
+  Deal.showStageInfo = async function showStageInfo(deal) {
+    if (deal.stageId) {
+      var stage = await Deal.app.models.DealStage.findById(deal.stageId);
+      return {
+        name: stage.name,
+        chance: stage.chance,
+        color: stage.color,
+        step: stage.step
+      };
+    }
+  };
+  Deal.showSourceInfo = async function showSourceInfo(deal) {
+    if (deal.sourceId) {
+      var source = await Deal.app.models.LeadSource.findById(deal.sourceId);
+      return { name: source.name, color: source.color };
+    }
+  };
+  Deal.showTypeInfo = async function showTypeInfo(deal) {
+    if (deal.typeId) {
+      var type = await Deal.app.models.DealType.findById(deal.typeId);
+      return { name: type.name, color: type.color };
+    }
+  };
+
+  Deal.transfer = async function(dealIds, newOwner) {
+    try {
+      let updatedRecords = [];
+      for (const dealId of dealIds) {
+        await Deal.updateAll({ id: dealId }, { userId: newOwner });
+        var updatedDeal = await Deal.findById(dealId);
+        updatedRecords.push(updatedDeal);
+      }
+      return updatedRecords;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+
+  Deal.remoteMethod("transfer", {
+    accepts: [
+      { arg: "dealIds", type: "array", required: true },
+      { arg: "newOwner", type: "string", required: true }
+    ],
+    returns: [{ arg: "updatedRecords", type: "array" }]
+  });
 };

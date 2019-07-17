@@ -46,8 +46,10 @@ module.exports = function (Company) {
           });
         }
 
-        //user info
-        var name = email;
+        // user info
+        // { firstName: 'Hello', lastName: 'World' }
+        var name = userInfo.lastName + " " + userInfo.firstName;
+
         if (userInfo == null) {
           userInfo = { email: email };
         } else {
@@ -55,7 +57,7 @@ module.exports = function (Company) {
             userInfo.email = email;
           }
           if (userInfo.hasOwnProperty("name")) {
-            name = userInfo.name;
+            name = userInfo.lastName + " " + userInfo.firstName;;
           }
         }
 
@@ -186,7 +188,7 @@ module.exports = function (Company) {
 
   Company.afterRemote("signup", function (context, user, next) {
     var BaseUser = Company.app.models.BaseUser;
-    /*
+    
     var options = {
       type: "email",
       // to: context.args.email,
@@ -206,7 +208,7 @@ module.exports = function (Company) {
       }
       // No error, send new user email verification
     });
-    */
+    
     next();
   });
 };

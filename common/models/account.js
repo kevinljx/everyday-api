@@ -57,6 +57,14 @@ module.exports = function(Account) {
     }
     return acctName;
   };
+  Account.showIndustryInfo = async function showIndustryInfo(acct) {
+    if (acct.industryId) {
+      var industry = await Account.app.models.LeadIndustry.findById(
+        acct.industryId
+      );
+      return industry.name;
+    }
+  };
 
   Account.showAllCustomer = async function showAllCustomer(acct) {
     var allCustomer = await Account.app.models.Customer.find({
@@ -80,10 +88,16 @@ module.exports = function(Account) {
       fields: {
         name: true,
         stageId: true,
+        stageInfo: true,
+        sourceId: true,
+        sourceInfo: true,
+        typeId: true,
+        typeInfo: true,
         amount: true,
         closingDate: true,
-        typeId: true,
-        sourceId: true,
+        type: true,
+        userId: true,
+        userInfo: true,
         id: true
       }
     });
@@ -111,4 +125,61 @@ module.exports = function(Account) {
     accepts: [{ arg: "accountName", type: "string", required: true }],
     returns: [{ arg: "count", type: "number" }, { arg: "data", type: "array" }]
   });
+
+  Account.transfer = async function(acctIds, newOwner) {
+    try {
+      let updatedRecords = [];
+      for (const acctId of acctIds) {
+        await Account.updateAll({ id: acctId }, { userId: newOwner });
+        var updatedAcct = await Account.findById(acctId);
+        updatedRecords.push(updatedAcct);
+      }
+      return updatedRecords;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+
+  Account.remoteMethod("transfer", {
+    accepts: [
+      { arg: "acctIds", type: "array", required: true },
+      { arg: "newOwner", type: "string", required: true }
+    ],
+    returns: [{ arg: "updatedRecords", type: "array" }]
+  });
+
+  // Get Form Fields
+  Account.beforeRemote("formFields", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+  Account.formFields = async function(userId) {
+    try {
+      const industry = await Account.app.models.LeadIndustry.find({
+        userId
+      }).map(ind => {
+        return { name: ind.name, value: ind.id };
+      });
+      const users = await Account.app.models.BaseUser.find().map(user => {
+        return { name: user.name, value: user.id };
+      });
+
+      return { industry, users };
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Account.remoteMethod("formFields", {
+    accepts: [{ arg: "userId", type: "any" }],
+    http: { path: "/formFields", verb: "get" },
+    returns: [{ arg: "fields", type: "object" }]
+  });
+
+  /// Save this copy
 };

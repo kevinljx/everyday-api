@@ -6,32 +6,50 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Quotation": {
+      "quoteID": "quoteID"
+    }
+  },
+  "scope": {
+    "include": [
+      "notes"
+    ]
+  },
   "properties": {
     "date": {
-      "type": "date",
-      "required": true
+      "type": "date"
+    },
+    "latest": {
+      "type": "boolean",
+      "default": true
     },
     "quote_days": {
       "type": "number"
     },
     "state": {
       "type": "string",
-      "default": "draft"
+      "default": "Draft"
     },
     "sent_date": {
-      "type": "date"
+      "type": "date",
+      "default": "$now"
     },
     "tnc": {
       "type": "string"
     },
-    "currency": {
+    "quoteID": {
       "type": "string"
+    },
+    "currency": {
+      "type": "object"
     },
     "currency_rate": {
       "type": "number"
     },
     "version": {
-      "type": "number"
+      "type": "number",
+      "default": 1
     },
     "subtotal": {
       "type": "number"
@@ -81,15 +99,6 @@
       "type": "belongsTo",
       "model": "DiscountSetting",
       "foreignKey": ""
-    },
-    "lines": {
-      "type": "embedsMany",
-      "model": "QuotationLine",
-      "property": "quotationline",
-      "options": {
-        "validate": true,
-        "forceId": false
-      }
     },
     "events": {
       "type": "hasMany",

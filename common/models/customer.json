@@ -12,7 +12,8 @@
         "fullAddress": "showFullAddress",
         "name": "showFullName",
         "accountInfo": "showAccountInfo",
-        "deals": "showAllDeal"
+        "deals": "showAllDeal",
+        "sourceInfo": "showSourceInfo"
       }
     },
     "DeleteHistory": true
@@ -47,6 +48,11 @@
       "options": {
         "nestRemoting": true
       }
+    },
+    "source": {
+      "type": "belongsTo",
+      "model": "LeadSource",
+      "foreignKey": ""
     },
     "account": {
       "type": "belongsTo",

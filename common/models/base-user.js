@@ -61,7 +61,6 @@ module.exports = function(Baseuser) {
         var template = handlebars.compile(html);
         var replacements = { link: resetPassURL };
         var htmlToSend = template(replacements);
-
         Baseuser.app.models.Email.send(
           {
             // uncomment to info.email, for production.

@@ -12,16 +12,16 @@
         "fullAddress": "showFullAddress",
         "name": "showFullName",
         "upcomingEvents": "showUpcoming",
-        "pastEvents": "showPast"
+        "pastEvents": "showPast",
+        "sourceInfo": "showSourceInfo",
+        "statusInfo": "showStatusInfo",
+        "industryInfo": "showIndustryInfo"
       }
     },
     "DeleteHistory": true
   },
   "scope": {
     "include": [
-      "status",
-      "source",
-      "industry",
       "notes"
     ]
   },

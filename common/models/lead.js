@@ -29,8 +29,25 @@ module.exports = function (Lead) {
     if (lead.baseContact) {
       fullName = lead.baseContact.firstName + " " + lead.baseContact.lastName;
     }
-
     return fullName;
+  };
+  Lead.showSourceInfo = async function showSourceInfo(lead) {
+    if (lead.sourceId) {
+      var source = await Lead.app.models.LeadSource.findById(lead.sourceId);
+      return { name: source.name, color: source.color };
+    }
+  };
+  Lead.showStatusInfo = async function showStatusInfo(lead) {
+    if (lead.statusId) {
+      var status = await Lead.app.models.LeadStatus.findById(lead.statusId);
+      return { name: status.name, color: status.color };
+    }
+  };
+  Lead.showIndustryInfo = async function showIndustryInfo(lead) {
+    if (lead.industryId) {
+      var ind = await Lead.app.models.LeadIndustry.findById(lead.industryId);
+      return ind.name;
+    }
   };
 
   Lead.showUpcoming = async function showUpcoming(lead) {
@@ -88,7 +105,6 @@ module.exports = function (Lead) {
 
       var acct;
       if (!existingAccountId) {
-        console.log("---acct dont exist");
         // No Account Id - create new account
         var acctBaseContact = lead.baseContact;
         acctBaseContact.name = lead.companyName;
@@ -144,7 +160,7 @@ module.exports = function (Lead) {
       Lead.destroyById(lead.id);
       return [newCust, newAcct, newDeal];
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       throw e;
     }
   };
@@ -153,7 +169,7 @@ module.exports = function (Lead) {
     accepts: [
       { arg: "id", type: "string", required: true },
       { arg: "dealDetails", type: "any", required: false },
-      { arg: "existingAccountId", type: "string" },
+      { arg: "existingAccountId", type: "any" },
       { arg: "userId", type: "any" }
     ],
     http: { path: "/convert/:id", verb: "post" },
