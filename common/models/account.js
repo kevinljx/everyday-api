@@ -103,6 +103,8 @@ module.exports = function(Account) {
     });
     return allDeal;
   };
+
+  // If Account exist
   Account.accountExist = async function accountExist(accountName) {
     try {
       var pattern = new RegExp(".*" + accountName + ".*", "i");
@@ -120,12 +122,12 @@ module.exports = function(Account) {
       throw e;
     }
   };
-
   Account.remoteMethod("accountExist", {
     accepts: [{ arg: "accountName", type: "string", required: true }],
     returns: [{ arg: "count", type: "number" }, { arg: "data", type: "array" }]
   });
 
+  // Transfer Record
   Account.transfer = async function(acctIds, newOwner) {
     try {
       let updatedRecords = [];
@@ -140,7 +142,6 @@ module.exports = function(Account) {
       throw e;
     }
   };
-
   Account.remoteMethod("transfer", {
     accepts: [
       { arg: "acctIds", type: "array", required: true },
@@ -180,6 +181,4 @@ module.exports = function(Account) {
     http: { path: "/formFields", verb: "get" },
     returns: [{ arg: "fields", type: "object" }]
   });
-
-  /// Save this copy
 };
