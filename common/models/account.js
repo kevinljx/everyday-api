@@ -148,4 +148,38 @@ module.exports = function(Account) {
     ],
     returns: [{ arg: "updatedRecords", type: "array" }]
   });
+
+  // Get Form Fields
+  Account.beforeRemote("formFields", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+  Account.formFields = async function(userId) {
+    try {
+      const industry = await Account.app.models.LeadIndustry.find({
+        userId
+      }).map(ind => {
+        return { name: ind.name, value: ind.id };
+      });
+      const users = await Account.app.models.BaseUser.find().map(user => {
+        return { name: user.name, value: user.id };
+      });
+
+      return { industry, users };
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Account.remoteMethod("formFields", {
+    accepts: [{ arg: "userId", type: "any" }],
+    http: { path: "/formFields", verb: "get" },
+    returns: [{ arg: "fields", type: "object" }]
+  });
+
+  /// Save this copy
 };
