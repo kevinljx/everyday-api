@@ -136,7 +136,8 @@ module.exports = function (Accessgroup) {
                         added = true;
                         if (acr.tier != role.tier) {
                             //update tier
-                            await acr.updateAttribute({ tier: role.tier });
+
+                            await acr.updateAttribute("tier", role.tier);
                         }
                         break;
                     }

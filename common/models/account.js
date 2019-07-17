@@ -1,14 +1,14 @@
 "use strict";
 
-module.exports = function(Account) {
-  Account.beforeRemote("create", async function(ctx) {
+module.exports = function (Account) {
+  Account.beforeRemote("create", async function (ctx) {
     if (ctx.args.data) {
       ctx.args.data.baseContact.isCompany = true;
     }
     return;
   });
 
-  Account.observe("before delete", async function(ctx) {
+  Account.observe("before delete", async function (ctx) {
     var allAccount = await Account.find({ where: ctx.where });
     for (const acct of allAccount) {
       // check customer
@@ -126,7 +126,7 @@ module.exports = function(Account) {
     returns: [{ arg: "count", type: "number" }, { arg: "data", type: "array" }]
   });
 
-  Account.transfer = async function(acctIds, newOwner) {
+  Account.transfer = async function (acctIds, newOwner) {
     try {
       let updatedRecords = [];
       for (const acctId of acctIds) {
@@ -150,7 +150,7 @@ module.exports = function(Account) {
   });
 
   // Get Form Fields
-  Account.beforeRemote("formFields", async function(ctx) {
+  Account.beforeRemote("formFields", async function (ctx) {
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
     if (userId) {
@@ -158,7 +158,7 @@ module.exports = function(Account) {
     }
     return;
   });
-  Account.formFields = async function(userId) {
+  Account.formFields = async function (userId) {
     try {
       const industry = await Account.app.models.LeadIndustry.find({
         userId
@@ -182,4 +182,5 @@ module.exports = function(Account) {
   });
 
   /// Save this copy
+  // This is the copy to save
 };
