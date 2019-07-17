@@ -30,25 +30,36 @@ module.exports = function(Customer) {
     }
     return fullName;
   };
-
+  Customer.showSourceInfo = async function showSourceInfo(cust) {
+    if (cust.sourceId) {
+      var source = await Customer.app.models.LeadSource.findById(cust.sourceId);
+      return { name: source.name, color: source.color };
+    }
+  };
   Customer.showAccountInfo = async function showAccountInfo(cust) {
     if (cust.accountId) {
       var account = await Customer.app.models.Account.findById(cust.accountId);
-      return { id: account.id, name: account.name };
+      return { name: account.name, id: account.id };
     }
   };
 
   Customer.showAllDeal = async function showAllDeal(cust) {
     var allDeal = await Customer.app.models.Deal.find({
       where: {
-        and: [{ customerId: cust.id }]
+        customerId: cust.id
       },
       fields: {
         name: true,
         stageId: true,
+        stageInfo: true,
+        sourceId: true,
+        sourceInfo: true,
+        typeId: true,
+        typeInfo: true,
         amount: true,
         closingDate: true,
         type: true,
+        userId: true,
         userInfo: true,
         id: true
       }

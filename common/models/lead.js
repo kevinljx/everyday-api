@@ -29,25 +29,24 @@ module.exports = function(Lead) {
     if (lead.baseContact) {
       fullName = lead.baseContact.firstName + " " + lead.baseContact.lastName;
     }
-
     return fullName;
   };
   Lead.showSourceInfo = async function showSourceInfo(lead) {
     if (lead.sourceId) {
       var source = await Lead.app.models.LeadSource.findById(lead.sourceId);
-      return { name: source.name, id: source.id, color: source.color };
+      return { name: source.name, color: source.color };
     }
   };
   Lead.showStatusInfo = async function showStatusInfo(lead) {
     if (lead.statusId) {
       var status = await Lead.app.models.LeadStatus.findById(lead.statusId);
-      return { name: status.name, id: status.id, color: status.color };
+      return { name: status.name, color: status.color };
     }
   };
   Lead.showIndustryInfo = async function showIndustryInfo(lead) {
     if (lead.industryId) {
       var ind = await Lead.app.models.LeadIndustry.findById(lead.industryId);
-      return { name: ind.name, id: ind.id };
+      return ind.name;
     }
   };
 
@@ -170,7 +169,7 @@ module.exports = function(Lead) {
     accepts: [
       { arg: "id", type: "string", required: true },
       { arg: "dealDetails", type: "any", required: false },
-      { arg: "existingAccountId", type: "string" },
+      { arg: "existingAccountId", type: "any" },
       { arg: "userId", type: "any" }
     ],
     http: { path: "/convert/:id", verb: "post" },
@@ -250,176 +249,5 @@ module.exports = function(Lead) {
     accepts: [{ arg: "userId", type: "any" }],
     http: { path: "/formFields", verb: "get" },
     returns: [{ arg: "fields", type: "object" }]
-  });
-
-  //===============
-  // Reports
-  //===============
-
-  /**
-   * Leads by status
-   */
-  Lead.beforeRemote("leadsByStatus", async function(ctx) {
-    var token = ctx.req.accessToken;
-    var userId = token && token.userId;
-    if (userId) {
-      ctx.args.userId = userId;
-    }
-    return;
-  });
-  Lead.leadsByStatus = async function(startDate, endDate, userId) {
-    try {
-      var data = [];
-      const status = await Lead.app.models.LeadStatus.find({ userId });
-      for (let i = 0; i < status.length; i++) {
-        var statusReport = {};
-        statusReport.name = status[i].name;
-        statusReport.color = status[i].color;
-        var leads = await Lead.find(
-          {
-            where: {
-              and: [
-                { createdAt: { between: [startDate, endDate] } },
-                { statusId: status[i].id }
-              ]
-            }
-          },
-          userId
-        ).map(lead => ({
-          name: lead.name,
-          companyName: lead.companyName,
-          userInfo: lead.userInfo.name,
-          source: lead.sourceInfo && lead.sourceInfo.name,
-          interest: lead.interest
-        }));
-        statusReport.totalLeads = leads.length;
-        statusReport.leads = leads;
-        data.push(statusReport);
-      }
-      return data;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
-  Lead.remoteMethod("leadsByStatus", {
-    accepts: [
-      { arg: "startDate", type: "date", required: true },
-      { arg: "endDate", type: "date", required: true },
-      { arg: "userId", type: "any" }
-    ],
-    http: { path: "/reports/leadsbyStatus" },
-    returns: [{ arg: "data", type: "array" }]
-  });
-
-  /**
-   * Leads by Owner
-   */
-  Lead.beforeRemote("leadsByOwner", async function(ctx) {
-    var token = ctx.req.accessToken;
-    var userId = token && token.userId;
-    if (userId) {
-      ctx.args.userId = userId;
-    }
-    return;
-  });
-  Lead.leadsByOwner = async function(startDate, endDate, userId) {
-    try {
-      var data = [];
-      const users = await Lead.app.models.BaseUser.find();
-      for (let i = 0; i < users.length; i++) {
-        var userReport = {};
-        userReport.name = users[i].name;
-        var leads = await Lead.find(
-          {
-            where: {
-              and: [
-                { createdAt: { between: [startDate, endDate] } },
-                { userId: users[i].id }
-              ]
-            }
-          },
-          userId
-        ).map(lead => ({
-          name: lead.name,
-          companyName: lead.companyName,
-          status: lead.statusInfo.name,
-          source: lead.sourceInfo && lead.sourceInfo.name,
-          interest: lead.interest
-        }));
-        userReport.totalLeads = leads.length;
-        userReport.leads = leads;
-        data.push(userReport);
-      }
-      return data;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
-  Lead.remoteMethod("leadsByOwner", {
-    accepts: [
-      { arg: "startDate", type: "date", required: true },
-      { arg: "endDate", type: "date", required: true },
-      { arg: "userId", type: "any" }
-    ],
-    http: { path: "/reports/leadsbyowner" },
-    returns: [{ arg: "data", type: "array" }]
-  });
-
-  /**
-   * Leads by Source
-   */
-  Lead.beforeRemote("leadsBySource", async function(ctx) {
-    var token = ctx.req.accessToken;
-    var userId = token && token.userId;
-    if (userId) {
-      ctx.args.userId = userId;
-    }
-    return;
-  });
-  Lead.leadsBySource = async function(startDate, endDate, userId) {
-    try {
-      var data = [];
-      const source = await Lead.app.models.LeadSource.find({ userId });
-      for (let i = 0; i < source.length; i++) {
-        var sourceReport = {};
-        sourceReport.name = source[i].name;
-        sourceReport.color = source[i].color;
-        var leads = await Lead.find(
-          {
-            where: {
-              and: [
-                { createdAt: { between: [startDate, endDate] } },
-                { sourceId: source[i].id }
-              ]
-            }
-          },
-          userId
-        ).map(lead => ({
-          name: lead.name,
-          companyName: lead.companyName,
-          userInfo: lead.userInfo.name,
-          status: lead.statusInfo.name,
-          interest: lead.interest
-        }));
-        sourceReport.totalLeads = leads.length;
-        sourceReport.leads = leads;
-        data.push(sourceReport);
-      }
-      return data;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
-  Lead.remoteMethod("leadsBySource", {
-    accepts: [
-      { arg: "startDate", type: "date", required: true },
-      { arg: "endDate", type: "date", required: true },
-      { arg: "userId", type: "any" }
-    ],
-    http: { path: "/reports/leadsbysource" },
-    returns: [{ arg: "data", type: "array" }]
   });
 };

@@ -57,6 +57,14 @@ module.exports = function(Account) {
     }
     return acctName;
   };
+  Account.showIndustryInfo = async function showIndustryInfo(acct) {
+    if (acct.industryId) {
+      var industry = await Account.app.models.LeadIndustry.findById(
+        acct.industryId
+      );
+      return industry.name;
+    }
+  };
 
   Account.showAllCustomer = async function showAllCustomer(acct) {
     var allCustomer = await Account.app.models.Customer.find({
@@ -80,10 +88,16 @@ module.exports = function(Account) {
       fields: {
         name: true,
         stageId: true,
+        stageInfo: true,
+        sourceId: true,
+        sourceInfo: true,
+        typeId: true,
+        typeInfo: true,
         amount: true,
         closingDate: true,
-        typeId: true,
-        sourceId: true,
+        type: true,
+        userId: true,
+        userInfo: true,
         id: true
       }
     });

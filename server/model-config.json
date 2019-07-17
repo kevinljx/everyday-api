@@ -197,5 +197,9 @@
   "Container": {
     "dataSource": "storage",
     "public": true
+  },
+  "Report": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
