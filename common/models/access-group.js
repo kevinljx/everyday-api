@@ -77,7 +77,8 @@ module.exports = function (Accessgroup) {
                     var role = await AccessRole.findById(a1.accessRoleId);
                     if (role) {
                         dataObj.roles.push({
-                            id: role.id,
+                            id: a1.id,
+                            roleId: role.id, 
                             name: role.name,
                             tier: a1.tier
                         })
@@ -105,8 +106,8 @@ module.exports = function (Accessgroup) {
     });
 
     Accessgroup.remoteMethod('saveRoles', {
-        accepts: [{ arg: 'userId', type: 'any' }, { arg: 'id', type: 'string', required: true }, { arg: 'roles', type: 'array' }],
-        returns: { arg: "success", type: "number" }
+        accepts: [{ arg: 'userId', type: 'any' }, { arg: 'id', type: 'any', required: true }, { arg: 'roles', type: 'array' }],
+        returns: { arg: "data", type: "array" }
     });
 
     Accessgroup.saveRoles = async function (userId, id, roles) {
@@ -117,19 +118,50 @@ module.exports = function (Accessgroup) {
         var companyUsers = await BaseUser.find({
             where: { company: userobj.company }
         });
-        var group = await Accessgroup.findById(id);
-        if (companyUsers.find(user => { return user.id == group.userId }) == undefined) {
+        var group = await Accessgroup.findById(id);       
+        if (companyUsers.find(user => { return user.id.equals(group.userId) }) == undefined) {
             var error = new Error("Invalid group id");
             error.status = 400;
             throw error;
         }
         else {
-            //cannot clean and remove as all users will be affected
+            //cannot clean and remove as all users will be affected. only replace those that are new
+            var currentRoles = await AccessGroupRole.find({ where: { accessGroupId: id }});            
+            var toAdd = [];
             for (const role of roles) {
-
+                var added = false;
+                for(const acr of currentRoles){
+                    if(acr.accessRoleId == role.id){
+                        added = true;
+                        if(acr.tier != role.tier){
+                            //update tier
+                            await acr.updateAttribute({tier: role.tier});
+                        }
+                        break;
+                    }
+                }
+                if(!added){
+                    toAdd.push(role);
+                }
             }
+            for (const acr of currentRoles){
+                var removed = true;
+                for(const role of roles){
+                    if(acr.accessRoleId == role.id){
+                        removed = false;
+                    }
+                }
+                if(removed){
+                    await AccessGroupRole.destroyById(acr.id);
+                }
+            }
+            for(const r of toAdd){
+                await AccessGroupRole.create({tier: r.tier, accessGroupId: id, accessRoleId: r.id});
+            }
+            
         }
-        return 1;
+        //return updated groups and roles
+        return Accessgroup.viewall(userId);
     }
 
 };

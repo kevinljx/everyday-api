@@ -73,7 +73,7 @@ module.exports = function (app) {
         }
         else if (methodName.includes("destroy")) {
           methodName = "delete";
-        }
+        }        
         AccessRole.find({ where: { id: { inq: roleIds } } }, function (err, accRoles) {
           checkSize = accRoles.length;
           accRoles.forEach(element => {

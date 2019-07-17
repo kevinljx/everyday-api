@@ -135,7 +135,8 @@ module.exports = function (server) {
       { name: "Deal", categoryName: "Deal", model: "Deal", method: "delete" },
       { name: "Access Setting", categoryName: "Access", model: "AccessSetting", method: "viewall" },
       { name: "Access Role", categoryName: "Access", model: "AccessRole", method: "viewall" },
-      { name: "Access Group", categoryName: "Access", model: "AccessGroup", method: "viewall" }
+      { name: "Access Group", categoryName: "Access", model: "AccessGroup", method: "viewall" },
+      { name: "Access Group", categoryName: "Access", model: "AccessGroup", method: "saveroles" }
   
     ], function (err, accrights) {
       if (err) throw err;
@@ -187,6 +188,7 @@ module.exports = function (server) {
         roles[0].accessRights.add(accrights[116]); //access setting viewall
         roles[0].accessRights.add(accrights[117]);
         roles[0].accessRights.add(accrights[118]);
+        roles[0].accessRights.add(accrights[119]);
   
         //basic user
         roles[1].accessRights.add(accrights[1]);
