@@ -94,11 +94,70 @@ module.exports = function (Accessrole) {
 
     }
 
-
     Accessrole.remoteMethod('viewall', {
         accepts: { arg: 'userId', type: 'any' },
         returns: { arg: 'data', type: 'array' }
     });
 
+    Accessrole.remoteMethod('saveRights', {
+        accepts: [{ arg: 'userId', type: 'any' }, { arg: 'id', type: 'any', required: true }, { arg: 'rights', type: 'array' }],
+        returns: { arg: "data", type: "array" }
+    });
+
+    Accessrole.saveRights = async function (userId, id, rights) {
+        //check if group id is valid
+        var BaseUser = Accessgroup.app.models.BaseUser;
+        var AccessGroupRole = Accessgroup.app.models.AccessGroupRole;
+        var userobj = await BaseUser.findOne({ where: { id: userId } });
+        var companyUsers = await BaseUser.find({
+            where: { company: userobj.company }
+        });
+        var group = await Accessgroup.findById(id);
+        if (companyUsers.find(user => { return user.id.equals(group.userId) }) == undefined) {
+            var error = new Error("Invalid group id");
+            error.status = 400;
+            throw error;
+        }
+        else {
+            //cannot clean and remove as all users will be affected. only replace those that are new
+            var currentRoles = await AccessGroupRole.find({ where: { accessGroupId: id } });
+            var toAdd = [];
+            for (const role of roles) {
+                var added = false;
+                for (const acr of currentRoles) {
+                    if (acr.accessRoleId == role.id) {
+                        added = true;
+                        if (acr.tier != role.tier) {
+                            //update tier
+
+                            await acr.updateAttribute("tier", role.tier);
+                        }
+                        break;
+                    }
+                }
+
+                if (!added) {
+                    toAdd.push(role);
+                }
+            }
+            for (const acr of currentRoles) {
+                var removed = true;
+                for (const role of roles) {
+                    if (acr.accessRoleId == role.id) {
+                        removed = false;
+                    }
+                }
+                if (removed) {
+                    await AccessGroupRole.destroyById(acr.id);
+                }
+            }
+            for (const r of toAdd) {
+                await AccessGroupRole.create({ tier: r.tier, accessGroupId: ObjectID(id), accessRoleId: ObjectID(r.id) });
+            }
+
+        }
+        //return updated groups and roles
+        return Accessgroup.viewall(userId);
+    }
 
 };
