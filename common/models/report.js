@@ -56,7 +56,7 @@ module.exports = function(Report) {
       { arg: "endDate", type: "date", required: true },
       { arg: "userId", type: "any" }
     ],
-    http: { path: "/leadsbyStatus" },
+    http: { path: "/leadsbystatus" },
     returns: [{ arg: "data", type: "array" }]
   });
 
@@ -310,17 +310,15 @@ module.exports = function(Report) {
       for (let i = 0; i < stage.length; i++) {
         var pipelineReport = {};
         pipelineReport.name = `${stage[i].name} - ${stage[i].chance}%`;
-        var deals = await Report.app.models.Deal.find(
-          {
-            where: {
-              and: [
-                { createdAt: { between: [startDate, endDate] } },
-                { stageId: stage[i].id }
-              ]
-            }
-          },
-          userId
-        ).map(deal => ({
+        var deals = await Report.app.models.Deal.find({
+          userId: userId,
+          where: {
+            and: [
+              { createdAt: { between: [startDate, endDate] } },
+              { stageId: stage[i].id }
+            ]
+          }
+        }).map(deal => ({
           name: deal.name,
           amount: deal.amount,
           closingDate: deal.closingDate,
@@ -498,27 +496,145 @@ module.exports = function(Report) {
   // INDIVIDUAL REPORT
   //==============================================================
   //==============================================================
+
   Report.individualSales = async function(startDate, endDate, userId) {
     try {
       // leads to close ratio: 3.41,
       //   deals won / total leads * 100
+      if (!userId) return null;
+      const user = await Report.app.models.BaseUser.findById(userId);
+      var data = {};
+      data.name = user.name;
+      data.startDate = startDate;
+      data.endDate = endDate;
 
-      const closedWon = await Report.app.models.DealStage.find({
-        userId: userId,
-        where: { chance: 100 }
+      const dealStages = await Report.app.models.DealStage.find({ userId });
+      const allDealsByUser = await Report.app.models.Deal.find({
+        where: {
+          and: [
+            { userId: userId },
+            { closingDate: { between: [startDate, endDate] } }
+          ]
+        }
       });
-      const closedLoss = await Report.app.models.DealStage.find({
-        userId: userId,
-        where: { chance: 0 }
+      const closedWon = dealStages.filter(stage => stage.chance == 100);
+      const closedLoss = dealStages.filter(stage => stage.chance == 0);
+
+      // totalDealsWon: 3,
+      const totalDealsWon = allDealsByUser.filter(deal =>
+        deal.stageId.equals(closedWon[0].id)
+      );
+      data.totalDealsWon = totalDealsWon.length;
+
+      // totalDealsAmt: 40000,
+      // totalDeals: 0,
+      const totalDeals = allDealsByUser.filter(
+        deal =>
+          !deal.stageId.equals(closedWon[0].id) &&
+          !deal.stageId.equals(closedLoss[0].id)
+      );
+      const totalDealsAmount = totalDeals.reduce(function(a, b) {
+        return a + b.amount;
+      }, 0);
+      data.totalDealsAmount = totalDealsAmount;
+      data.totalDeals = totalDeals.length;
+
+      // totalLeads: 8,
+      const totalLeads = await Report.app.models.Lead.find({
+        where: {
+          and: [
+            { userId: userId },
+            { createdAt: { between: [startDate, endDate] } }
+          ]
+        }
       });
-      //   totalDealsWon: 3,
-      //     totalDealsAmt: 40000,
-      //       totalLeads: 8,
-      //         totalDeals: 0,
-      //           accountsToDeals: 0.56,
+      data.totalLeads = totalLeads.length;
+
+      // accountsToDeals: 0.56,
+      const totalAccts = await Report.app.models.Account.find({
+        where: {
+          and: [
+            { userId: userId },
+            { createdAt: { between: [startDate, endDate] } }
+          ]
+        }
+      });
+      if (totalAccts.length > 0) {
+        data.accountsToDeals = allDealsByUser.length / totalAccts.length;
+      } else {
+        data.accountsToDeals = 0;
+      }
+
       //sales data
+      const salesData = totalDealsWon.map(deal => ({
+        date: deal.closingDate,
+        amount: deal.amount
+      }));
+      data.salesData = salesData;
+
       // pipeline
+
+      var pipeline = [];
+      for (let i = 0; i < dealStages.length; i++) {
+        var pipelineReport = {};
+        pipelineReport.name = `${dealStages[i].name} - ${
+          dealStages[i].chance
+        }%`;
+        var deals = await Report.app.models.Deal.find({
+          where: {
+            and: [
+              { createdAt: { between: [startDate, endDate] } },
+              { stageId: dealStages[i].id },
+              { userId: userId }
+            ]
+          }
+        }).map(deal => ({
+          name: deal.name,
+          amount: deal.amount,
+          closingDate: deal.closingDate,
+          userInfo: deal.userInfo.name,
+          source: deal.sourceInfo && deal.sourceInfo.name,
+          type: deal.typeInfo && deal.typeInfo.name,
+          chance: deal.stageInfo.chance,
+          accountInfo: deal.accountInfo.name
+        }));
+        pipelineReport.totalDeals = deals.length;
+        pipelineReport.totalAmount = deals.reduce(function(a, b) {
+          return a + b["amount"];
+        }, 0);
+        pipelineReport.deals = deals;
+        pipeline.push(pipelineReport);
+      }
+      data.pipeline = pipeline;
+
       // leads status
+      var leadStatus = [];
+      const status = await Report.app.models.LeadStatus.find({ userId });
+      for (let i = 0; i < status.length; i++) {
+        var statusReport = {};
+        statusReport.name = status[i].name;
+        statusReport.color = status[i].color;
+        var leads = await Report.app.models.Lead.find({
+          where: {
+            and: [
+              { createdAt: { between: [startDate, endDate] } },
+              { statusId: status[i].id }
+            ]
+          }
+        }).map(lead => ({
+          name: lead.name,
+          companyName: lead.companyName,
+          userInfo: lead.userInfo.name,
+          source: lead.sourceInfo && lead.sourceInfo.name,
+          interest: lead.interest
+        }));
+        statusReport.totalLeads = leads.length;
+        statusReport.leads = leads;
+        leadStatus.push(statusReport);
+      }
+      data.leadStatus = leadStatus;
+
+      return data;
     } catch (e) {
       console.log(e);
       throw e;
@@ -529,9 +645,9 @@ module.exports = function(Report) {
     accepts: [
       { arg: "startDate", type: "date", required: true },
       { arg: "endDate", type: "date", required: true },
-      { arg: "userId", type: "any", required: true }
+      { arg: "userId", type: "any" }
     ],
-    http: { path: "/individualSale" },
-    returns: [{ arg: "data", type: "array" }]
+    http: { path: "/individualsales" },
+    returns: [{ arg: "data", type: "object" }]
   });
 };
