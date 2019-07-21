@@ -119,17 +119,68 @@ module.exports = function(Baseuser) {
     return ctx;
   }
 
+  Baseuser.observe('access', async function (ctx) {
+    var token = ctx.options && ctx.options.accessToken;
+    var userId = token && token.userId;
+    if (!userId) {
+        if (ctx.query.userId != null) {
+            userId = ctx.query.userId;
+        }
+        else {
+            return;
+        }
+    }  // no access token, internal or test request;
+    var user = await Baseuser.findById(userId);
+    var whereClause = { companyId: user.companyId };
+    ctx.query = ctx.query || {};
+      if (ctx.query.where) {
+          if (ctx.query.where.and) {
+
+              ctx.query.where.and.push(whereClause);
+
+          } else {
+              var tmpWhere = ctx.query.where;
+              ctx.query.where = {};
+              ctx.query.where.and = [tmpWhere, whereClause];
+
+          }
+      } else {
+          ctx.query.where = whereClause;
+      }
+      //console.log(ctx);
+      return
+  });
+
   Baseuser.beforeRemote("**", async function(ctx) {
+    
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
+    /*
     if (ctx.method.name.includes("find")) {
       //show all company users
       var user = await Baseuser.findById(userId);
       ctx = companyOnlyQuery(ctx, user.companyId);
-    } else if (ctx.method.name.includes("create")) {
+    } else */
+    if (ctx.method.name.includes("create")) {
       //include companyId
       var user = await Baseuser.findById(userId);
       ctx.args.data.companyId = user.companyId;
+      var baseContact = {};
+      if(ctx.args.data.firstName !== undefined){
+        baseContact.firstName = ctx.args.data.firstName;
+      }
+      if(ctx.args.data.lastName !== undefined){
+        baseContact.lastName = ctx.args.data.lastName;
+      }
+      if(ctx.args.data.contact !== undefined){
+        baseContact.contactNo = ctx.args.data.contact;
+      }
+      ctx.args.data.baseContact = baseContact;
+      
+      ctx.args.data.emailVerified = true;      
+      
+      
+      
     }
   });
 
