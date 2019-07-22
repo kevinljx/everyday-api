@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function (server) {
+module.exports = function(server) {
   /**
    * ==================================
    * DEVELOPMENT ONLY
@@ -136,8 +136,8 @@ module.exports = function (server) {
       { name: "Access Setting", categoryName: "Access", model: "AccessSetting", method: "viewall" },
       { name: "Access Role", categoryName: "Access", model: "AccessRole", method: "viewall" },
       { name: "Access Group", categoryName: "Access", model: "AccessGroup", method: "viewall" },
-      { name: "Access Group", categoryName: "Access", model: "AccessGroup", method: "saveroles" }
-      { name: "Access Role", categoryName: "Access", model: "AccessRole", method: "saverights" }
+      { name: "Access Group", categoryName: "Access", model: "AccessGroup", method: "saveroles" },
+      { name: "Access Role", categoryName: "Access", model: "AccessRole", method: "saverights" },
       { name: "Access Setting", categoryName: "Access", model: "AccessSetting", method: "saveuserrights" }
   
     ], function (err, accrights) {

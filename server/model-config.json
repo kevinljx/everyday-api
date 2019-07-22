@@ -201,5 +201,9 @@
   "Report": {
     "dataSource": "everyday",
     "public": true
+  },
+  "Widget": {
+    "dataSource": "everyday",
+    "public": true
   }
 }

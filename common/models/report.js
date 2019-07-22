@@ -517,21 +517,19 @@ module.exports = function(Report) {
           ]
         }
       });
-      const closedWon = dealStages.filter(stage => stage.chance == 100);
-      const closedLoss = dealStages.filter(stage => stage.chance == 0);
+      //const closedWon = dealStages.filter(stage => stage.chance == 100);
+      //const closedLoss = dealStages.filter(stage => stage.chance == 0);
 
       // totalDealsWon: 3,
-      const totalDealsWon = allDealsByUser.filter(deal =>
-        deal.stageId.equals(closedWon[0].id)
+      const totalDealsWon = allDealsByUser.filter(
+        deal => deal.stage.chance == 100
       );
       data.totalDealsWon = totalDealsWon.length;
 
       // totalDealsAmt: 40000,
       // totalDeals: 0,
       const totalDeals = allDealsByUser.filter(
-        deal =>
-          !deal.stageId.equals(closedWon[0].id) &&
-          !deal.stageId.equals(closedLoss[0].id)
+        deal => !deal.stage.chance == 100 && !deal.stage.chance == 0
       );
       const totalDealsAmount = totalDeals.reduce(function(a, b) {
         return a + b.amount;
@@ -620,7 +618,8 @@ module.exports = function(Report) {
           where: {
             and: [
               { createdAt: { between: [startDate, endDate] } },
-              { statusId: status[i].id }
+              { statusId: status[i].id },
+              { userId: userId }
             ]
           }
         }).map(lead => ({
