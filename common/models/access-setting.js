@@ -68,7 +68,7 @@ module.exports = function (Accesssetting) {
       if (userId) {
         ctx = userOnlyQuery(ctx, userId);
       }
-    } else if (ctx.method.name == "viewall" || ctx.method.name == "getUserAccessSetting") {
+    } else if (ctx.method.name == "viewall" || ctx.method.name == "getUserAccessSetting" || ctx.method.name == "saveUserRights") {
       var token = ctx.req.accessToken;
       var userId = token && token.userId;
       if (userId) {
@@ -233,7 +233,7 @@ module.exports = function (Accesssetting) {
         var AccessGroupUser = Accesssetting.app.models.AccessGroupUser;
         AccessGroupRole.findById(st.accessroleId, function (err, arole) {
           //then delete the access group user
-          if (arole.accessGroupId) {
+          if (arole !== undefined && arole.accessGroupId) {
             AccessGroupUser.destroyAll({ where: { and: [{ userId: st.userId }, { accessGroupId: arole.accessGroupId }] } }, function (err, info) {
               finishCheckGroup();
             });
@@ -249,5 +249,34 @@ module.exports = function (Accesssetting) {
     });
 
   });
+
+  Accesssetting.remoteMethod("saveUserRights", {
+    accepts: [{ arg: "userId", type: "any"}, {arg: "saveUserId", type: "any"},  {arg: "rights", type: "array"}],
+    returns: { arg: "data", type: "array" }    
+  });
+
+  Accesssetting.saveUserRights = async function(userId, saveUserId, rights){
+    //check if user id and save user is in the same company
+    //rights in the form of groups, then rights
+    var BaseUser = Accesssetting.app.models.BaseUser;   
+    var userobj = await BaseUser.findById(userId);
+    var saveUser = await BaseUser.findById(saveUserId);
+    if(!userobj.companyId.equals(saveUser.companyId)){
+      var error = new Error("Invalid user");
+      error.status = 400;
+      throw error;
+    }
+    //clear all user access rights
+    await Accesssetting.destroyAll({userId: saveUserId});
+    for(const group of rights){
+      for(const rl of group.roles){
+        
+        await Accesssetting.create({userId: saveUserId, grouproleId: rl.id});
+      }
+    }
+    return Accesssetting.getUserAccessSetting(userId); 
+    
+  }
+
 
 };
