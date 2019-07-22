@@ -26,12 +26,12 @@ module.exports = function(Widget) {
         where: { userId }
       });
       const totalOpenDeals = totalDeals.filter(
-        deal => deal.stage.chance != 100 && deal.stage.chance != 0
+        deal => deal.stageInfo.chance != 100 && deal.stageInfo.chance != 0
       );
       const openDealsAmount = totalOpenDeals.reduce(function(a, b) {
         return a + b.amount;
       }, 0);
-      const dealsWon = totalDeals.filter(deal => deal.stage.chance == 100);
+      const dealsWon = totalDeals.filter(deal => deal.stageInfo.chance == 100);
       var dealsWonAmount = 0;
       if (dealsWon.length > 0)
         dealsWonAmount = dealsWon.reduce((a, b) => a + b.amount);

@@ -503,10 +503,6 @@ module.exports = function(Report) {
       //   deals won / total leads * 100
       if (!userId) return null;
       const user = await Report.app.models.BaseUser.findById(userId);
-      var data = {};
-      data.name = user.name;
-      data.startDate = startDate;
-      data.endDate = endDate;
 
       const dealStages = await Report.app.models.DealStage.find({ userId });
       const allDealsByUser = await Report.app.models.Deal.find({
@@ -517,25 +513,24 @@ module.exports = function(Report) {
           ]
         }
       });
-      //const closedWon = dealStages.filter(stage => stage.chance == 100);
-      //const closedLoss = dealStages.filter(stage => stage.chance == 0);
+      const closedWon = dealStages.filter(stage => stage.chance == 100);
+      const closedLoss = dealStages.filter(stage => stage.chance == 0);
 
       // totalDealsWon: 3,
       const totalDealsWon = allDealsByUser.filter(
-        deal => deal.stage.chance == 100
+        deal => deal.stageInfo.chance == 100
       );
-      data.totalDealsWon = totalDealsWon.length;
 
       // totalDealsAmt: 40000,
       // totalDeals: 0,
       const totalDeals = allDealsByUser.filter(
-        deal => !deal.stage.chance == 100 && !deal.stage.chance == 0
+        deal =>
+          !deal.stageId.equals(closedWon[0].id) &&
+          !deal.stageId.equals(closedLoss[0].id)
       );
       const totalDealsAmount = totalDeals.reduce(function(a, b) {
         return a + b.amount;
       }, 0);
-      data.totalDealsAmount = totalDealsAmount;
-      data.totalDeals = totalDeals.length;
 
       // totalLeads: 8,
       const totalLeads = await Report.app.models.Lead.find({
@@ -546,7 +541,6 @@ module.exports = function(Report) {
           ]
         }
       });
-      data.totalLeads = totalLeads.length;
 
       // accountsToDeals: 0.56,
       const totalAccts = await Report.app.models.Account.find({
@@ -557,12 +551,11 @@ module.exports = function(Report) {
           ]
         }
       });
+      var accountsToDeals = 0;
       if (totalAccts.length > 0) {
-        data.accountsToDeals = (
-          allDealsByUser.length / totalAccts.length
-        ).toFixed(3);
-      } else {
-        data.accountsToDeals = 0;
+        accountsToDeals = (allDealsByUser.length / totalAccts.length).toFixed(
+          3
+        );
       }
 
       //sales data
@@ -570,10 +563,8 @@ module.exports = function(Report) {
         date: deal.closingDate,
         amount: deal.amount
       }));
-      data.salesData = salesData;
 
       // pipeline
-
       var pipeline = [];
       for (let i = 0; i < dealStages.length; i++) {
         var pipelineReport = {};
@@ -605,7 +596,6 @@ module.exports = function(Report) {
         pipelineReport.deals = deals;
         pipeline.push(pipelineReport);
       }
-      data.pipeline = pipeline;
 
       // leads status
       var leadStatus = [];
@@ -633,7 +623,20 @@ module.exports = function(Report) {
         statusReport.leads = leads;
         leadStatus.push(statusReport);
       }
-      data.leadStatus = leadStatus;
+
+      var data = {
+        name: user.name,
+        startDate,
+        endDate,
+        totalDealsWon: totalDealsWon.length,
+        totalDeals: totalDeals.length,
+        totalLeads: totalLeads.length,
+        totalDealsAmount,
+        accountsToDeals,
+        leadStatus,
+        pipeline,
+        salesData
+      };
 
       return data;
     } catch (e) {
