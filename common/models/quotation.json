@@ -3,14 +3,6 @@
   "plural": "quotations",
   "base": "BaseModel",
   "idInjection": true,
-  "options": {
-    "validateUpsert": true
-  },
-  "mixins": {
-    "Quotation": {
-      "quoteID": "quoteID"
-    }
-  },
   "scope": {
     "include": [
       "notes"
