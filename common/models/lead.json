@@ -21,9 +21,7 @@
     "DeleteHistory": true
   },
   "scope": {
-    "include": [
-      "notes"
-    ]
+    "include": ["notes"]
   },
   "properties": {
     "companyName": {
@@ -43,6 +41,10 @@
     },
     "pastEvents": {
       "type": "array"
+    },
+    "isConverted": {
+      "type": "boolean",
+      "default": false
     }
   },
   "validations": [],

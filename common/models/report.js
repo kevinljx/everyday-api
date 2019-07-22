@@ -560,7 +560,9 @@ module.exports = function(Report) {
         }
       });
       if (totalAccts.length > 0) {
-        data.accountsToDeals = allDealsByUser.length / totalAccts.length;
+        data.accountsToDeals = (
+          allDealsByUser.length / totalAccts.length
+        ).toFixed(3);
       } else {
         data.accountsToDeals = 0;
       }

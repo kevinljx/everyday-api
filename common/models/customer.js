@@ -26,7 +26,9 @@ module.exports = function(Customer) {
   Customer.showFullName = function showFullName(cust) {
     var fullName = "";
     if (cust.baseContact) {
-      fullName = cust.baseContact.firstName + " " + cust.baseContact.lastName;
+      fullName =
+        (cust.baseContact.firstName ? cust.baseContact.firstName + " " : "") +
+        cust.baseContact.lastName;
     }
     return fullName;
   };
