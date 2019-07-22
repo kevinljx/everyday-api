@@ -94,11 +94,43 @@ module.exports = function (Accessrole) {
 
     }
 
-
     Accessrole.remoteMethod('viewall', {
         accepts: { arg: 'userId', type: 'any' },
         returns: { arg: 'data', type: 'array' }
     });
 
+    Accessrole.remoteMethod('saveRights', {
+        accepts: [{ arg: 'userId', type: 'any' }, { arg: 'id', type: 'any', required: true }, { arg: 'rights', type: 'array' }],
+        returns: { arg: "data", type: "array" }
+    });
+
+    Accessrole.saveRights = async function (userId, id, rights) {
+        //check if role id is valid
+        var BaseUser = Accessrole.app.models.BaseUser;
+        
+        var userobj = await BaseUser.findOne({ where: { id: userId } });
+        var companyUsers = await BaseUser.find({
+            where: { company: userobj.company }
+        });
+        var role = await Accessrole.findById(id);
+        if (companyUsers.find(user => { return user.id.equals(role.userId) }) == undefined) {
+            var error = new Error("Invalid role id");
+            error.status = 400;
+            throw error;
+        }
+        else {
+            //delete all access role rights and update all
+            var currentRights = await role.accessRights.find();
+            for(const rt of currentRights){
+                await role.accessRights.remove(rt);
+            }                        
+            
+            for(const right of rights){
+                await role.accessRights.add(right.id);
+            }
+        }
+        //return updated groups and roles
+        return Accessrole.viewall(userId);
+    }
 
 };
