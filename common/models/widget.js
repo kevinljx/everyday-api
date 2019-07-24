@@ -12,7 +12,6 @@ module.exports = function(Widget) {
 
   Widget.crmsummary = async function(userId) {
     try {
-      var data = {};
       // total leads
       // leads not contacted
       const allLeads = await Widget.app.models.Lead.find({
@@ -36,7 +35,7 @@ module.exports = function(Widget) {
       if (dealsWon.length > 0)
         dealsWonAmount = dealsWon.reduce((a, b) => a + b.amount);
 
-      data = {
+      var data = {
         totalLeads,
         openDealsAmount,
         totalOpenDeals: totalOpenDeals.length,
@@ -54,5 +53,30 @@ module.exports = function(Widget) {
     accepts: [{ arg: "userId", type: "any" }],
     http: { path: "/crmsummary", verb: "get" },
     returns: [{ arg: "data", type: "object" }]
+  });
+
+  Widget.untouchedleads = async function(userId, date) {
+    try {
+      var oldLeads = Widget.app.models.Lead.find({
+        where: { userId: userId, updatedAt: { lte: date } }
+      }).map(lead => ({
+        id: lead.id,
+        name: lead.name,
+        companyName: lead.companyName,
+        email: lead.baseContact.email,
+        mobile: lead.baseContact.mobile,
+        statusInfo: lead.statusInfo,
+        updatedAt: lead.updatedAt
+      }));
+      return oldLeads;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Widget.remoteMethod("untouchedleads", {
+    accepts: [{ arg: "userId", type: "any" }, { arg: "date", type: "date" }],
+    http: { path: "/untouchedleads" },
+    returns: [{ arg: "data", type: "array" }]
   });
 };
