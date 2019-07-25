@@ -201,5 +201,9 @@
   "Report": {
     "dataSource": "everyday",
     "public": true
+  },
+  "Invoice": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
