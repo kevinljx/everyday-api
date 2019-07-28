@@ -59,12 +59,11 @@ module.exports = function (Accessgroup) {
         var AccessRole = Accessgroup.app.models.AccessRole;
         var AccessGroupRole = Accessgroup.app.models.AccessGroupRole;
 
-        var userobj = await BaseUser.findOne({ where: { id: userId } });
+        var userobj = await BaseUser.findById(userId);
         var companyUsers = await BaseUser.find({
-            where: { company: userobj.company }
+            where: { companyId: userobj.companyId }
         });
-        for (const user of companyUsers) {
-
+        for (const user of companyUsers) {            
             var accessGroups = await Accessgroup.find({
                 where: { userId: user.id }
             });
@@ -117,7 +116,7 @@ module.exports = function (Accessgroup) {
         var AccessGroupRole = Accessgroup.app.models.AccessGroupRole;
         var userobj = await BaseUser.findOne({ where: { id: userId } });
         var companyUsers = await BaseUser.find({
-            where: { company: userobj.company }
+            where: { companyId: userobj.companyId }
         });
         var group = await Accessgroup.findById(id);
         if (companyUsers.find(user => { return user.id.equals(group.userId) }) == undefined) {

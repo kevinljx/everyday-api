@@ -146,8 +146,7 @@ module.exports = function(Baseuser) {
           }
       } else {
           ctx.query.where = whereClause;
-      }
-      //console.log(ctx);
+      }      
       return
   });
 

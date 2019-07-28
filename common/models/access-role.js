@@ -55,7 +55,7 @@ module.exports = function (Accessrole) {
         var AccessRight = Accessrole.app.models.AccessRight;
 
         var userobj = await BaseUser.findOne({ where: { id: userId } });
-        var companyUsers = await BaseUser.find({ where: { company: userobj.company } });
+        var companyUsers = await BaseUser.find({ where: { companyId: userobj.companyId } });
 
         for (const user of companyUsers) {
             var companyRoles = await Accessrole.find({ where: { userId: user.id } });
@@ -110,7 +110,7 @@ module.exports = function (Accessrole) {
         
         var userobj = await BaseUser.findOne({ where: { id: userId } });
         var companyUsers = await BaseUser.find({
-            where: { company: userobj.company }
+            where: { companyId: userobj.companyId }
         });
         var role = await Accessrole.findById(id);
         if (companyUsers.find(user => { return user.id.equals(role.userId) }) == undefined) {
