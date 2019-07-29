@@ -43,6 +43,10 @@
     },
     "pastEvents": {
       "type": "array"
+    },
+    "isConverted": {
+      "type": "boolean",
+      "default": false
     }
   },
   "validations": [],

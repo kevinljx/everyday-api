@@ -141,7 +141,7 @@ module.exports = function(Deal) {
       );
       const dealStage = await Deal.app.models.DealStage.find({ userId }).map(
         stage => {
-          return { name: stage.name, value: stage.id };
+          return { name: `${stage.name} - ${stage.chance}%`, value: stage.id };
         }
       );
       const dealType = await Deal.app.models.DealType.find({ userId }).map(

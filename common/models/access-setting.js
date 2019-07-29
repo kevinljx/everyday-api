@@ -89,7 +89,7 @@ module.exports = function (Accesssetting) {
 
     var userobj = await BaseUser.findOne({ where: { id: userId } });
     var companyUsers = await BaseUser.find({
-      where: { company: userobj.company }
+      where: { companyId: userobj.companyId }
     });
     for (const user of companyUsers) {
       var dataObj = { userid: user.id, username: user.name };

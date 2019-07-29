@@ -1,6 +1,11 @@
 "use strict";
 
 module.exports = function(Lead) {
+  //===========================================
+  //===========================================
+  // Computed Fields
+  //===========================================
+  //===========================================
   Lead.showFullAddress = function showFullAddress(lead) {
     var address = "";
     if (lead.baseContact) {
@@ -20,14 +25,14 @@ module.exports = function(Lead) {
         address += lead.baseContact._address.zip;
       }
     }
-
     return address;
   };
-
   Lead.showFullName = function showFullName(lead) {
     var fullName = "";
     if (lead.baseContact) {
-      fullName = lead.baseContact.firstName + " " + lead.baseContact.lastName;
+      fullName =
+        (lead.baseContact.firstName ? lead.baseContact.firstName + " " : "") +
+        lead.baseContact.lastName;
     }
     return fullName;
   };
@@ -50,6 +55,11 @@ module.exports = function(Lead) {
     }
   };
 
+  //===========================================
+  //===========================================
+  // Events
+  //===========================================
+  //===========================================
   Lead.showUpcoming = async function showUpcoming(lead) {
     var allUpcoming = [];
     var Event = Lead.app.models.Event;
@@ -66,7 +76,6 @@ module.exports = function(Lead) {
     });
     return allUpcoming;
   };
-
   Lead.showPast = async function showPast(lead) {
     var allPast = [];
     var Event = Lead.app.models.Event;
@@ -84,6 +93,11 @@ module.exports = function(Lead) {
     return allPast;
   };
 
+  //===========================================
+  //===========================================
+  // Convert Lead
+  //===========================================
+  //===========================================
   Lead.beforeRemote("convert", async function(ctx) {
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
@@ -156,8 +170,9 @@ module.exports = function(Lead) {
         newDeal = await Lead.app.models.Deal.findById(deal.id);
       }
 
-      // delete lead instance
+      // delete or set converted lead instance
       Lead.destroyById(lead.id);
+      //await lead.patchAttributes({ isConverted: true });
       return [newCust, newAcct, newDeal];
     } catch (e) {
       console.log(e);
@@ -180,6 +195,11 @@ module.exports = function(Lead) {
     ]
   });
 
+  //===========================================
+  //===========================================
+  // Transfer Record
+  //===========================================
+  //===========================================
   Lead.transfer = async function(leadIds, newOwner) {
     try {
       let updatedRecords = [];
@@ -194,7 +214,6 @@ module.exports = function(Lead) {
       throw e;
     }
   };
-
   Lead.remoteMethod("transfer", {
     accepts: [
       { arg: "leadIds", type: "array", required: true },
@@ -203,6 +222,11 @@ module.exports = function(Lead) {
     returns: [{ arg: "updatedRecords", type: "array" }]
   });
 
+  //===========================================
+  //===========================================
+  // Form Fields
+  //===========================================
+  //===========================================
   Lead.beforeRemote("formFields", async function(ctx) {
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
@@ -211,7 +235,6 @@ module.exports = function(Lead) {
     }
     return;
   });
-
   Lead.formFields = async function(userId) {
     try {
       const leadSource = await Lead.app.models.LeadSource.find({ userId }).map(
@@ -234,7 +257,7 @@ module.exports = function(Lead) {
       }).map(interest => {
         return { name: interest.name, value: interest.level };
       });
-      const users = await Lead.app.models.BaseUser.find().map(user => {
+      const users = await Lead.app.models.BaseUser.find({ userId }).map(user => {
         return { name: user.name, value: user.id };
       });
 
@@ -244,7 +267,6 @@ module.exports = function(Lead) {
       throw e;
     }
   };
-
   Lead.remoteMethod("formFields", {
     accepts: [{ arg: "userId", type: "any" }],
     http: { path: "/formFields", verb: "get" },
