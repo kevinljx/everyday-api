@@ -74,7 +74,7 @@ module.exports = function(Report) {
   Report.leadsByOwner = async function(startDate, endDate, userId) {
     try {
       var data = [];
-      const users = await Report.app.models.BaseUser.find();
+      const users = await Report.app.models.BaseUser.find({ userId });
       for (let i = 0; i < users.length; i++) {
         var userReport = {};
         userReport.name = users[i].name;
@@ -185,7 +185,7 @@ module.exports = function(Report) {
   Report.dealsByOwner = async function(startDate, endDate, userId) {
     try {
       var data = [];
-      const companyUsers = await Report.app.models.BaseUser.find();
+      const companyUsers = await Report.app.models.BaseUser.find({ userId });
       for (let i = 0; i < companyUsers.length; i++) {
         var userReport = {};
         userReport.name = companyUsers[i].name;

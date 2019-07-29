@@ -257,9 +257,11 @@ module.exports = function(Lead) {
       }).map(interest => {
         return { name: interest.name, value: interest.level };
       });
-      const users = await Lead.app.models.BaseUser.find().map(user => {
-        return { name: user.name, value: user.id };
-      });
+      const users = await Lead.app.models.BaseUser.find({ userId }).map(
+        user => {
+          return { name: user.name, value: user.id };
+        }
+      );
 
       return { leadSource, leadStatus, industry, leadInterest, users };
     } catch (e) {
