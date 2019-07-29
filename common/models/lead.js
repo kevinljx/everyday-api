@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function(Lead) {
+module.exports = function (Lead) {
   //===========================================
   //===========================================
   // Computed Fields
@@ -98,7 +98,7 @@ module.exports = function(Lead) {
   // Convert Lead
   //===========================================
   //===========================================
-  Lead.beforeRemote("convert", async function(ctx) {
+  Lead.beforeRemote("convert", async function (ctx) {
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
     if (userId) {
@@ -107,7 +107,7 @@ module.exports = function(Lead) {
     return;
   });
 
-  Lead.convert = async function(
+  Lead.convert = async function (
     leadID,
     dealDetails,
     existingAccountId,
@@ -200,7 +200,7 @@ module.exports = function(Lead) {
   // Transfer Record
   //===========================================
   //===========================================
-  Lead.transfer = async function(leadIds, newOwner) {
+  Lead.transfer = async function (leadIds, newOwner) {
     try {
       let updatedRecords = [];
       for (const leadId of leadIds) {
@@ -227,7 +227,7 @@ module.exports = function(Lead) {
   // Form Fields
   //===========================================
   //===========================================
-  Lead.beforeRemote("formFields", async function(ctx) {
+  Lead.beforeRemote("formFields", async function (ctx) {
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
     if (userId) {
@@ -235,7 +235,7 @@ module.exports = function(Lead) {
     }
     return;
   });
-  Lead.formFields = async function(userId) {
+  Lead.formFields = async function (userId) {
     try {
       const leadSource = await Lead.app.models.LeadSource.find({ userId }).map(
         source => {
@@ -257,9 +257,11 @@ module.exports = function(Lead) {
       }).map(interest => {
         return { name: interest.name, value: interest.level };
       });
-      const users = await Lead.app.models.BaseUser.find({ userId }).map(user => {
-        return { name: user.name, value: user.id };
-      });
+      const users = await Lead.app.models.BaseUser.find({ userId }).map(
+        user => {
+          return { name: user.name, value: user.id };
+        }
+      );
 
       return { leadSource, leadStatus, industry, leadInterest, users };
     } catch (e) {
