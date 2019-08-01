@@ -126,9 +126,11 @@ module.exports = function(Customer) {
           return { name: acct.name, value: acct.id };
         }
       );
-      const users = await Customer.app.models.BaseUser.find().map(user => {
-        return { name: user.name, value: user.id };
-      });
+      const users = await Customer.app.models.BaseUser.find({ userId }).map(
+        user => {
+          return { name: user.name, value: user.id };
+        }
+      );
 
       return { leadSource, accounts, users };
     } catch (e) {

@@ -149,9 +149,11 @@ module.exports = function(Deal) {
           return { name: type.name, value: type.id };
         }
       );
-      const users = await Deal.app.models.BaseUser.find().map(user => {
-        return { name: user.name, value: user.id };
-      });
+      const users = await Deal.app.models.BaseUser.find({ userId }).map(
+        user => {
+          return { name: user.name, value: user.id };
+        }
+      );
       const accounts = await Deal.app.models.Account.find({ userId }).map(
         acct => {
           return { name: acct.name, value: acct.id };
