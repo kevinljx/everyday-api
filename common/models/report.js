@@ -513,8 +513,8 @@ module.exports = function(Report) {
           ]
         }
       });
-      const closedWon = dealStages.filter(stage => stage.chance == 100);
-      const closedLoss = dealStages.filter(stage => stage.chance == 0);
+      const closedWon = dealStages.find(stage => stage.chance == 100);
+      const closedLoss = dealStages.find(stage => stage.chance == 0);
 
       // totalDealsWon: 3,
       const totalDealsWon = allDealsByUser.filter(
@@ -525,8 +525,8 @@ module.exports = function(Report) {
       // totalDeals: 0,
       const totalDeals = allDealsByUser.filter(
         deal =>
-          !deal.stageId.equals(closedWon[0].id) &&
-          !deal.stageId.equals(closedLoss[0].id)
+          !deal.stageId.equals(closedWon.id) &&
+          !deal.stageId.equals(closedLoss.id)
       );
       const totalDealsAmount = totalDeals.reduce(function(a, b) {
         return a + b.amount;
