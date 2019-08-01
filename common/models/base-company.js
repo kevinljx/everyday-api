@@ -191,8 +191,8 @@ module.exports = function (Company) {
     
     var options = {
       type: "email",
-      // to: context.args.email,
-      to: 'gianjie@ocdigitalnetwork.com',
+      to: context.args.email,
+      // to: 'gianjie@ocdigitalnetwork.com',
       from: "Everyday <donotreply@everyday.com.sg>",
       subject: "[Everyday] Thank you for registering",
       template: path.resolve(__dirname, "../../server/views/verify.ejs"),

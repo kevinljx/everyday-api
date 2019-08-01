@@ -4,8 +4,6 @@ module.exports = function(Quotation) {
 
 
     Quotation.quotations = async function (data) {
-      console.log('data quotations')
-
       // console.log(data)
       try {
 
@@ -16,7 +14,7 @@ module.exports = function(Quotation) {
         datum.quoteID = await Sequencesetting.generateNumber(userId, "Quotation")
         datum.terms = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id felis ut sapien finibus vestibulum. Ut eget faucibus ligula. Integer vitae vehicula est. Aenean id neque enim. Fusce tempus nibh at augue feugiat, at aliquet elit sollicitudin. Fusce tellus massa, sollicitudin sit amet malesuada nec, sagittis dignissim neque. Nunc lacinia placerat est, a euismod odio sagittis nec. Aenean rhoncus lorem eget felis tristique facilisis. Vivamus convallis, justo nec consectetur laoreet, felis ante euismod neque, sit amet condimentum dolor justo fringilla enim. Donec pulvinar nulla non malesuada sagittis."  
 
-        let result = await Quotation.create(datum)
+        await Quotation.create(datum)
 
         return [1, {}]
 

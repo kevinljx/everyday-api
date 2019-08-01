@@ -1,0 +1,108 @@
+{
+  "name": "Invoice",
+  "plural": "invoices",
+  "base": "BaseModel",
+  "idInjection": true,
+  "scope": {
+    "include": [
+      "notes"
+    ]
+  },
+  "properties": {
+    "date": {
+      "type": "date"
+    },
+    "latest": {
+      "type": "boolean",
+      "default": true
+    },
+    "quote_days": {
+      "type": "number"
+    },
+    "state": {
+      "type": "string",
+      "default": "Draft"
+    },
+    "sent_date": {
+      "type": "date",
+      "default": "$now"
+    },
+    "tnc": {
+      "type": "string"
+    },
+    "quoteID": {
+      "type": "string"
+    },
+    "currency": {
+      "type": "object"
+    },
+    "currency_rate": {
+      "type": "number"
+    },
+    "version": {
+      "type": "number",
+      "default": 1
+    },
+    "subtotal": {
+      "type": "number"
+    },
+    "tax_amount": {
+      "type": "number"
+    },
+    "discount_total": {
+      "type": "number"
+    },
+    "total": {
+      "type": "number"
+    },
+    "shipping_cost": {
+      "type": "number"
+    },
+    "custinfo": {
+      "type": "string"
+    },
+    "shipinfo": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "account": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": ""
+    },
+    "attn_to": {
+      "type": "belongsTo",
+      "model": "Customer",
+      "foreignKey": ""
+    },
+    "ship_to": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": ""
+    },
+    "tax": {
+      "type": "belongsTo",
+      "model": "Tax",
+      "foreignKey": ""
+    },
+    "discount": {
+      "type": "belongsTo",
+      "model": "DiscountSetting",
+      "foreignKey": ""
+    },
+    "events": {
+      "type": "hasMany",
+      "model": "Event",
+      "polymorphic": "eventable"
+    },
+    "notes": {
+      "type": "hasMany",
+      "model": "Note",
+      "polymorphic": "noteable"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
