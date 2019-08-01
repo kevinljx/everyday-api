@@ -130,6 +130,10 @@
     "dataSource": "everyday",
     "public": true
   },
+  "Invoice": {
+    "dataSource": "everyday",
+    "public": true
+  },
   "Account": {
     "dataSource": "everyday",
     "public": true

@@ -4,7 +4,6 @@ module.exports = function(Quotation) {
 
 
     Quotation.quotations = async function (data) {
-      console.log('posting')
       try {
 
         let datum = {...data}
@@ -27,8 +26,6 @@ module.exports = function(Quotation) {
       
       // Sequencesetting
     }
-
-    
     Quotation.remoteMethod("quotations", {
         accepts: [
           { arg: "data", type: "object" },
@@ -59,14 +56,11 @@ module.exports = function(Quotation) {
         return [1, currentQuotation]
 
       } catch (e) {
-        console.log(e)
         return [0, {}]
       }
       
       // Sequencesetting
     }
-
-    
     Quotation.remoteMethod("updateStatus", {
         accepts: [
           { arg: "data", type: "object" },
@@ -78,9 +72,8 @@ module.exports = function(Quotation) {
     });
 
 
-
     // Deep cloning the last mongo Object into object and resave as new entry
-    Quotation.convert = async function (data) {
+    Quotation.newVersion = async function (data) {
 
       try {
 
@@ -107,8 +100,7 @@ module.exports = function(Quotation) {
       }
 
     }
-
-    Quotation.remoteMethod("convert", {
+    Quotation.remoteMethod("newVersion", {
         accepts: [
           { arg: "data", type: "object" },
         ],
@@ -150,6 +142,43 @@ module.exports = function(Quotation) {
       ]
     });
 
+
+
+    Quotation.convertInvoice = async function (data){
+      console.log(data.id)
+
+      // get id,
+      // create new invoice de with the information in the quotation
+      // change state = Converted
+      // do we delete?
+      // what do we return?
+
+      try {
+      
+        let currentQuotation = await Quotation.findById(data.id)
+
+        currentQuotation.state = "Converted"
+        // previousQuotation.latest = true
+        // await previousQuotation.save()
+
+        return [1, currentQuotation]
+
+      } catch (e) {
+        return [0, {}]
+      }
+
+    }
+
+
+    Quotation.remoteMethod("convertInvoice", {
+      accepts: [
+        { arg: "data", type: "object" },
+      ],
+      returns: [
+        { arg: "success", type: "number" },
+        { arg: "data", type: "object" },
+      ]
+    })
 
 
 
