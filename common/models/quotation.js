@@ -4,19 +4,20 @@ module.exports = function(Quotation) {
 
 
     Quotation.quotations = async function (data) {
+      console.log(data)
       try {
 
         let datum = {...data}
-        const {userId} = datum
       
         // var Sequencesetting = Quotation.app.models.SequenceSetting
         // datum.quoteID = await Sequencesetting.generateNumber(userId, "Quotation")
 
         datum.quoteID = 'Not applicable'
+        datum.version = 1
         datum.terms = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id felis ut sapien finibus vestibulum. Ut eget faucibus ligula. Integer vitae vehicula est. Aenean id neque enim. Fusce tempus nibh at augue feugiat, at aliquet elit sollicitudin. Fusce tellus massa, sollicitudin sit amet malesuada nec, sagittis dignissim neque. Nunc lacinia placerat est, a euismod odio sagittis nec. Aenean rhoncus lorem eget felis tristique facilisis. Vivamus convallis, justo nec consectetur laoreet, felis ante euismod neque, sit amet condimentum dolor justo fringilla enim. Donec pulvinar nulla non malesuada sagittis."  
 
         await Quotation.create(datum)
-
+        console.log('created!')
         return [1, {}]
 
       } catch (e) {
@@ -143,33 +144,36 @@ module.exports = function(Quotation) {
     });
 
 
-
     Quotation.convertInvoice = async function (data){
-      console.log(data.id)
-
-      // get id,
-      // create new invoice de with the information in the quotation
-      // change state = Converted
-      // do we delete?
-      // what do we return?
 
       try {
       
         let currentQuotation = await Quotation.findById(data.id)
 
         currentQuotation.state = "Converted"
-        // previousQuotation.latest = true
-        // await previousQuotation.save()
+        var Sequencesetting = Quotation.app.models.SequenceSetting
+        currentQuotation.quoteID = await Sequencesetting.generateNumber(currentQuotation.userId, "Quotation")
+        await currentQuotation.save()
+
+        // create invoice
+        var Invoice = Quotation.app.models.Invoice
+        var newInvoice = JSON.parse(JSON.stringify(currentQuotation))
+        delete newInvoice.id;
+
+        newInvoice.quoteID = await Sequencesetting.generateNumber(newInvoice.userId, "Invoice")
+        newInvoice.state = "Confirmed"
+        newInvoice.terms = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id felis ut sapien finibus vestibulum. Ut eget faucibus ligula. Integer vitae vehicula est. Aenean id neque enim. Fusce tempus nibh at augue feugiat, at aliquet elit sollicitudin. Fusce tellus massa, sollicitudin sit amet malesuada nec, sagittis dignissim neque. Nunc lacinia placerat est, a euismod odio sagittis nec. Aenean rhoncus lorem eget felis tristique facilisis. Vivamus convallis, justo nec consectetur laoreet, felis ante euismod neque, sit amet condimentum dolor justo fringilla enim. Donec pulvinar nulla non malesuada sagittis."  
+        await Invoice.create(newInvoice)
+
 
         return [1, currentQuotation]
 
       } catch (e) {
+        console.log(e)
         return [0, {}]
       }
 
     }
-
-
     Quotation.remoteMethod("convertInvoice", {
       accepts: [
         { arg: "data", type: "object" },
