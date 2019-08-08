@@ -209,5 +209,13 @@
   "Widget": {
     "dataSource": "everyday",
     "public": true
+  },
+  "account_reconcile": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "account_payment": {
+    "dataSource": "everyday",
+    "public": true
   }
 }

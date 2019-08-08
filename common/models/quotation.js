@@ -4,13 +4,9 @@ module.exports = function(Quotation) {
 
 
     Quotation.quotations = async function (data) {
-      console.log(data)
       try {
 
         let datum = {...data}
-      
-        // var Sequencesetting = Quotation.app.models.SequenceSetting
-        // datum.quoteID = await Sequencesetting.generateNumber(userId, "Quotation")
 
         datum.quoteID = 'Not applicable'
         datum.version = 1
@@ -132,7 +128,6 @@ module.exports = function(Quotation) {
       }
 
     }
-
     Quotation.remoteMethod("revertQuotation", {
       accepts: [
         { arg: "data", type: "object" },

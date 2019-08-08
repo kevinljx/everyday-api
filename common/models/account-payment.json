@@ -1,0 +1,38 @@
+{
+  "name": "account_payment",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "amount": {
+      "type": "number"
+    },
+    "customer": {
+      "type": "string"
+    },
+    "paid_amount": {
+      "type": "number"
+    },
+    "paid_date": {
+      "type": "date"
+    },
+    "payment_method": {
+      "type": "string"
+    },
+    "payment_ref": {
+      "type": "string"
+    },
+    "memo": {
+      "type": "string"
+    },
+    "payment_differences": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

@@ -1,0 +1,32 @@
+{
+  "name": "account_reconcile",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "debit_id": {
+      "type": "string"
+    },
+    "debit_type": {
+      "type": "number"
+    },
+    "credit_id": {
+      "type": "string"
+    },
+    "credit_type": {
+      "type": "number"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "reconciled": {
+      "type": "boolean"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
