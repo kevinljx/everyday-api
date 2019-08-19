@@ -1,5 +1,5 @@
 {
-  "name": "account_payment",
+  "name": "AccountPayment",
   "base": "BaseModel",
   "idInjection": true,
   "options": {

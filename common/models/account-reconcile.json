@@ -1,5 +1,5 @@
 {
-  "name": "account_reconcile",
+  "name": "AccountReconcile",
   "base": "BaseModel",
   "idInjection": true,
   "options": {
