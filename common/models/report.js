@@ -185,21 +185,22 @@ module.exports = function(Report) {
   Report.dealsByOwner = async function(startDate, endDate, userId) {
     try {
       var data = [];
+      const closedStages = await Report.app.models.DealStage.find({
+        userId,
+        where: { or: [{ chance: 0 }, { chance: 100 }] }
+      }).map(deal => deal.id);
+
       const companyUsers = await Report.app.models.BaseUser.find({ userId });
       for (let i = 0; i < companyUsers.length; i++) {
-        var userReport = {};
-        userReport.name = companyUsers[i].name;
-        var deals = await Report.app.models.Deal.find(
-          {
-            where: {
-              and: [
-                { createdAt: { between: [startDate, endDate] } },
-                { userId: companyUsers[i].id }
-              ]
-            }
-          },
-          userId
-        ).map(deal => ({
+        var deals = await Report.app.models.Deal.find({
+          where: {
+            and: [
+              { createdAt: { between: [startDate, endDate] } },
+              { userId: companyUsers[i].id },
+              { stageId: { nin: closedStages } }
+            ]
+          }
+        }).map(deal => ({
           name: deal.name,
           amount: deal.amount,
           closingDate: deal.closingDate,
@@ -208,11 +209,13 @@ module.exports = function(Report) {
           chance: deal.stageInfo.chance,
           accountInfo: deal.accountInfo.name
         }));
-        userReport.totalDeals = deals.length;
-        userReport.totalAmount = deals.reduce(function(a, b) {
-          return a + b["amount"];
-        }, 0);
-        userReport.deals = deals;
+
+        var userReport = {
+          name: companyUsers[i].name,
+          totalDeals: deals.length,
+          totalAmount: deals.reduce((a, b) => a + b["amount"], 0),
+          deals
+        };
         data.push(userReport);
       }
       return data;
@@ -247,33 +250,28 @@ module.exports = function(Report) {
       var data = [];
       const type = await Report.app.models.DealType.find({ userId });
       for (let i = 0; i < type.length; i++) {
-        var typeReport = {};
-        typeReport.name = type[i].name;
-        typeReport.color = type[i].color;
-        var deals = await Report.app.models.Deal.find(
-          {
-            where: {
-              and: [
-                { createdAt: { between: [startDate, endDate] } },
-                { typeId: type[i].id }
-              ]
-            }
-          },
-          userId
-        ).map(deal => ({
+        var deals = await Report.app.models.Deal.find({
+          where: {
+            and: [
+              { createdAt: { between: [startDate, endDate] } },
+              { typeId: type[i].id }
+            ]
+          }
+        }).map(deal => ({
           name: deal.name,
-          amount: deal.amount,
           closingDate: deal.closingDate,
           userInfo: deal.userInfo.name,
           stage: deal.stageInfo.name,
           chance: deal.stageInfo.chance,
           accountInfo: deal.accountInfo.name
         }));
-        typeReport.totalDeals = deals.length;
-        typeReport.totalAmount = deals.reduce(function(a, b) {
-          return a + b["amount"];
-        }, 0);
-        typeReport.deals = deals;
+        var typeReport = {
+          name: type[i].name,
+          color: type[i].color,
+          totalDeals: deals.length,
+          totalAmount: deals.reduce((a, b) => a + b["amount"], 0),
+          deals
+        };
         data.push(typeReport);
       }
       return data;
@@ -308,8 +306,6 @@ module.exports = function(Report) {
       var data = [];
       const stage = await Report.app.models.DealStage.find({ userId });
       for (let i = 0; i < stage.length; i++) {
-        var pipelineReport = {};
-        pipelineReport.name = `${stage[i].name} - ${stage[i].chance}%`;
         var deals = await Report.app.models.Deal.find({
           userId: userId,
           where: {
@@ -328,11 +324,12 @@ module.exports = function(Report) {
           chance: deal.stageInfo.chance,
           accountInfo: deal.accountInfo.name
         }));
-        pipelineReport.totalDeals = deals.length;
-        pipelineReport.totalAmount = deals.reduce(function(a, b) {
-          return a + b["amount"];
-        }, 0);
-        pipelineReport.deals = deals;
+        var pipelineReport = {
+          name: `${stage[i].name} - ${stage[i].chance}%`,
+          totalDeals: deals.length,
+          totalAmount: deals.reduce((a, b) => a + b["amount"], 0),
+          deals
+        };
         data.push(pipelineReport);
       }
       return data;
@@ -371,35 +368,33 @@ module.exports = function(Report) {
   Report.topSpenderAcct = async function(startDate, endDate, userId) {
     try {
       var data = [];
-      const closedLoss = await Report.app.models.DealStage.find({
+      const closedWon = await Report.app.models.DealStage.find({
         userId: userId,
-        where: { chance: 0 }
+        where: { chance: 100 }
       });
       const accounts = await Report.app.models.Account.find({ userId: userId });
       for (let i = 0; i < accounts.length; i++) {
-        var allDealsWon = await Report.app.models.Deal.find({
+        var allDeals = await Report.app.models.Deal.find({
           where: {
             and: [
-              { stageId: { neq: closedLoss[0].id } },
+              { stageId: closedWon[0].id },
               { accountId: accounts[i].id },
               { closingDate: { between: [startDate, endDate] } }
             ]
           }
         });
-        if (allDealsWon.length > 0) {
-          var acctReport = {};
-          acctReport.name = accounts[i].name;
-          var deals = allDealsWon.map(deal => ({
+        if (allDeals.length > 0) {
+          var deals = allDeals.map(deal => ({
             name: deal.name,
             amount: deal.amount,
             closingDate: deal.closingDate,
-            stage: deal.stageInfo.name,
-            chance: deal.stageInfo.chance
+            stage: deal.stageInfo.name
           }));
-          acctReport.totalSpent = allDealsWon.reduce(function(a, b) {
-            return a + b.amount;
-          }, 0);
-          acctReport.deals = deals;
+          var acctReport = {
+            name: accounts[i].name,
+            totalSpent: allDeals.reduce((a, b) => a + b.amount, 0),
+            deals
+          };
           data.push(acctReport);
         }
       }
@@ -440,9 +435,9 @@ module.exports = function(Report) {
   Report.topSpenderCust = async function(startDate, endDate, userId) {
     try {
       var data = [];
-      const closedLoss = await Report.app.models.DealStage.find({
+      const closedWon = await Report.app.models.DealStage.find({
         userId: userId,
-        where: { chance: 0 }
+        where: { chance: 100 }
       });
       const customers = await Report.app.models.Customer.find({
         userId: userId
@@ -451,15 +446,13 @@ module.exports = function(Report) {
         var allDealsWon = await Report.app.models.Deal.find({
           where: {
             and: [
-              { stageId: { neq: closedLoss[0].id } },
+              { stageId: closedWon[0].id },
               { customerId: customers[i].id },
               { closingDate: { between: [startDate, endDate] } }
             ]
           }
         });
         if (allDealsWon.length > 0) {
-          var custReport = {};
-          custReport.name = customers[i].name;
           var deals = allDealsWon.map(deal => ({
             name: deal.name,
             amount: deal.amount,
@@ -467,10 +460,11 @@ module.exports = function(Report) {
             stage: deal.stageInfo.name,
             chance: deal.stageInfo.chance
           }));
-          custReport.totalSpent = allDealsWon.reduce(function(a, b) {
-            return a + b.amount;
-          }, 0);
-          custReport.deals = deals;
+          var custReport = {
+            name: customers[i].name,
+            totalSpent: allDealsWon.reduce((a, b) => a + b.amount, 0),
+            deals
+          };
           data.push(custReport);
         }
       }
@@ -513,24 +507,24 @@ module.exports = function(Report) {
           ]
         }
       });
-      const closedWon = dealStages.filter(stage => stage.chance == 100);
-      const closedLoss = dealStages.filter(stage => stage.chance == 0);
+      const closedWon = dealStages.find(stage => stage.chance == 100);
+      const closedLoss = dealStages.find(stage => stage.chance == 0);
 
       // totalDealsWon: 3,
+      // totalClosedAmount
       const totalDealsWon = allDealsByUser.filter(
         deal => deal.stageInfo.chance == 100
       );
+      const totalClosedAmount = totalDealsWon.reduce((a, b) => a + b.amount, 0);
 
       // totalDealsAmt: 40000,
       // totalDeals: 0,
       const totalDeals = allDealsByUser.filter(
         deal =>
-          !deal.stageId.equals(closedWon[0].id) &&
-          !deal.stageId.equals(closedLoss[0].id)
+          !deal.stageId.equals(closedWon.id) &&
+          !deal.stageId.equals(closedLoss.id)
       );
-      const totalDealsAmount = totalDeals.reduce(function(a, b) {
-        return a + b.amount;
-      }, 0);
+      const totalDealsAmount = totalDeals.reduce((a, b) => a + b.amount, 0);
 
       // totalLeads: 8,
       const totalLeads = await Report.app.models.Lead.find({
@@ -631,6 +625,7 @@ module.exports = function(Report) {
         totalDealsWon: totalDealsWon.length,
         totalDeals: totalDeals.length,
         totalLeads: totalLeads.length,
+        totalClosedAmount,
         totalDealsAmount,
         accountsToDeals,
         leadStatus,
@@ -653,5 +648,74 @@ module.exports = function(Report) {
     ],
     http: { path: "/individualsales" },
     returns: [{ arg: "data", type: "object" }]
+  });
+
+  //==============================================================
+  //==============================================================
+  // CLOSED DEAL REPORT
+  //==============================================================
+  //==============================================================
+
+  /**
+   * Closed Deals by owner
+   */
+  Report.beforeRemote("wonByOwner", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+  Report.wonByOwner = async function(startDate, endDate, userId) {
+    try {
+      var data = [];
+      const closedStages = await Report.app.models.DealStage.findOne({
+        userId,
+        where: { chance: 100 }
+      });
+
+      const companyUsers = await Report.app.models.BaseUser.find({ userId });
+      for (let i = 0; i < companyUsers.length; i++) {
+        var deals = await Report.app.models.Deal.find({
+          where: {
+            and: [
+              { createdAt: { between: [startDate, endDate] } },
+              { userId: companyUsers[i].id },
+              { stageId: closedStages.id }
+            ]
+          }
+        }).map(deal => ({
+          name: deal.name,
+          amount: deal.amount,
+          closingDate: deal.closingDate,
+          userInfo: deal.userInfo.name,
+          stage: deal.stageInfo.name,
+          chance: deal.stageInfo.chance,
+          accountInfo: deal.accountInfo.name
+        }));
+
+        var userReport = {
+          name: companyUsers[i].name,
+          totalDeals: deals.length,
+          totalAmount: deals.reduce((a, b) => a + b["amount"], 0),
+          deals
+        };
+        data.push(userReport);
+      }
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Report.remoteMethod("wonByOwner", {
+    accepts: [
+      { arg: "startDate", type: "date", required: true },
+      { arg: "endDate", type: "date", required: true },
+      { arg: "userId", type: "any" }
+    ],
+    http: { path: "/closedbyowner" },
+    returns: [{ arg: "data", type: "array" }]
   });
 };

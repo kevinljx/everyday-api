@@ -33,7 +33,7 @@ module.exports = function(Widget) {
       const dealsWon = totalDeals.filter(deal => deal.stageInfo.chance == 100);
       var dealsWonAmount = 0;
       if (dealsWon.length > 0)
-        dealsWonAmount = dealsWon.reduce((a, b) => a + b.amount);
+        dealsWonAmount = dealsWon.reduce((a, b) => a + b.amount, 0);
 
       var data = {
         totalLeads,
