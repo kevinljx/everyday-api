@@ -1,9 +1,11 @@
 {
-  "name": "account_reconcile",
+  "name": "AccountReconcile",
+  "plural": "accountreconciles",
   "base": "BaseModel",
   "idInjection": true,
   "options": {
-    "validateUpsert": true
+    "validateUpsert": true,
+    "strictObjectIDCoercion": true
   },
   "properties": {
     "debit_id": {

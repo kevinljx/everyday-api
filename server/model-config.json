@@ -210,11 +210,11 @@
     "dataSource": "everyday",
     "public": true
   },
-  "account_reconcile": {
+  "AccountReconcile": {
     "dataSource": "everyday",
     "public": true
   },
-  "account_payment": {
+  "AccountPayment": {
     "dataSource": "everyday",
     "public": true
   }

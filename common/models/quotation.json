@@ -3,6 +3,10 @@
   "plural": "quotations",
   "base": "BaseModel",
   "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "strictObjectIDCoercion": true
+  },
   "scope": {
     "include": [
       "notes"
