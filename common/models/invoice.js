@@ -1,5 +1,6 @@
 'use strict';
 
+
 module.exports = function(Invoice) {
 
 
@@ -26,7 +27,6 @@ module.exports = function(Invoice) {
         
         // Sequencesetting
     }
-  
     Invoice.remoteMethod("invoices", {
         accepts: [
           { arg: "data", type: "object" },
@@ -57,7 +57,7 @@ module.exports = function(Invoice) {
           const Sequencesetting = Invoice.app.models.SequenceSetting
           currentInvoice.quoteID = await Sequencesetting.generateNumber(currentInvoice.userId, "Invoice")
           currentInvoice.state = data.value
-        
+      
         }        
 
         await currentInvoice.save()
@@ -70,7 +70,6 @@ module.exports = function(Invoice) {
       
       // Sequencesetting
     }
-  
     Invoice.remoteMethod("updateStatus", {
       accepts: [
         { arg: "data", type: "object" },
@@ -111,7 +110,6 @@ module.exports = function(Invoice) {
       }
 
     }
-
     Invoice.remoteMethod("convert", {
         accepts: [
           { arg: "data", type: "object" },
@@ -123,8 +121,50 @@ module.exports = function(Invoice) {
     });
 
 
+    
+    Invoice.beforeRemote("getAllInvoices", async function (ctx) {
+      var token = ctx.req.accessToken;
+      var userId = token && token.userId;
+      if (userId) {
+        ctx.args.userId = userId;
+      }
+      return;
+    });
+    
+    Invoice.getAllInvoices = async function (userId) {
+     
+      try {
+        const InvoiceSource = await Invoice.find({ userId }).map(
+          source => {
+            
+            return { 
+              quoteID: source.quoteID, 
+              id: source.id,  
+              attn_toId: 
+              source.attn_toId, 
+              totalAmt: source.totalAmt, 
+              sent_date:source.sent_date, 
+              dueDate:source.dueDate, 
+              version:source.version, 
+              state:source.state,
+              companyName: source.companyName
+            };
+          }
+        );
 
+        return InvoiceSource
 
+      } catch (e) {
+        console.log(e);
+        throw e;
+      }
+    };
+
+    Invoice.remoteMethod("getAllInvoices", {
+      accepts: [{ arg: "userId", type: "any" }],
+      http: { path: "/getAllInvoices", verb: "get" },
+      returns: [{ arg: "fields", type: "object" }]
+    });
 
       
 };

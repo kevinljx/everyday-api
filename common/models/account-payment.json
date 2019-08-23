@@ -1,5 +1,6 @@
 {
   "name": "AccountPayment",
+  "plural": "accountpayments",
   "base": "BaseModel",
   "idInjection": true,
   "options": {
@@ -28,6 +29,9 @@
       "type": "string"
     },
     "payment_differences": {
+      "type": "string"
+    },
+    "invoiceId": {
       "type": "string"
     }
   },

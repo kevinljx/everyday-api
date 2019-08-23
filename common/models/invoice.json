@@ -3,6 +3,10 @@
   "plural": "invoices",
   "base": "BaseModel",
   "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "strictObjectIDCoercion": true
+  },
   "scope": {
     "include": [
       "notes"
@@ -63,6 +67,10 @@
     },
     "shipinfo": {
       "type": "string"
+    },
+    "reconcile": {
+      "type": "boolean",
+      "default": false
     }
   },
   "validations": [],
@@ -75,6 +83,11 @@
     "attn_to": {
       "type": "belongsTo",
       "model": "Customer",
+      "foreignKey": ""
+    },
+    "accountId": {
+      "type": "belongsTo",
+      "model": "Account",
       "foreignKey": ""
     },
     "ship_to": {

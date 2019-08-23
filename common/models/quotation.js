@@ -3,7 +3,11 @@
 module.exports = function(Quotation) {
 
 
-    Quotation.quotations = async function (data) {
+    Quotation.submitQuotations = async function (data) {
+      
+      console.log('data')
+      console.log(data)
+
       try {
 
         let datum = {...data}
@@ -13,27 +17,25 @@ module.exports = function(Quotation) {
         datum.terms = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id felis ut sapien finibus vestibulum. Ut eget faucibus ligula. Integer vitae vehicula est. Aenean id neque enim. Fusce tempus nibh at augue feugiat, at aliquet elit sollicitudin. Fusce tellus massa, sollicitudin sit amet malesuada nec, sagittis dignissim neque. Nunc lacinia placerat est, a euismod odio sagittis nec. Aenean rhoncus lorem eget felis tristique facilisis. Vivamus convallis, justo nec consectetur laoreet, felis ante euismod neque, sit amet condimentum dolor justo fringilla enim. Donec pulvinar nulla non malesuada sagittis."  
 
         await Quotation.create(datum)
+
         console.log('created!')
         return [1, {}]
 
       } catch (e) {
-
+        console.log(e)
         return [0, {}]
       }
       
-      // Sequencesetting
     }
-    Quotation.remoteMethod("quotations", {
-        accepts: [
-          { arg: "data", type: "object" },
-        ],
-        http: {path: '/', verb: 'post'},
+
+    Quotation.remoteMethod("submitQuotations", {
+        accepts: [{ arg: "data", type: "object" },],
+        http: {path: '/submitQuotations', verb: 'post'},
         returns: [
           { arg: "success", type: "number" },
           { arg: "data", type: "object" },
         ]
     });
-
 
     Quotation.updateStatus = async function (data) {
 
@@ -67,7 +69,6 @@ module.exports = function(Quotation) {
           { arg: "data", type: "object" },
         ]
     });
-
 
     // Deep cloning the last mongo Object into object and resave as new entry
     Quotation.newVersion = async function (data) {
@@ -107,7 +108,6 @@ module.exports = function(Quotation) {
         ]
     });
    
-
     // Delete the latest quotation and convert last second as Open invoice
     Quotation.revertQuotation = async function (data) {
 
@@ -137,7 +137,6 @@ module.exports = function(Quotation) {
         { arg: "data", type: "object" },
       ]
     });
-
 
     Quotation.convertInvoice = async function (data){
 
@@ -179,6 +178,111 @@ module.exports = function(Quotation) {
       ]
     })
 
+
+    Quotation.beforeRemote("formFields", async function (ctx) {
+      var token = ctx.req.accessToken;
+      var userId = token && token.userId;
+      if (userId) {
+        ctx.args.userId = userId;
+      }
+      return;
+    });
+
+    Quotation.formFields = async function (userId) {
+
+      try {
+
+        const AccountSource = await Quotation.app.models.Account.find({ userId }).map(
+          async (source) => {
+            const address = source.baseContact._address.address_1 + " " + source.baseContact._address.address_2 + " " + source.baseContact._address.city + " " + source.baseContact._address.zip
+            
+            const customerID = await Quotation.app.models.Customer.find({accountId: source.id})
+
+            let customer = []
+            customerID.map(item =>{
+              if(String(item.accountId) == String(source.id)){
+                customer.push({
+                  name : item.name,
+                  value : item.id
+                })
+              }
+            })
+            
+            return { name: source.name, value: source.id, address:address, customer: customer };
+
+          }
+        );
+
+        const users = await Quotation.app.models.BaseUser.find({ userId }).map(
+          user => {
+            return { name: user.name, value: user.id };
+          }
+        );
+
+
+        // console.log({AccountSource, users})
+        return [AccountSource, users];
+
+      } catch (e) {
+        console.log(e);
+        throw e;
+      }
+    };
+
+    Quotation.remoteMethod("formFields", {
+      accepts: [{ arg: "userId", type: "any" }],
+      http: { path: "/formFields", verb: "get" },
+      returns: [{ arg: "fields", type: "any" }]
+    });
+
+
+
+
+
+    Quotation.beforeRemote("getAllQuotations", async function (ctx) {
+      var token = ctx.req.accessToken;
+      var userId = token && token.userId;
+      if (userId) {
+        ctx.args.userId = userId;
+      }
+      return;
+    });
+
+    Quotation.getAllQuotations = async function (userId) {
+    
+      try {
+
+        const QuotationSource = await Quotation.find({ userId }).map(
+           (source) => {
+            // console.log("source")
+            console.log(source.companyName)
+            return { 
+              id:source.id,
+              quoteID: source.quoteID, 
+              sent_date: source.sentOn, 
+              dueDate:source.dueDate,
+              totalAmt:source.totalAmt, 
+              version: source.version,
+              state : source.state,
+              companyName: source.companyName
+            };
+          }
+        );
+
+        // console.log({AccountSource, users})
+        return QuotationSource;
+
+      } catch (e) {
+        console.log(e);
+        throw e;
+      }
+    };
+    
+    Quotation.remoteMethod("getAllQuotations", {
+      accepts: [{ arg: "userId", type: "any" }],
+      http: { path: "/getAllQuotations", verb: "get" },
+      returns: [{ arg: "fields", type: "any" }]
+    });
 
 
 };
