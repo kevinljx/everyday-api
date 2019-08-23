@@ -12,14 +12,13 @@ module.exports = function(Accountpayment) {
       });
   
     Accountpayment.getAllPayments = async function (userId) {
-        console.log('userId')
-        console.log(userId)
+      
         try {
   
           const PaymentSource = await Accountpayment.find({ userId }).map(
             async (source) => {
                 let dataSource =  source
-                console.log("source")
+
                 const setup = {
                     id : source.customer,
                     name: source.customerName
