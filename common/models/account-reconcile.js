@@ -21,8 +21,6 @@ module.exports = function(Accountreconcile) {
             reconciled : false,
           }
 
-          console.log('item payment and reconcile created')
-
           await Accountreconcile.create(reconcile_object)
 
           return [1, {}]
@@ -126,8 +124,7 @@ module.exports = function(Accountreconcile) {
     Accountreconcile.getSingleCompanyPayments = async function(data) {
 
         const companyId = data
-        console.log("companyId")
-        console.log(companyId)
+       
         try {
 
             let getAllInvoicesPayment = []
@@ -136,7 +133,6 @@ module.exports = function(Accountreconcile) {
         
             const confirmedInvoices = await Invoice.find({where : {'accountId.value': String(companyId), state: "Confirmed", }})
                  
-            console.log(confirmedInvoices.length)
 
             for (const perInvoice of confirmedInvoices) { 
 
@@ -167,7 +163,6 @@ module.exports = function(Accountreconcile) {
             })
 
           
-            console.log(getAllInvoicesPayment)
             return [1, getAllInvoicesPayment, Company]
           
         } catch (e) {
