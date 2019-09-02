@@ -69,13 +69,14 @@ module.exports = function(Account) {
   Account.showAllCustomer = async function showAllCustomer(acct) {
     var allCustomer = await Account.app.models.Customer.find({
       where: {
-        and: [{ accountId: acct.id }, { isActive: true }]
+        and: [{ accountId: acct.id }]
       },
       fields: {
         name: true,
         id: true,
         accountId: false,
-        baseContact: true
+        baseContact: true,
+        isActive: true
       }
     });
     return allCustomer;

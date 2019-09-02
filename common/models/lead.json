@@ -11,8 +11,6 @@
       "properties": {
         "fullAddress": "showFullAddress",
         "name": "showFullName",
-        "upcomingEvents": "showUpcoming",
-        "pastEvents": "showPast",
         "sourceInfo": "showSourceInfo",
         "statusInfo": "showStatusInfo",
         "industryInfo": "showIndustryInfo"
@@ -21,9 +19,7 @@
     "DeleteHistory": true
   },
   "scope": {
-    "include": [
-      "notes"
-    ]
+    "include": ["notes", "events"]
   },
   "properties": {
     "companyName": {

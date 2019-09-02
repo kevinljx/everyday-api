@@ -7,6 +7,9 @@
     "validateUpsert": true,
     "strictObjectIDCoercion": true
   },
+  "scope": {
+    "order": "createdAt DESC"
+  },
   "properties": {
     "title": {
       "type": "string",
@@ -22,7 +25,7 @@
     },
     "desc": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "location": {
       "type": "string"
