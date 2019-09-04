@@ -50,8 +50,8 @@ module.exports = function (Company) {
 
         // user info
         // { firstName: 'Hello', lastName: 'World' }
-        var name = userInfo.lastName + " " + userInfo.firstName;
-
+        var name = userInfo.firstName + " " + userInfo.lastName;
+        console.log(userInfo);
         if (userInfo == null) {
           userInfo = { email: email };
         } else {
@@ -59,7 +59,7 @@ module.exports = function (Company) {
             userInfo.email = email;
           }
           if (userInfo.hasOwnProperty("name")) {
-            name = userInfo.lastName + " " + userInfo.firstName;;
+            name = userInfo.firstName + " " + userInfo.lastName;;
           }
         }
 
@@ -67,7 +67,7 @@ module.exports = function (Company) {
           name: name,
           email: email,
           password: password,
-          contact: userInfo,
+          baseContact: userInfo,
           company: comp
         });
 
@@ -190,7 +190,7 @@ module.exports = function (Company) {
 
   Company.afterRemote("signup", function (context, user, next) {
     var BaseUser = Company.app.models.BaseUser;
-    
+
     var options = {
       type: "email",
       to: context.args.email,
@@ -210,7 +210,7 @@ module.exports = function (Company) {
       }
       // No error, send new user email verification
     });
-    
+
     next();
   });
 };
