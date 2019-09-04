@@ -21,35 +21,27 @@ module.exports = function(app) {
 
   // verified
   app.get('/verified', async (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../views/verified.html"));
-
-    // let link = ""
-    // if(app.settings.host=="localhost"){
-    //   link = "localhost/login"
-    // } else {
-    //   link = "cloud.everydaycrm.sg/login"
-    // }
-
-
-    // // href="{{link}}"
-    // readHTMLFile(
-    //   path.resolve(__dirname, "../views/verified.html"),
-    //   function(err, html) {
-
-    //     const resetPassURL = link
-
-    //     var template = handlebars.compile(html);
-    //     var replacements = { link: resetPassURL };
-    //     var htmlToSend = template(replacements);
-        
-        
-    //     res.sendFile(htmlToSend);
-    //   }
-    // );
-
-
+    res.render('verified', {
+      redirectUrl: '/login',
+    });
   });
   
+
+  app.get('/login', function(req, res) {
+    // Process the data received in req.body
+
+    const config = app.settings.host
+    // const config = "api"
+
+    let link = ''
+    if(config == "localhost"){
+      link = "http://localhost:3000/login"
+    } else {
+      link = "https://cloud.everydaycrm.sg/login"
+    }
+
+    res.redirect(link);
+  });
 
   //show password reset form
   app.get('/reset-password', function(req, res, next) {
