@@ -18,13 +18,13 @@ module.exports = function(Baseuser) {
   // invoke resend email
   Baseuser.verify = async function(id) {
     var user = await Baseuser.findById(id);
-    console.log(user);
+    // console.log(user);
     // replace to Email address with user[0].email
     var options = {
       type: "email",
       to: user.baseContact.email,
-      from: "Everyday <donotreply@everyday.com.sg>",
-      subject: "[Everyday] Please verify your email address",
+      from: "Ester from Everyday <hello@everydaycrm.sg>",
+      subject: "Please verify your email address",
       template: path.resolve(__dirname, "../../server/views/verify.ejs"),
       redirect: `/verified`,
       user: Baseuser
@@ -64,10 +64,9 @@ module.exports = function(Baseuser) {
         Baseuser.app.models.Email.send(
           {
             // uncomment to info.email, for production.
-            // to : info.email
-            to: info.email,
-            from: "Everyday <donotreply@everyday.com.sg>",
-            subject: "[Everyday] Please reset your password",
+            to : info.email,
+            from: "Ester from Everyday <hello@everydaycrm.sg>",
+            subject: "Reset your password",
             html: htmlToSend
           },
           function(err) {
@@ -92,13 +91,17 @@ module.exports = function(Baseuser) {
   // render UI page after password reset
   // redirectTo actualy everyday domain website
   Baseuser.afterRemote("setPassword", function(context, user, next) {
+
+
+
     context.res.render("response", {
       title: "Password reset success",
       content: "Your password has been reset successfully",
-      redirectTo: "http://localhost:3000/login",
-      redirectToLinkText: "Log in"
+      redirectTo: "https://cloud.everydaycrm.sg/login",
+      redirectToLinkText: "Click to login"
     });
   });
+
   function companyOnlyQuery(ctx, companyId) {
     var whereClause = { companyId: companyId };
     var filter = ctx.args.filter || {};

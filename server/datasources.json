@@ -24,8 +24,8 @@
         "secure": true,
         "port": 465,
         "auth": {
-          "user": "everydayocdn@gmail.com",
-          "pass": "Ocdigital"
+          "user": "hello@everydaycrm.sg",
+          "pass": "Ocdigital123"
         }
       }
     ]

@@ -63,6 +63,9 @@ module.exports = function (Company) {
           }
         }
 
+        console.log('userInfo')
+        console.log(userInfo)
+
         var newuser = await BaseUser.create({
           name: name,
           email: email,
@@ -70,6 +73,7 @@ module.exports = function (Company) {
           contact: userInfo,
           company: comp
         });
+
 
         comp.paymentInfos.create(paymentInfo);
 
@@ -190,12 +194,14 @@ module.exports = function (Company) {
 
   Company.afterRemote("signup", function (context, user, next) {
     var BaseUser = Company.app.models.BaseUser;
-    
+
+
     var options = {
       type: "email",
-      to: context.args.email,
-      from: "Everyday <donotreply@everyday.com.sg>",
-      subject: "[Everyday] Thank you for registering",
+      // to: context.args.email,
+      to : `igc14.gianjie@gmail.com`,
+      from: "Ester from Everyday <hello@everydaycrm.sg>",
+      subject: "Thank you for registering",
       template: path.resolve(__dirname, "../../server/views/verify.ejs"),
       redirect: `/verified`,
       user: BaseUser,
@@ -204,10 +210,13 @@ module.exports = function (Company) {
 
     user.newuser.verify(options, function (err, response) {
       if (err) {
+        console.log('err')
+        console.log(err)
         // Prevent Spam Accounts
         // BaseUser.deleteById(user.id);
         return next(err);
       }
+
       // No error, send new user email verification
     });
     
