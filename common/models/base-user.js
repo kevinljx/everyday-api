@@ -90,14 +90,7 @@ module.exports = function (Baseuser) {
 
   // render UI page after password reset
   // redirectTo actualy everyday domain website
-<<<<<<< HEAD
-  Baseuser.afterRemote("setPassword", function(context, user, next) {
-
-
-
-=======
   Baseuser.afterRemote("setPassword", function (context, user, next) {
->>>>>>> origin/master
     context.res.render("response", {
       title: "Password reset success",
       content: "Your password has been reset successfully",
