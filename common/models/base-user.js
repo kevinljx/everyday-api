@@ -4,8 +4,8 @@ const handlebars = require("handlebars");
 const fs = require("fs");
 const config = require("../../server/config.json");
 
-const readHTMLFile = function(path, callback) {
-  fs.readFile(path, { encoding: "utf-8" }, function(err, html) {
+const readHTMLFile = function (path, callback) {
+  fs.readFile(path, { encoding: "utf-8" }, function (err, html) {
     if (err) {
       throw err;
     } else {
@@ -14,9 +14,9 @@ const readHTMLFile = function(path, callback) {
   });
 };
 
-module.exports = function(Baseuser) {
+module.exports = function (Baseuser) {
   // invoke resend email
-  Baseuser.verify = async function(id) {
+  Baseuser.verify = async function (id) {
     var user = await Baseuser.findById(id);
     // console.log(user);
     // replace to Email address with user[0].email
@@ -30,7 +30,7 @@ module.exports = function(Baseuser) {
       user: Baseuser
     };
 
-    user.verify(options, function(err, response) {
+    user.verify(options, function (err, response) {
       if (err) {
         // Prevent Spam Accounts
         // BaseUser.deleteById(user.id);
@@ -50,14 +50,14 @@ module.exports = function(Baseuser) {
     ]
   });
 
-  Baseuser.on("resetPasswordRequest", function(info) {
+  Baseuser.on("resetPasswordRequest", function (info) {
     const url = "http://" + config.host + ":" + config.port + "/reset-password";
     const resetPassURL = url + "?accessToken=" + info.accessToken.id;
 
     // render html template to initiate reset password page
     readHTMLFile(
       path.resolve(__dirname, "../../server/views/resetPassword.html"),
-      function(err, html) {
+      function (err, html) {
         var template = handlebars.compile(html);
         var replacements = { link: resetPassURL };
         var htmlToSend = template(replacements);
@@ -69,7 +69,7 @@ module.exports = function(Baseuser) {
             subject: "Reset your password",
             html: htmlToSend
           },
-          function(err) {
+          function (err) {
             if (err) return console.log("> error sending password reset email");
             // Sending password reset email to user
           }
@@ -90,10 +90,14 @@ module.exports = function(Baseuser) {
 
   // render UI page after password reset
   // redirectTo actualy everyday domain website
+<<<<<<< HEAD
   Baseuser.afterRemote("setPassword", function(context, user, next) {
 
 
 
+=======
+  Baseuser.afterRemote("setPassword", function (context, user, next) {
+>>>>>>> origin/master
     context.res.render("response", {
       title: "Password reset success",
       content: "Your password has been reset successfully",
@@ -126,35 +130,35 @@ module.exports = function(Baseuser) {
     var token = ctx.options && ctx.options.accessToken;
     var userId = token && token.userId;
     if (!userId) {
-        if (ctx.query.userId != null) {
-            userId = ctx.query.userId;
-        }
-        else {
-            return;
-        }
+      if (ctx.query.userId != null) {
+        userId = ctx.query.userId;
+      }
+      else {
+        return;
+      }
     }  // no access token, internal or test request;
     var user = await Baseuser.findById(userId);
     var whereClause = { companyId: user.companyId };
     ctx.query = ctx.query || {};
-      if (ctx.query.where) {
-          if (ctx.query.where.and) {
+    if (ctx.query.where) {
+      if (ctx.query.where.and) {
 
-              ctx.query.where.and.push(whereClause);
+        ctx.query.where.and.push(whereClause);
 
-          } else {
-              var tmpWhere = ctx.query.where;
-              ctx.query.where = {};
-              ctx.query.where.and = [tmpWhere, whereClause];
-
-          }
       } else {
-          ctx.query.where = whereClause;
-      }      
-      return
+        var tmpWhere = ctx.query.where;
+        ctx.query.where = {};
+        ctx.query.where.and = [tmpWhere, whereClause];
+
+      }
+    } else {
+      ctx.query.where = whereClause;
+    }
+    return
   });
 
-  Baseuser.beforeRemote("**", async function(ctx) {
-    
+  Baseuser.beforeRemote("**", async function (ctx) {
+
     var token = ctx.req.accessToken;
     var userId = token && token.userId;
     /*
@@ -168,21 +172,21 @@ module.exports = function(Baseuser) {
       var user = await Baseuser.findById(userId);
       ctx.args.data.companyId = user.companyId;
       var baseContact = {};
-      if(ctx.args.data.firstName !== undefined){
+      if (ctx.args.data.firstName !== undefined) {
         baseContact.firstName = ctx.args.data.firstName;
       }
-      if(ctx.args.data.lastName !== undefined){
+      if (ctx.args.data.lastName !== undefined) {
         baseContact.lastName = ctx.args.data.lastName;
       }
-      if(ctx.args.data.contact !== undefined){
+      if (ctx.args.data.contact !== undefined) {
         baseContact.contactNo = ctx.args.data.contact;
       }
       ctx.args.data.baseContact = baseContact;
-      
-      ctx.args.data.emailVerified = true;      
-      
-      
-      
+
+      ctx.args.data.emailVerified = true;
+
+
+
     }
   });
 

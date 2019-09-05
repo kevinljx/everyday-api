@@ -95,4 +95,31 @@ module.exports = function (Model, bootOptions = {}) {
     }
     return next();
   });
+
+  Model.observe('after save', async function (ctx) {
+    const BaseUser = Model.app.models.BaseUser;
+    if (ctx.instance) {
+      if (ctx.instance.userId != null) {
+        var userobj = await BaseUser.findById(ctx.instance.userId);
+        ctx.instance.userInfo = {
+          id: userobj.id,
+          name: userobj.name
+        }
+      }
+      if (ctx.instance.createdBy) {
+        var userobj = await BaseUser.findById(ctx.instance.createdBy);
+        ctx.instance.creatorInfo = {
+          id: userobj.id,
+          name: userobj.name
+        };
+      }
+      if (ctx.instance.updatedBy) {
+        var userobj = await BaseUser.findById(ctx.instance.updatedBy);
+        ctx.instance.updaterInfo = {
+          id: userobj.id,
+          name: userobj.name
+        };
+      }
+    }
+  });
 };
