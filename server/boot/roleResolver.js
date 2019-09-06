@@ -44,7 +44,7 @@ module.exports = function (app) {
           cb(null, true);
         }
         else {
-          return reject();
+          return reject("You do not have the correct access rights.");
         }
       }
     }
