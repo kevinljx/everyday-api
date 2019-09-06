@@ -1,7 +1,7 @@
 {
   "name": "Widget",
   "plural": "widgets",
-  "base": "Model",
+  "base": "BaseModel",
   "idInjection": false,
   "options": {},
   "properties": {},
