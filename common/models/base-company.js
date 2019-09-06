@@ -194,7 +194,7 @@ module.exports = function (Company) {
 
     var options = {
       type: "email",
-      // to: context.args.email,
+      to: context.args.email,
       // to : `igc14.gianjie@gmail.com`,
       from: "Ester from Everyday <hello@everydaycrm.sg>",
       subject: "Thank you for registering",
