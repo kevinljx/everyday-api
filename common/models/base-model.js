@@ -72,18 +72,18 @@ module.exports = function (Basemodel) {
         /*
         if(roleIds[2].length > 0){
             var roles = await AccessRole.find({where: {id: {inq: roleIds[2]}}});
-            
+
             for(var i=0; i < roles.length; i++){
                 var rights = await roles[i].accessRights.find({where: {model: ctx.modelName}});
                 if(rights && rights.length > 0){
                     var groupObj = await AccessGroup.findById(groupIds[2][i]);
-                    
+
                     var agroupRoles = await AccessGroupRole.find({where: {and: [ {accessGroupId: groupIds[2][i]}, {tier: {lt: 4}} ]}});
                     var agroupRoleIds = agroupRoles.map(function (e) { return e.id; });
                     var groupSettings = await AccessSetting.find({where: {id: {inq: agroupRoleIds}}});
                     var ownerIds = groupSettings.map(function(e) { return e.id});
                     allOwnerIds.concat(ownerIds);
-                   
+
                 }
             }
         }
