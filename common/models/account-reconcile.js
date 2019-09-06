@@ -122,48 +122,85 @@ module.exports = function(Accountreconcile) {
 
 
     Accountreconcile.getSingleCompanyPayments = async function(data) {
-
-        const companyId = data
        
+        const singlePaymentId = data 
+  
+
         try {
+
+            const singleInvoices = Accountreconcile.app.models.Invoice
+            const singlePayment = Accountreconcile.app.models.AccountPayment
+
+            const getSinglePaymentObject = await singlePayment.findById(singlePaymentId)
+            
+
+            const getAllAccountReconcileObjects = await Accountreconcile.find({where: {["credit_id"]: getSinglePaymentObject.id}}) 
+            // console.log('getAllAccountReconcileObjects')
+            // console.log(getAllAccountReconcileObjects)
 
             let getAllInvoicesPayment = []
 
-            const Invoice = Accountreconcile.app.models.Invoice
-        
-            const confirmedInvoices = await Invoice.find({where : {'accountId.value': String(companyId), state: "Confirmed", }})
-                 
+            for (const perReconcileItem of getAllAccountReconcileObjects) { 
+               
+                // console.log('perReconcileItem')
+                // console.log(perReconcileItem)
 
-            for (const perInvoice of confirmedInvoices) { 
+                const AllInvoices = await singleInvoices.find({where: {['id']: perReconcileItem.debit_id}})
 
-                const reconcileInvoice = await Accountreconcile.find({where: {debit_id: perInvoice.id}}) 
-        
+                // console.log('perInvoice')
+                // console.log(AllInvoices)
+
                 let currentPaymentTillDate = 0
 
-                for (const reconcileItem of reconcileInvoice) { 
-                    currentPaymentTillDate = currentPaymentTillDate + reconcileItem.amount
+                for (const eachInvoice of AllInvoices) { 
+
+                    currentPaymentTillDate = currentPaymentTillDate + eachInvoice.amount
+
+                    const getReconciledPaymentObjects = await Accountreconcile.find({where: {["debit_id"]: eachInvoice.id}}) 
+                    // console.log('getReconciledPaymentObjects')
+                    // console.log(getReconciledPaymentObjects)
+
+                    let totalPaidAmount = 0
+                    for (const eachPaidObjects of getReconciledPaymentObjects) { 
+                        // console.log('eachPaidObjects')
+                        // console.log(eachPaidObjects)
+                        totalPaidAmount = eachPaidObjects.amount + totalPaidAmount
+                    }
+
+
+                    let openBalance = eachInvoice.totalAmt - totalPaidAmount
+                    let reconcile = (openBalance <= 0)? true : false
+
+                    getAllInvoicesPayment.push({
+                        id: eachInvoice.id,
+                        invoiceId: eachInvoice.quoteID,
+                        dated: eachInvoice.sent_date,
+                        dueDate: new Date(eachInvoice.dueDate),
+                        originalAmount: eachInvoice.totalAmt,
+                        openBalance: openBalance,
+                        reconcile: {disabled: reconcile, reconcile: reconcile},
+                        allocated: perReconcileItem.amount
+                    })
+
                 }
 
-                const openBalance = perInvoice.totalAmt - currentPaymentTillDate
-                let reconcile = (openBalance <= 0)? true : false
-                getAllInvoicesPayment.push({
-                    invoiceId: perInvoice.quoteID,
-                    dated: perInvoice.sent_date,
-                    dueDate: new Date(perInvoice.dueDate),
-                    originalAmount: perInvoice.totalAmt,
-                    openBalance: openBalance,
-                    reconcile: {disabled: reconcile, reconcile: reconcile}
-                })
 
                 // i += 1
             }
 
-            const Company = await Accountreconcile.app.models.Account.findById(companyId).then(Result =>{
-                return { name: Result.baseContact.name, id: Result.id };
-            })
+
+            console.log('getAllInvoicesPayment')
+            console.log(getAllInvoicesPayment)
+
+            return [1, getSinglePaymentObject, getAllInvoicesPayment]
+
+       
+
+            // const Company = await Accountreconcile.app.models.Account.findById(companyId).then(Result =>{
+            //     return { name: Result.baseContact.name, id: Result.id };
+            // })
 
           
-            return [1, getAllInvoicesPayment, Company]
           
         } catch (e) {
             console.log(e)
@@ -184,20 +221,182 @@ module.exports = function(Accountreconcile) {
 
 
 
+    Accountreconcile.getAllCompanyPayments = async function(userId) {
+      
+      try {
+
+        const Account = Accountreconcile.app.models.Account
+
+        const CompanySource = await Account.find({where : {userId:userId}}).map(
+          (source) => {
+
+            return { 
+              name: source.baseContact.name,
+              id: source.id,
+              value: source.baseContact.name,
+
+            };
+          }
+        )
+
+        return CompanySource
+
+        // for (const eachCompany of AccountList) { 
+
+        //   const allInvoices = await Invoice.find({where: {'accountId.value': String(eachCompany.id)}}) 
+        //   console.log('allInvoices')
+        //   console.log(allInvoices)
+
+        //   for (const eachCompany of AccountList) { 
+
+        //   }
+
+        // }
+
+        //  return company  with all invoices, confirmed and unpaid // imcomplete invoices
+        /*
+        
+          [
+            {
+              companyName : 'text',
+              invoices :[
+                {}
+              ]
+            }
+          ]
+        
+        */
+        
+      } catch (e) {
+
+      }
+    }
+
+    Accountreconcile.beforeRemote("getAllCompanyPayments", async function (ctx) {
+      var token = ctx.req.accessToken;
+      var userId = token && token.userId;
+      if (userId) {
+        ctx.args.userId = userId;
+      }
+      return;
+    });
+
+    Accountreconcile.remoteMethod("getAllCompanyPayments", {
+        accepts: [{ arg: "userId", type: "any" }],
+        returns: [{ arg: "fields", type: "any" }]
+    });
 
 
+    Accountreconcile.getAllInvoicesOneCompany = async function(id) {
+      
+      let getAllInvoicesPayment = []
 
+      try {
 
+        const Invoice = Accountreconcile.app.models.Invoice
+        const InvoiceSource = await Invoice.find({where : {'accountId.value': id, state: "Confirmed", }})
 
+        for (const perInvoice of InvoiceSource) { 
 
+          // Date - date
+          // Due Date - dueDate
+          // Original Amount - totalAmt
+          // Open Balance - 
+          // Reconcile -
+          // Allocation -
 
+          const reconcileInvoice = await Accountreconcile.find({where: {debit_id: perInvoice.id}}) 
+  
+          let currentPaymentTillDate = 0
 
+          for (const reconcileItem of reconcileInvoice) { 
+              currentPaymentTillDate = currentPaymentTillDate + reconcileItem.amount
+          }
 
+          const openBalance = perInvoice.totalAmt - currentPaymentTillDate
+          let reconcile = (openBalance <= 0)? true : false
+          getAllInvoicesPayment.push({
+              id :perInvoice.id,
+              invoiceId: perInvoice.quoteID,
+              dated: perInvoice.sent_date,
+              dueDate: new Date(perInvoice.dueDate),
+              originalAmount: perInvoice.totalAmt,
+              openBalance: openBalance,
+              reconcile: {disabled: reconcile, reconcile: reconcile},
+              allocation:0,
+          })
 
+        }
 
+        return getAllInvoicesPayment
 
+      } catch (e) {
+
+      }
+    }
+
+    Accountreconcile.remoteMethod("getAllInvoicesOneCompany", {
+      accepts: [{ arg: "id", type: "any" }],
+      returns: [{ arg: "fields", type: "any" }]
+    });
 
 };
 
 
+
+
+// --------- Backup for showing all invoices and reconcile items ----------- //
+
+
+// Accountreconcile.getSingleCompanyPayments = async function(data) {
+       
+//   const singlePaymentId = data 
+//   console.log('singlePaymentId')
+//   console.log(singlePaymentId)
+
+//   try {
+
+//       let getAllInvoicesPayment = []
+
+//       const Invoice = Accountreconcile.app.models.Invoice
+  
+//       const confirmedInvoices = await Invoice.find({where : {'accountId.value': String(companyId), state: "Confirmed", }})
+           
+
+//       for (const perInvoice of confirmedInvoices) { 
+
+//           const reconcileInvoice = await Accountreconcile.find({where: {debit_id: perInvoice.id}}) 
+  
+//           let currentPaymentTillDate = 0
+
+//           for (const reconcileItem of reconcileInvoice) { 
+//               currentPaymentTillDate = currentPaymentTillDate + reconcileItem.amount
+//           }
+
+//           const openBalance = perInvoice.totalAmt - currentPaymentTillDate
+//           let reconcile = (openBalance <= 0)? true : false
+//           getAllInvoicesPayment.push({
+//               invoiceId: perInvoice.quoteID,
+//               dated: perInvoice.sent_date,
+//               dueDate: new Date(perInvoice.dueDate),
+//               originalAmount: perInvoice.totalAmt,
+//               openBalance: openBalance,
+//               reconcile: {disabled: reconcile, reconcile: reconcile}
+//           })
+
+//           // i += 1
+//       }
+
+//       const Company = await Accountreconcile.app.models.Account.findById(companyId).then(Result =>{
+//           return { name: Result.baseContact.name, id: Result.id };
+//       })
+
+    
+//       return [1, getAllInvoicesPayment, Company]
+    
+//   } catch (e) {
+//       console.log(e)
+//       return [0, []]
+//   }
+// }
 

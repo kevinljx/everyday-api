@@ -71,6 +71,7 @@ module.exports = function (Company) {
           company: comp
         });
 
+
         comp.paymentInfos.create(paymentInfo);
 
         //create default access rights
@@ -194,8 +195,9 @@ module.exports = function (Company) {
     var options = {
       type: "email",
       to: context.args.email,
-      from: "Everyday <donotreply@everyday.com.sg>",
-      subject: "[Everyday] Thank you for registering",
+      // to : `igc14.gianjie@gmail.com`,
+      from: "Ester from Everyday <hello@everydaycrm.sg>",
+      subject: "Thank you for registering",
       template: path.resolve(__dirname, "../../server/views/verify.ejs"),
       redirect: `/verified`,
       user: BaseUser,
@@ -204,10 +206,12 @@ module.exports = function (Company) {
 
     user.newuser.verify(options, function (err, response) {
       if (err) {
+        console.log('err')
         // Prevent Spam Accounts
         // BaseUser.deleteById(user.id);
         return next(err);
       }
+
       // No error, send new user email verification
     });
 
