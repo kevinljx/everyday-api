@@ -23,7 +23,7 @@ module.exports = function (Baseuser) {
     var options = {
       type: "email",
       to: user.baseContact.email,
-      from: "Ester from Everyday <hello@everydaycrm.sg>",
+      from: "Esther from Everyday <hello@everydaycrm.sg>",
       subject: "Please verify your email address",
       template: path.resolve(__dirname, "../../server/views/verify.ejs"),
       redirect: `/verified`,
@@ -65,7 +65,7 @@ module.exports = function (Baseuser) {
           {
             // uncomment to info.email, for production.
             to : info.email,
-            from: "Ester from Everyday <hello@everydaycrm.sg>",
+            from: "Esther from Everyday <hello@everydaycrm.sg>",
             subject: "Reset your password",
             html: htmlToSend
           },

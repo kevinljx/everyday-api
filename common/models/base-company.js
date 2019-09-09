@@ -51,7 +51,7 @@ module.exports = function (Company) {
         // user info
         // { firstName: 'Hello', lastName: 'World' }
         var name = userInfo.firstName + " " + userInfo.lastName;
-        console.log(userInfo);
+
         if (userInfo == null) {
           userInfo = { email: email };
         } else {
@@ -196,7 +196,7 @@ module.exports = function (Company) {
       type: "email",
       to: context.args.email,
       // to : `igc14.gianjie@gmail.com`,
-      from: "Ester from Everyday <hello@everydaycrm.sg>",
+      from: "Esther from Everyday <hello@everydaycrm.sg>",
       subject: "Thank you for registering",
       template: path.resolve(__dirname, "../../server/views/verify.ejs"),
       redirect: `/verified`,
