@@ -51,6 +51,13 @@
   },
   "acls": [
     {
+      "property": "signup",
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    },
+    {
       "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "$authenticated",
