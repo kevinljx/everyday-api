@@ -1,0 +1,39 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "everyday": {
+    "host": "localhost",
+    "port": 27017,
+    "url": "",
+    "database": "everydaystaging",
+    "password": "",
+    "name": "everyday",
+    "user": "",
+    "useNewUrlParser": true,
+    "connector": "mongodb"
+  },
+  "mail": {
+    "name": "mail",
+    "connector": "mail",
+    "transports": [
+      {
+        "type": "SMTP",
+        "host": "smtp.gmail.com",
+        "secure": true,
+        "port": 465,
+        "auth": {
+          "user": "hello@everydaycrm.sg",
+          "pass": "Ocdigital123"
+        }
+      }
+    ]
+  },
+  "storage": {
+    "name": "storage",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "./server/storage"
+  }
+}
