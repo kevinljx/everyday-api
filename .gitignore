@@ -1,3 +1,4 @@
 node_modules
 /server/datasources.json
 /server/datasources.staging.json
+/server/datasources.production.json
