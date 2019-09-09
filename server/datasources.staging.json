@@ -8,9 +8,9 @@
     "port": 27017,
     "url": "",
     "database": "everydaystaging",
-    "password": "",
+    "password": "digitalOC99",
     "name": "everyday",
-    "user": "",
+    "user": "everydayAdmin",
     "useNewUrlParser": true,
     "connector": "mongodb"
   },

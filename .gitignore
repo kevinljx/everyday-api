@@ -1,1 +1,3 @@
 node_modules
+datasources.json
+datasources.staging.json
