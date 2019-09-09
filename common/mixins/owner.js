@@ -46,24 +46,32 @@ module.exports = function (Model, bootOptions = {}) {
     const BaseUser = Model.app.models.BaseUser;
     if (ctx.data.userId != null && typeof ctx.data.userId != "string") {
       var userobj = await BaseUser.findById(ctx.data.userId);
-      ctx.data.userInfo = {
-        id: userobj.id,
-        name: userobj.name
-      };
+      if (userobj != undefined && userobj != null) {
+        ctx.data.userInfo = {
+          id: userobj.id,
+          name: userobj.name
+        };
+      }
+
     }
     if (ctx.data.createdBy) {
       var userobj = await BaseUser.findById(ctx.data.createdBy);
-      ctx.data.creatorInfo = {
-        id: userobj.id,
-        name: userobj.name
-      };
+      if (userobj != undefined && userobj != null) {
+        ctx.data.creatorInfo = {
+          id: userobj.id,
+          name: userobj.name
+        };
+      }
+
     }
     if (ctx.data.updatedBy) {
       var userobj = await BaseUser.findById(ctx.data.updatedBy);
-      ctx.data.updaterInfo = {
-        id: userobj.id,
-        name: userobj.name
-      };
+      if (userobj != undefined && userobj != null) {
+        ctx.data.updaterInfo = {
+          id: userobj.id,
+          name: userobj.name
+        };
+      }
     }
     return;
   });
