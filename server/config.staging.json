@@ -1,6 +1,6 @@
 {
   "restApiRoot": "/api",
-  "host": "0.0.0.0",
+  "host": "staging-api.everydaycrm.sg",
   "port": 5001,
   "remoting": {
     "context": false,
