@@ -50,7 +50,8 @@ module.exports = function(Invoice) {
         if(data.value == "Current"){
 
           currentInvoice.state = data.value
-
+          const Sequencesetting = Invoice.app.models.SequenceSetting
+          currentInvoice.quoteID = await Sequencesetting.generateNumber(currentInvoice.userId, "Invoice")
         } else {
           
           // changed to confirmed state, input sequenceSettings
@@ -98,8 +99,8 @@ module.exports = function(Invoice) {
         objectToCopy.state = "Current"
         objectToCopy.latest = true
 
-        // var Sequencesetting = Invoice.app.models.SequenceSetting
-        // objectToCopy.quoteID = await Sequencesetting.generateNumber(objectToCopy.userId, "Invoice")
+        var Sequencesetting = Invoice.app.models.SequenceSetting
+        objectToCopy.quoteID = await Sequencesetting.generateNumber(objectToCopy.userId, "Invoice")
         let newInvoice = await Invoice.create(objectToCopy)
         
         return [1, newInvoice]

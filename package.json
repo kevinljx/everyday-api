@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "posttest": "npm run lint && npm audit",
     "start": "NODE_ENV=production node .",
-    "dev": "NODE_ENV=development node .",
+    "dev": "nodemon  NODE_ENV=development server/server.js --watch common --watch server",
     "staging": "NODE_ENV=staging node ."
   },
   "dependencies": {

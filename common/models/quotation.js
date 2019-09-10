@@ -81,6 +81,7 @@ module.exports = function(Quotation) {
 
         var Sequencesetting = Quotation.app.models.SequenceSetting
         objectToCopy.quoteID = await Sequencesetting.generateNumber(objectToCopy.userId, "Quotation")
+
         let newQuotation = await Quotation.create(objectToCopy)
 
         return [1, newQuotation]
@@ -247,8 +248,7 @@ module.exports = function(Quotation) {
 
         const QuotationSource = await Quotation.find({ userId }).map(
            (source) => {
-            // console.log("source")
-            console.log(source.companyName)
+
             return { 
               id:source.id,
               quoteID: source.quoteID, 
