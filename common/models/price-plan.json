@@ -22,14 +22,6 @@
   },
   "validations": [],
   "relations": {
-    "accessRights": {
-      "type": "hasAndBelongsToMany",
-      "model": "AccessRight",
-      "foreignKey": "",
-      "options": {
-        "nestRemoting": true
-      }
-    },
     "defaultRoles": {
       "type": "hasAndBelongsToMany",
       "model": "AccessRole",

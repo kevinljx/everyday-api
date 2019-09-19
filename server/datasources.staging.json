@@ -7,10 +7,13 @@
     "host": "localhost",
     "port": 27017,
     "url": "",
-    "database": "everyday2",
+    "database": "everydaystaging",
+    "password": "digitalOC99",
     "name": "everyday",
+    "user": "everydayAdmin",
     "useNewUrlParser": true,
-    "connector": "mongodb"
+    "connector": "mongodb",
+    "authSource": "admin"
   },
   "mail": {
     "name": "mail",
@@ -22,8 +25,8 @@
         "secure": true,
         "port": 465,
         "auth": {
-          "user": "everydayocdn@gmail.com",
-          "pass": "Ocdigital"
+          "user": "hello@everydaycrm.sg",
+          "pass": "Ocdigital123"
         }
       }
     ]

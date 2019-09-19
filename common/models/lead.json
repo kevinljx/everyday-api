@@ -19,7 +19,10 @@
     "DeleteHistory": true
   },
   "scope": {
-    "include": ["notes", "events"]
+    "include": [
+      "notes",
+      "events"
+    ]
   },
   "properties": {
     "companyName": {

@@ -21,9 +21,13 @@
       "type": "string",
       "required": true
     },
-    "editable": {
+    "seePeer": {
       "type": "boolean",
-      "default": true
+      "default": false
+    },
+    "tier": {
+      "type": "number",
+      "required": true
     }
   },
   "validations": [],
@@ -35,6 +39,15 @@
       "options": {
         "nestRemoting": true
       }
+    },
+    "parent": {
+      "type": "belongsTo",
+      "model": "AccessRole",
+      "foreignKey": ""
+    },
+    "company": {
+      "type": "belongsTo",
+      "model": "BaseCompany"
     }
   },
   "acls": [

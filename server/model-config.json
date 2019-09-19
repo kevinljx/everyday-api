@@ -170,21 +170,9 @@
     "dataSource": "everyday",
     "public": true
   },
-  "AccessGroup": {
-    "dataSource": "everyday",
-    "public": true
-  },
-  "AccessGroupRole": {
-    "dataSource": "everyday",
-    "public": false
-  },
   "AccessSetting": {
     "dataSource": "everyday",
     "public": true
-  },
-  "AccessGroupUser": {
-    "dataSource": "everyday",
-    "public": false
   },
   "Deal": {
     "dataSource": "everyday",
@@ -217,5 +205,9 @@
   "AccountPayment": {
     "dataSource": "everyday",
     "public": true
+  },
+  "AccessRightCategory": {
+    "dataSource": "everyday",
+    "public": false
   }
 }

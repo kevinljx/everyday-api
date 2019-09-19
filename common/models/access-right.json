@@ -11,9 +11,6 @@
       "type": "string",
       "required": true
     },
-    "categoryName": {
-      "type": "string"
-    },
     "description": {
       "type": "string"
     },
@@ -26,6 +23,9 @@
       "required": true,
       "default": "read"
     },
+    "parentModel": {
+      "type": "string"
+    },
     "parentMethod": {
       "type": "string"
     },
@@ -35,7 +35,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "category": {
+      "type": "belongsTo",
+      "model": "AccessRightCategory",
+      "foreignKey": ""
+    }
+  },
   "acls": [
     {
       "accessType": "*",
