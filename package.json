@@ -7,9 +7,10 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "start": "node .",
     "posttest": "npm run lint && npm audit",
-    "dev": "nodemon server/server.js --watch common --watch server"
+    "start": "NODE_ENV=production node .",
+    "dev": "NODE_ENV=development node .",
+    "staging": "NODE_ENV=staging node ."
   },
   "dependencies": {
     "compression": "^1.0.3",

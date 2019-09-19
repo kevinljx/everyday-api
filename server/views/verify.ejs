@@ -1,5 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -11,6 +13,7 @@
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
     }
+
     body {
       width: 100% !important;
       height: 100%;
@@ -20,8 +23,13 @@
       color: #839197;
       -webkit-text-size-adjust: none;
     }
+
     a {
-      color: #414EF9;
+      color: #FF952E;
+    }
+
+    a:visited {
+      color: white;
     }
 
     /* Layout ------------------------------ */
@@ -31,6 +39,7 @@
       padding: 0;
       background-color: #F5F7F9;
     }
+
     .email-content {
       width: 100%;
       margin: 0;
@@ -42,10 +51,12 @@
       padding: 25px 0;
       text-align: center;
     }
+
     .email-masthead_logo {
       max-width: 400px;
       border: 0;
     }
+
     .email-masthead_name {
       font-size: 16px;
       font-weight: bold;
@@ -54,43 +65,68 @@
       text-shadow: 0 1px 0 white;
     }
 
-    /* Body ------------------------------ */
-    .email-body {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      border-top: 1px solid #E7EAEC;
-      border-bottom: 1px solid #E7EAEC;
-      background-color: #FFFFFF;
-    }
-    .email-body_inner {
-      width: 570px;
+    .header_container {
       margin: 0 auto;
       padding: 0;
+      text-align: left;
     }
+
+    .header_logo_container {
+      margin: 0 auto;
+      padding: 35px 0px 0px 35px;
+    }
+
+    /* Body ------------------------------ */
+    .email-body {
+      width: 570px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .email-body_inner {
+      margin: 0 auto;
+      padding: 0;
+      border: 1px solid #E7EAEC;
+      border-radius: 15px;
+      background-color: #FFFFFF;
+      box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.15);
+    }
+
     .email-footer {
       width: 570px;
       margin: 0 auto;
       padding: 0;
       text-align: center;
     }
+
     .email-footer p {
       color: #839197;
     }
+
     .body-action {
       width: 100%;
       margin: 30px auto;
       padding: 0;
       text-align: center;
     }
+
     .body-sub {
       margin-top: 25px;
       padding-top: 25px;
       border-top: 1px solid #E7EAEC;
+      width: 100%;
     }
+
+    .body-footer {
+      margin-top: 25px;
+      padding-top: 25px;
+      width: 100%;
+    }
+
     .content-cell {
       padding: 35px;
     }
+
     .align-right {
       text-align: right;
     }
@@ -103,6 +139,7 @@
       font-weight: bold;
       text-align: left;
     }
+
     h2 {
       margin-top: 0;
       color: #292E31;
@@ -110,6 +147,7 @@
       font-weight: bold;
       text-align: left;
     }
+
     h3 {
       margin-top: 0;
       color: #292E31;
@@ -117,6 +155,7 @@
       font-weight: bold;
       text-align: left;
     }
+
     p {
       margin-top: 0;
       color: #839197;
@@ -124,9 +163,15 @@
       line-height: 1.5em;
       text-align: left;
     }
+
     p.sub {
       font-size: 12px;
     }
+
+    p.text {
+      font-size: 12px;
+    }
+
     p.center {
       text-align: center;
     }
@@ -134,34 +179,46 @@
     /* Buttons ------------------------------ */
     .button {
       display: inline-block;
-      width: 200px;
-      background-color: #414EF9;
+      background-color: #FF952E;
+      padding-left: 15px;
+      padding-right: 15px;
       border-radius: 3px;
-      color: #ffffff;
+      color: #FFFFFF;
       font-size: 15px;
       line-height: 45px;
       text-align: center;
       text-decoration: none;
       -webkit-text-size-adjust: none;
       mso-hide: all;
+      box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.15);
     }
+
     .button--green {
       background-color: #28DB67;
     }
+
     .button--red {
       background-color: #FF3665;
     }
+
     .button--blue {
-      background-color: #414EF9;
+      background-color: #FF952E;
+      margin-top: 0;
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: bold;
+      text-align: center;
     }
 
     /*Media Queries ------------------------------ */
     @media only screen and (max-width: 600px) {
+
       .email-body_inner,
       .email-footer {
         width: 100% !important;
       }
     }
+
     @media only screen and (max-width: 500px) {
       .button {
         width: 100% !important;
@@ -169,29 +226,47 @@
     }
   </style>
 </head>
+
 <body>
   <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
     <tr>
       <td align="center">
         <table class="email-content" width="100%" cellpadding="0" cellspacing="0">
           <!-- Logo -->
+
           <tr>
             <td class="email-masthead">
-              <a class="email-masthead_name">Canvas</a>
+              <!-- <a class="email-masthead_name">Canvas</a> -->
+              <!-- <img src="https://en.facebookbrand.com/wp-content/uploads/2019/04/f_logo_RGB-Hex-Blue_512.png" alt="Smiley face" height="42" width="42"> -->
+
+              <!-- <table class="header_container" width="570" cellpadding="0" cellspacing="0">
+                    <td class="header_logo_container"cellpadding="0" cellspacing="0">
+                        <img src="https://en.facebookbrand.com/wp-content/uploads/2019/04/f_logo_RGB-Hex-Blue_512.png" alt="Smiley face" height="80" width="80">
+                      </td>
+                </table> -->
+
             </td>
           </tr>
           <!-- Email Body -->
           <tr>
+
             <td class="email-body" width="100%">
               <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0">
                 <!-- Body content -->
+
+                <td class="header_logo_container" cellpadding="0" cellspacing="0">
+                  <img src="https://everydaycrm.sg/wp-content/uploads/2019/08/cropped-everyday-logo-ff952e-1.png"
+                    alt="Everyday logo" width="150">
+                </td>
+
                 <tr>
                   <td class="content-cell">
-                    <h1>Verify your email address</h1>
-                    <p>We're excited to have you as an user of Everyday platform and have sent an email with a confirmation link to your email address.</p>
+                    <h1>Welcome to Everydaycrm!</h1>
+                    <p>Activate your account by clicking below</p>
                     <!-- Action -->
                     <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
                       <tr>
+
                         <td align="center">
                           <div>
                             <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{action_url}}" style="height:45px;v-text-anchor:middle;width:200px;" arcsize="7%" stroke="f" fill="t">
@@ -199,25 +274,37 @@
                             <w:anchorlock/>
                             <center style="color:#ffffff;font-family:sans-serif;font-size:15px;">Verify Email</center>
                             </v:roundrect><![endif]-->
-                          
+
                             <!-- <a href="www.goggle.com" return true class="button button--blue">Verify Email</a> -->
-                            <a href="<%= verifyHref %>" class="button button--blue" target="_blank">Verify Email</a>
+                            <a href="<%= verifyHref %>" class="button button--blue" target="_blank">Activate Your
+                              Everyday Account</a>
 
                           </div>
                         </td>
                       </tr>
                     </table>
-                    <p>Thanks,<br>The Everyday Team</p>
+                    <p>Thanks,
+                      <br>
+                      Esther
+                      <br>
+                      Everyday</p>
+
                     <!-- Sub copy -->
+                    </br>
                     <table class="body-sub">
                       <tr>
                         <td>
-                          <p class="sub">If you’re having trouble clicking the button, copy and paste the URL below into your web browser.
+                          <p class="sub">If you’re having trouble clicking the above button, </br>click below to
+                            activate your account.
                           </p>
-                          <p class="sub"><a href="<%= verifyHref %>"><%= verifyHref %></a></p>
+                          <p class="sub"><a href="<%= verifyHref %>">Click here</a></p>
+                          <p class="sub left">
+                            Copyright ⓒ 2019 Everydaycrm All rights reservered
+                          </p>
                         </td>
                       </tr>
                     </table>
+
                   </td>
                 </tr>
               </table>
@@ -225,15 +312,8 @@
           </tr>
           <tr>
             <td>
-              <table class="email-footer" align="center" width="570" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td class="content-cell">
-                    <p class="sub center">
-                      Canvas Labs, Inc.
-                      <br>325 9th St, San Francisco, CA 94103
-                    </p>
-                  </td>
-                </tr>
+              <table class="body-footer">
+
               </table>
             </td>
           </tr>
@@ -242,7 +322,8 @@
     </tr>
   </table>
 </body>
+
 </html>
 
 <!-- %= verifyHref % -->
- <!-- <a href="<%= verifyHref %>"><%= verifyHref %></a> -->
+<!-- <a href="<%= verifyHref %>"><%= verifyHref %></a> -->

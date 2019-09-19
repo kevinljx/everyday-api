@@ -20,10 +20,18 @@ module.exports = function (app) {
 
 
   Role.registerResolver('companySet', function (role, context, cb) {
-    function reject() {
-      process.nextTick(function () {
-        cb(null, false);
-      });
+    function reject(errormsg) {
+      if (errormsg) {
+        var error = new Error(errormsg);
+        error.status = 403;
+        cb(error, false);
+      }
+      else {
+        process.nextTick(function () {
+          cb(null, false);
+        });
+      }
+
     }
 
     var checkCount = 0;
@@ -36,7 +44,7 @@ module.exports = function (app) {
           cb(null, true);
         }
         else {
-          return reject();
+          return reject("You do not have the correct access rights.");
         }
       }
     }
