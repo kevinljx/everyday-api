@@ -25,6 +25,9 @@
     },
     "reconciled": {
       "type": "boolean"
+    },
+    "accountId": {
+      "type": "string"
     }
   },
   "validations": [],

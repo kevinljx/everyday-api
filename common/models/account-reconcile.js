@@ -4,24 +4,394 @@ module.exports = function(Accountreconcile) {
 
 
 
-    Accountreconcile.payment = async function (data) {
+    Accountreconcile.payment = async function (datum) {
+       
+        // console.log("datum")
+        // console.log(datum)
 
-        // save payment Id and create new item for reconcile table
-        // payment object - company, 
+        const data = datum.payment
+        const balancePayment = datum.balance
+
+
         try {
-          var Accountpayment = Accountreconcile.app.models.AccountPayment
-          const paymentObject = await Accountpayment.create(data)
+        
+          if(balancePayment.length > 0) {
+            console.log('commencing balance payment')
+            for (const balanceItem of balancePayment) { 
+                
+                // find the outstanding reconcile object
+                const balancePaymentReconcile = await Accountreconcile.findOne({where : {"_id": balanceItem.id}})
+               
+                // Invoice.findOne always pick the one oldest entry by default
+                const Invoice = Accountreconcile.app.models.Invoice
+                const InvoiceSource = await Invoice.findOne({where : {'accountId.value': balancePaymentReconcile.accountId, state: "Confirmed"}})
+                const invoiceReconcile = await Accountreconcile.findOne({where : {'debit_id': InvoiceSource.id, 'credit_id': '', reconciled: false}})
 
-          const reconcile_object = {
-            debit_id : data.invoiceId,
-            debit_type: 1,
-            credit_id : paymentObject.id,
-            credit_type: 1,
-            amount: paymentObject.paidAmount,
-            reconciled : false,
+                if(invoiceReconcile) {
+
+                  console.log('invoiceReconcile found!')
+                  // console.log(invoiceReconcile)
+                 
+                  const remainingAmount = invoiceReconcile.amount - balanceItem.allocation
+                  // invoiceReconcile.amount  = balanceItem.allocation
+                  // invoiceReconcile.credit_id = balancePaymentReconcile.credit_id
+                  // invoiceReconcile.credit_type = 1
+                  // invoiceReconcile.reconciled = true
+                  // await invoiceReconcile.save()
+                  // console.log('converting invoiceReconcile to true and save into backend')
+
+
+                  console.log('checking remaining amount')
+
+                  if(remainingAmount > 0) {
+                    console.log('remainingAmount more than 0', remainingAmount, 'proceed to create balance in reconcile table')
+                    let debit_balance_amount = {
+                      debit_id : invoiceReconcile.debit_id,
+                      debit_type: 1,
+                      credit_id : "",
+                      credit_type: "",
+                      amount: remainingAmount,
+                      reconciled : false,
+                      accountId: balancePaymentReconcile.accountId
+                    }
+                    // console.log(debit_balance_amount)
+                    await Accountreconcile.create(debit_balance_amount)
+
+                  } else if (remainingAmount < 0) {
+                    console.log('remainingAmount less than 0, expecting negative value', remainingAmount, '')
+
+                    // need to find the exsiting and replace the old one
+                    // invoiceReconcile.amount = InvoiceSource.totalAmt
+                    // invoiceReconcile.credit_id = balancePaymentReconcile.credit_id
+                    // invoiceReconcile.credit_type = 1
+                    // invoiceReconcile.reconciled = true
+
+                    // console.log('Deducting reconcile invoice from the balance payment, save into backend')
+                    // // console.log(invoiceReconcile)
+                    // await invoiceReconcile.save()
+
+                    let objectToCopy = {
+                      debit_id : "",
+                      debit_type: "",
+                      credit_id : balancePaymentReconcile.credit_id,
+                      credit_type: 2,
+                      amount: remainingAmount * -1,
+                      reconciled : false,
+                      accountId: balancePaymentReconcile.accountId
+                    }
+
+                    console.log('clone and create new payment balance, with negative change to positive')
+                    await Accountreconcile.create(objectToCopy)
+
+
+                    console.log('remaining less than 0, converting to paid for invoice')
+                    // should convert invoice status to paid
+                    InvoiceSource.state = "Paid"
+                    await InvoiceSource.save()
+
+                  }
+
+
+                  const balancePayment = balancePaymentReconcile.amount - balanceItem.allocation
+                  balancePaymentReconcile.amount = balancePaymentReconcile.amount - balanceItem.allocation
+                  balancePaymentReconcile.debit_id = invoiceReconcile.debit_id
+                  balancePaymentReconcile.debit_type = 1
+                  balancePaymentReconcile.credit_type = 1
+                  balancePaymentReconcile.amount = balanceItem.allocation
+                  balancePaymentReconcile.reconciled = true
+                  console.log('Balance payment used, reconciled to true, proceed to save')
+                  console.log(balancePaymentReconcile)
+                  await balancePaymentReconcile.save()
+                  
+                  console.log('balancePayment')
+                  console.log(balancePayment)
+                  if(balancePayment > 0){
+                   
+                    let objectToCopy = {
+                      debit_id : '',
+                      debit_type: "",
+                      credit_id : balancePaymentReconcile.id,
+                      credit_type: 2,
+                      amount: balancePayment,
+                      reconciled : false,
+                      accountId: balancePaymentReconcile.accountId
+                    }
+
+
+                    console.log('clone and create new payment balance')
+                    console.log(objectToCopy)
+                    await Accountreconcile.create(objectToCopy)
+
+                    console.log('end of process')
+
+                  }
+
+            
+                } else {
+                  
+                  console.log('no invoiceReconcile')
+
+                  let remainingAmount = InvoiceSource.totalAmt - balanceItem.allocation
+
+                  console.log('remainingAmount')
+                  console.log(remainingAmount)
+
+                  console.log('InvoiceSource.totalAmt')
+                  console.log(InvoiceSource.totalAmt)
+
+                  if(remainingAmount > 0) {
+                    console.log('remaining amount > 0')
+
+                    // const reconcile_object = {
+                    //   debit_id : InvoiceSource.id,
+                    //   debit_type: 1,
+                    //   credit_id : balancePaymentReconcile.credit_id,
+                    //   credit_type: 1,
+                    //   amount: balanceItem.allocation,
+                    //   reconciled : true,
+                    //   accountId: balancePaymentReconcile.accountId
+                    // }
+  
+                    // console.log('because no reconcile object found in table, new object and user paid lesser than the amount')
+                    // await Accountreconcile.create(reconcile_object)
+  
+                    let debit_balance_amount = {
+                      debit_id : InvoiceSource.id,
+                      debit_type: 1,
+                      credit_id : "",
+                      credit_type: "",
+                      amount: remainingAmount,
+                      reconciled : false,
+                      accountId: balancePaymentReconcile.accountId
+                    }
+
+                    console.log('creating new debit balance amount')
+                    await Accountreconcile.create(debit_balance_amount)
+  
+                    const balancePayment = balancePaymentReconcile.amount - balanceItem.allocation
+
+                    // balancePaymentReconcile.amount = balancePaymentReconcile.amount - balanceItem.allocation
+                    balancePaymentReconcile.debit_id = InvoiceSource.id
+                    balancePaymentReconcile.debit_type = 1
+                    balancePaymentReconcile.credit_type = 1
+                    balancePaymentReconcile.amount = balanceItem.allocation
+                    balancePaymentReconcile.reconciled = true
+                    console.log('Balance payment used, reconciled to true, proceed to save')
+                    console.log(balancePaymentReconcile)
+                    await balancePaymentReconcile.save()
+                    
+                    if(balancePayment > 0){
+                   
+                      let objectToCopy = {
+                        debit_id : "",
+                        debit_type: "",
+                        credit_id : balancePaymentReconcile.credit_id,
+                        credit_type: 2,
+                        amount: balancePayment,
+                        reconciled : false,
+                        accountId: balancePaymentReconcile.accountId
+                      }
+  
+                      console.log('clone and create new payment balance')
+                      console.log(objectToCopy)
+                      await Accountreconcile.create(objectToCopy)
+  
+                      console.log('end of process')
+  
+                    } 
+
+                  } else if (remainingAmount < 0) {
+                    console.log('remaining amount < 0')
+                    // need to find the exsiting and replace the old one
+     
+                    balancePaymentReconcile.debit_id = InvoiceSource.id
+                    balancePaymentReconcile.debit_type = 1
+                    balancePaymentReconcile.amount = InvoiceSource.totalAmt
+                    balancePaymentReconcile.credit_type = 1
+                    balancePaymentReconcile.reconciled = true
+                    await balancePaymentReconcile.save()
+
+                    let objectToCopy = {
+                      debit_id : "",
+                      debit_type: "",
+                      credit_id : balancePaymentReconcile.credit_id,
+                      credit_type: 2,
+                      amount: remainingAmount * -1,
+                      reconciled : false,
+                      accountId: balancePaymentReconcile.accountId
+                    }
+
+                    console.log('clone and create new payment balance, with negative change to positive')
+                    await Accountreconcile.create(objectToCopy)
+
+                    console.log('remaining less than 0, converting to paid for invoice')
+                    // should convert invoice status to paid
+                    InvoiceSource.state = "Paid"
+                    await InvoiceSource.save()
+
+                    console.log('end of process')
+
+                  }
+
+                }
+              
+                console.log('----END---')
+                console.log('----------')
+                console.log('----------')
+                console.log('----------')
+                console.log('----------')
+
+            }
+          }
+          
+          // LOOP FOR EACH PAYMENT FROM FRONTEND
+          if(data.length > 0){
+ 
+            for (const paymentItem of data) { 
+          
+              // Create & Save payment object
+              var Accountpayment = Accountreconcile.app.models.AccountPayment
+              const Invoice = Accountreconcile.app.models.Invoice
+
+              // CREATE PAYMENT OBJECT
+              const paymentObject = await Accountpayment.create(paymentItem)
+            
+
+              // CHECK FOR RECONCILE TABLE
+              const ReconcileSource = await Accountreconcile.findOne({where : {'accountId': paymentItem.customer, 'debit_id': paymentItem.invoiceId, reconciled: false}})
+
+              let reconcile_object = {
+                debit_id : paymentItem.invoiceId,
+                debit_type: 1,
+                credit_id : paymentObject.id,
+                credit_type: 1,
+                amount: paymentObject.amount,
+                reconciled : true,
+                accountId: paymentItem.customer
+              }
+              
+              // got record
+              if(ReconcileSource){
+
+                let balance = ReconcileSource.amount - paymentObject.amount
+                
+                if(balance > 0) {
+
+                  ReconcileSource.amount = balance
+                  await ReconcileSource.save()
+                  await Accountreconcile.create(reconcile_object)
+
+                } else {
+
+                  if(balance < 0){
+                    balance = balance * -1
+    
+                    const credit_reconcile_object = {
+                      debit_id : "",
+                      debit_type: "",
+                      credit_id : paymentObject.id,
+                      credit_type: 2,
+                      amount: balance,
+                      reconciled : false,
+                      accountId: paymentItem.customer
+                    }                 
+
+                    ReconcileSource.credit_id = paymentObject.id  
+                    ReconcileSource.credit_type = 1                                              
+                    ReconcileSource.amount = ReconcileSource.amount   
+                    ReconcileSource.reconciled = true
+
+                    await ReconcileSource.save()
+                    await Accountreconcile.create(credit_reconcile_object)
+    
+                  } else {
+                    await Accountreconcile.create(reconcile_object)
+                  }
+
+                  // should convert invoice status to paid
+                  const InvoiceSource = await Invoice.findOne({where : {'_id': paymentItem.invoiceId, state: "Confirmed"}})
+                  InvoiceSource.state = "Paid"
+                  await InvoiceSource.save()
+
+                }
+
+              } else {
+                // no record
+                
+                const InvoiceSource = await Invoice.findOne({where : {'_id': paymentItem.invoiceId, state: "Confirmed"}})
+
+                let balance = InvoiceSource.totalAmt - paymentObject.amount
+
+                if(balance > 0) {
+
+                  const reconcile_object = {
+                    debit_id : paymentItem.invoiceId,
+                    debit_type: 1,
+                    credit_id : paymentObject.id,
+                    credit_type: 1,
+                    amount: paymentObject.amount,
+                    reconciled : true,
+                    accountId: paymentItem.customer
+                  }
+
+                  console.log('because no reconcile object found in table, new object and user paid lesser than the amount')
+                  await Accountreconcile.create(reconcile_object)
+
+                  let debit_balance_amount = {
+                    debit_id : paymentItem.invoiceId,
+                    debit_type: 1,
+                    credit_id : "",
+                    credit_type: "",
+                    amount: balance,
+                    reconciled : false,
+                    accountId: paymentItem.customer
+                  }
+      
+                  await Accountreconcile.create(debit_balance_amount)
+
+                } else {
+
+                  if(balance < 0){
+                    balance = balance * -1
+
+                    let credit_reconcile_object = {
+                      debit_id : "",
+                      debit_type: "",
+                      credit_id : paymentObject.id,
+                      credit_type: 2,
+                      amount: balance,
+                      reconciled : false,
+                      accountId: paymentItem.customer
+                    }
+
+                    const new_reconcile_object = {
+                      debit_id : paymentItem.invoiceId,
+                      debit_type: 1,
+                      credit_id : paymentObject.id,
+                      credit_type: 1,
+                      amount: InvoiceSource.totalAmt,
+                      reconciled : true,
+                      accountId: paymentItem.customer
+                    }
+
+                    await Accountreconcile.create(new_reconcile_object)
+                    await Accountreconcile.create(credit_reconcile_object)
+    
+                  } else {
+                    await Accountreconcile.create(reconcile_object)
+                  }
+
+                  // should convert invoice status to paid
+                  InvoiceSource.state = "Paid"
+                  await InvoiceSource.save()
+
+                }
+            
+              }
+
+            }
           }
 
-          await Accountreconcile.create(reconcile_object)
 
           return [1, {}]
   
@@ -34,7 +404,7 @@ module.exports = function(Accountreconcile) {
   
     Accountreconcile.remoteMethod("payment", {
         accepts: [
-          { arg: "data", type: "object" },
+          { arg: "data", type: "Object" },
         ],
         returns: [
           { arg: "success", type: "number" },
@@ -42,9 +412,8 @@ module.exports = function(Accountreconcile) {
         ]
     });
 
-
     Accountreconcile.getpaymentaccounts = async function(data) {
-         
+        console.log('getpaymentaccounts')
         try {
             const userId = data
 
@@ -120,88 +489,69 @@ module.exports = function(Accountreconcile) {
         ]
     });
 
-
     Accountreconcile.getSingleCompanyPayments = async function(data) {
-       
+        
+        console.log('getSingleCompanyPayments', data)
+
         const singlePaymentId = data 
   
-
         try {
 
             const singleInvoices = Accountreconcile.app.models.Invoice
             const singlePayment = Accountreconcile.app.models.AccountPayment
 
             const getSinglePaymentObject = await singlePayment.findById(singlePaymentId)
-            
-
-            const getAllAccountReconcileObjects = await Accountreconcile.find({where: {["credit_id"]: getSinglePaymentObject.id}}) 
-            // console.log('getAllAccountReconcileObjects')
-            // console.log(getAllAccountReconcileObjects)
-
+                       
+            console.log(getSinglePaymentObject.id)
+            const getReconcileObject = await Accountreconcile.find({where: {["credit_id"]: getSinglePaymentObject.id}}) 
+         
+            console.log(getReconcileObject.length)
             let getAllInvoicesPayment = []
 
-            for (const perReconcileItem of getAllAccountReconcileObjects) { 
-               
-                // console.log('perReconcileItem')
-                // console.log(perReconcileItem)
+            for (const eachPayment of getReconcileObject) { 
 
-                const AllInvoices = await singleInvoices.find({where: {['id']: perReconcileItem.debit_id}})
+                const OneInvoice = await singleInvoices.findOne({where: {['id']: eachPayment.debit_id}})
+     
+                if(OneInvoice){
 
-                // console.log('perInvoice')
-                // console.log(AllInvoices)
+                  getAllInvoicesPayment.push({
+                    id: OneInvoice.id,
+                    invoiceId: OneInvoice.quoteID,
+                    dated: OneInvoice.sent_date,
+                    dueDate: OneInvoice.dueDate,
+                    originalAmount: OneInvoice.totalAmt,
+                    allocated: eachPayment.amount
+                    // openBalance: openBalance,
+                    // reconcile: {disabled: reconcile, reconcile: reconcile},
+                  })
+  
+              } else {
 
-                let currentPaymentTillDate = 0
+                  getAllInvoicesPayment.push({
+                    id: '',
+                    invoiceId: '',
+                    dated: '',
+                    dueDate: '',
+                    originalAmount: '',
+                    allocated: eachPayment.amount
+                    // openBalance: openBalance,
+                    // reconcile: {disabled: reconcile, reconcile: reconcile},
+                  })
+  
+              }
+                
 
-                for (const eachInvoice of AllInvoices) { 
-
-                    currentPaymentTillDate = currentPaymentTillDate + eachInvoice.amount
-
-                    const getReconciledPaymentObjects = await Accountreconcile.find({where: {["debit_id"]: eachInvoice.id}}) 
-                    // console.log('getReconciledPaymentObjects')
-                    // console.log(getReconciledPaymentObjects)
-
-                    let totalPaidAmount = 0
-                    for (const eachPaidObjects of getReconciledPaymentObjects) { 
-                        // console.log('eachPaidObjects')
-                        // console.log(eachPaidObjects)
-                        totalPaidAmount = eachPaidObjects.amount + totalPaidAmount
-                    }
-
-
-                    let openBalance = eachInvoice.totalAmt - totalPaidAmount
-                    let reconcile = (openBalance <= 0)? true : false
-
-                    getAllInvoicesPayment.push({
-                        id: eachInvoice.id,
-                        invoiceId: eachInvoice.quoteID,
-                        dated: eachInvoice.sent_date,
-                        dueDate: new Date(eachInvoice.dueDate),
-                        originalAmount: eachInvoice.totalAmt,
-                        openBalance: openBalance,
-                        reconcile: {disabled: reconcile, reconcile: reconcile},
-                        allocated: perReconcileItem.amount
-                    })
-
-                }
-
-
-                // i += 1
             }
 
-
-            console.log('getAllInvoicesPayment')
-            console.log(getAllInvoicesPayment)
 
             return [1, getSinglePaymentObject, getAllInvoicesPayment]
 
        
-
             // const Company = await Accountreconcile.app.models.Account.findById(companyId).then(Result =>{
             //     return { name: Result.baseContact.name, id: Result.id };
             // })
 
-          
-          
+           
         } catch (e) {
             console.log(e)
             return [0, []]
@@ -219,10 +569,9 @@ module.exports = function(Accountreconcile) {
         ]
     });
 
-
-
     Accountreconcile.getAllCompanyPayments = async function(userId) {
-      
+      console.log('getAllCompanyPayments')
+
       try {
 
         const Account = Accountreconcile.app.models.Account
@@ -288,47 +637,59 @@ module.exports = function(Accountreconcile) {
 
 
     Accountreconcile.getAllInvoicesOneCompany = async function(id) {
-      
+      console.log('getAllInvoicesOneCompany', id)
       let getAllInvoicesPayment = []
 
       try {
 
         const Invoice = Accountreconcile.app.models.Invoice
-        const InvoiceSource = await Invoice.find({where : {'accountId.value': id, state: "Confirmed", }})
 
+        const InvoiceSource = await Invoice.find({where : {'accountId.value': id, state: "Confirmed"}})
+        // const ReconcileSource = await Accountreconcile.find({where : {'accountId': id, 'credit_id': ''}})
+        // console.log('ReconcileSource', ReconcileSource.length)
+        // const filterInvoice = getSimilarity(InvoiceSource, ReconcileSource)
+        
         for (const perInvoice of InvoiceSource) { 
 
-          // Date - date
-          // Due Date - dueDate
-          // Original Amount - totalAmt
-          // Open Balance - 
-          // Reconcile -
-          // Allocation -
+          const checkingPaymentReconcile = await Accountreconcile.findOne({where : {'debit_id': perInvoice.id, 'credit_id': '', reconciled: false}})
 
-          const reconcileInvoice = await Accountreconcile.find({where: {debit_id: perInvoice.id}}) 
-  
-          let currentPaymentTillDate = 0
-
-          for (const reconcileItem of reconcileInvoice) { 
-              currentPaymentTillDate = currentPaymentTillDate + reconcileItem.amount
-          }
-
-          const openBalance = perInvoice.totalAmt - currentPaymentTillDate
-          let reconcile = (openBalance <= 0)? true : false
           getAllInvoicesPayment.push({
               id :perInvoice.id,
               invoiceId: perInvoice.quoteID,
               dated: perInvoice.sent_date,
               dueDate: new Date(perInvoice.dueDate),
               originalAmount: perInvoice.totalAmt,
-              openBalance: openBalance,
-              reconcile: {disabled: reconcile, reconcile: reconcile},
-              allocation:0,
+              openBalance: checkingPaymentReconcile? checkingPaymentReconcile.amount : perInvoice.totalAmt,
+              reconciled: false,
+              amount: 0 ,
+          })
+
+        }
+          
+        let checkingBalancePayment = []
+        const balanceArray = await Accountreconcile.find({where : {'debit_id': '', 'accountId': id, reconciled: false}})
+        // console.log('checkingBalancePayment')
+        // console.log(checkingBalancePayment)
+        for (const perPayment of balanceArray) { 
+
+          // console.log(perPayment)
+          // const checkingPaymentReconcile = await Accountreconcile.find({where : {'debit_id': perInvoice.id, 'credit_id': '', reconciled: false}})
+
+          checkingBalancePayment.push({
+              id : perPayment.id,
+              // invoiceId: "-",
+              dated: perPayment.createdAt,
+              dueDate: perPayment.createdAt,
+              // originalAmount: 0,
+              // openBalance: 0,
+              reconciled: false,
+              amount: perPayment.amount,
+              allocation: 0,
           })
 
         }
 
-        return getAllInvoicesPayment
+        return {getAllInvoicesPayment, checkingBalancePayment}
 
       } catch (e) {
 
@@ -343,6 +704,15 @@ module.exports = function(Accountreconcile) {
 };
 
 
+function getSimilarity(result1, result2){
+  const uniqueResult = result1.filter(function(obj) {
+    return result2.some(function(obj2) {
+        return obj.id == obj2.debit_id;
+    });
+  });
+
+  return uniqueResult
+}
 
 
 // --------- Backup for showing all invoices and reconcile items ----------- //
@@ -400,3 +770,69 @@ module.exports = function(Accountreconcile) {
 //   }
 // }
 
+
+/*
+
+ getAllInvoicesOneCompany
+
+ const Invoice = Accountreconcile.app.models.Invoice
+        const InvoiceSource = await Invoice.find({where : {'accountId.value': id, state: "Confirmed", }})
+
+        for (const perInvoice of InvoiceSource) { 
+
+          // Date - date
+          // Due Date - dueDate
+          // Original Amount - totalAmt
+          // Open Balance - 
+          // Reconcile -
+          // Allocation -
+
+          const reconcileInvoice = await Accountreconcile.find({where: {debit_id: perInvoice.id}}) 
+  
+          let currentPaymentTillDate = 0
+
+          for (const reconcileItem of reconcileInvoice) { 
+              currentPaymentTillDate = currentPaymentTillDate + reconcileItem.amount
+          }
+
+          const openBalance = perInvoice.totalAmt - currentPaymentTillDate
+          let reconcile = (openBalance <= 0)? true : false
+          getAllInvoicesPayment.push({
+              id :perInvoice.id,
+              invoiceId: perInvoice.quoteID,
+              dated: perInvoice.sent_date,
+              dueDate: new Date(perInvoice.dueDate),
+              originalAmount: perInvoice.totalAmt,
+              openBalance: openBalance,
+              reconcile: {disabled: reconcile, reconcile: reconcile},
+              allocation:0,
+          })
+
+        }
+
+        return getAllInvoicesPayment
+
+*/
+
+
+
+// {
+//   startTime: 'unix timestamp',
+//   isActive: Boolean,
+//   title: String,
+//   userInfo: {
+//     name: String,
+//     email: String,
+//   },
+//   Key: String,
+//   recurringFrequency: "",
+
+// },
+
+// recurringFrequencyOption: {
+//   "Daily",
+//   "Weekly",
+//   "Fortnightly",
+//   "Monthly",
+//   "Yearly"
+// }

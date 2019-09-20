@@ -12,11 +12,12 @@ module.exports = function(Accountpayment) {
       });
   
     Accountpayment.getAllPayments = async function (userId) {
-      
+        console.log('getAllPayments')
         try {
   
           const PaymentSource = await Accountpayment.find({ userId }).map(
             async (source) => {
+
                 let dataSource =  source
 
                 const setup = {
@@ -28,7 +29,7 @@ module.exports = function(Accountpayment) {
               return dataSource
             }
           );
-  
+          
         //   const users = await Quotation.app.models.BaseUser.find({ userId }).map(
         //     user => {
         //       return { name: user.name, value: user.id };
