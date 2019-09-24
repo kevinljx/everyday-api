@@ -34,8 +34,8 @@
     "invoiceId": {
       "type": "string"
     },
-    "accountId":{
-      "type":"string"
+    "accountId": {
+      "type": "string"
     }
   },
   "validations": [],

@@ -24,6 +24,7 @@ module.exports = function(Invoice) {
         
         // Sequencesetting
     }
+
     Invoice.remoteMethod("invoices", {
         accepts: [
           { arg: "data", type: "object" },
@@ -35,7 +36,6 @@ module.exports = function(Invoice) {
         ]
     });
 
-  
     Invoice.updateStatus = async function (data) {
       // console.log(data.value)
 
@@ -90,6 +90,7 @@ module.exports = function(Invoice) {
       
       // Sequencesetting
     }
+
     Invoice.remoteMethod("updateStatus", {
       accepts: [
         { arg: "data", type: "object" },
@@ -99,7 +100,6 @@ module.exports = function(Invoice) {
         { arg: "data", type: "object" },
       ]
     });
-
 
     // Deep cloning the last mongo Object into object and resave as new entry
     Invoice.convert = async function (data) {
@@ -131,8 +131,6 @@ module.exports = function(Invoice) {
 
     }
 
-
-    
     Invoice.remoteMethod("convert", {
         accepts: [
           { arg: "data", type: "object" },
@@ -143,8 +141,6 @@ module.exports = function(Invoice) {
         ]
     });
 
-
-    
     Invoice.beforeRemote("getAllInvoices", async function (ctx) {
       var token = ctx.req.accessToken;
       var userId = token && token.userId;
@@ -186,6 +182,38 @@ module.exports = function(Invoice) {
     Invoice.remoteMethod("getAllInvoices", {
       accepts: [{ arg: "userId", type: "any" }],
       http: { path: "/getAllInvoices", verb: "get" },
+      returns: [{ arg: "fields", type: "object" }]
+    });
+
+
+    Invoice.getInvoiceReconcile = async function (data) {
+    
+      const InvoiceSource = await Invoice.findById(data)
+
+      const AccountReconcile = Invoice.app.models.AccountReconcile
+     
+      const ReconcileSource = await AccountReconcile.find({where : {'debit_id': data, reconciled: true}}).map(
+        source => {
+          
+          return { 
+            amount: source.amount,
+            credit_id: source.credit_id,
+            updatedAt: source.updatedAt,
+            reconciled: source.reconciled,
+
+          };
+        }
+      );
+
+      return {InvoiceSource, ReconcileSource}
+
+    }
+
+    Invoice.remoteMethod("getInvoiceReconcile", {
+      accepts: [
+        { arg: "data", type: "Any" },
+      ],
+      http: { path: "/getInvoiceReconcile", verb: "post" },
       returns: [{ arg: "fields", type: "object" }]
     });
 

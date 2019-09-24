@@ -217,5 +217,9 @@
   "AccountPayment": {
     "dataSource": "everyday",
     "public": true
+  },
+  "Notification": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
