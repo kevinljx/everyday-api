@@ -208,6 +208,10 @@
   },
   "AccessRightCategory": {
     "dataSource": "everyday",
+    "public": true
+  },
+  "AccessRightMethod": {
+    "dataSource": "everyday",
     "public": false
   }
 }

@@ -32,12 +32,12 @@
   },
   "validations": [],
   "relations": {
-    "accessRights": {
-      "type": "hasAndBelongsToMany",
-      "model": "AccessRight",
-      "foreignKey": "",
+    "accessCategories": {
+      "type": "embedsMany",
+      "model": "AccessRightCategory",
       "options": {
-        "nestRemoting": true
+        "validate": true,
+        "forceId": false
       }
     },
     "parent": {

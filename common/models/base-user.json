@@ -51,11 +51,11 @@
   },
   "acls": [
     {
-      "property": "signup",
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$everyone",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": "signup"
     },
     {
       "accessType": "READ",

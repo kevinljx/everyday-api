@@ -24,7 +24,7 @@
       "model": "BaseUser",
       "foreignKey": ""
     },
-    "grouprole": {
+    "role": {
       "type": "belongsTo",
       "model": "AccessRole",
       "foreignKey": ""

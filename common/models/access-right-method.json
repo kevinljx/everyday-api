@@ -1,5 +1,5 @@
 {
-  "name": "AccessRightCategory",
+  "name": "AccessRightMethod",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -10,24 +10,22 @@
       "type": "string",
       "required": true
     },
-    "description": {
+    "editable": {
+      "type": "boolean",
+      "default": true
+    },
+    "parentModel": {
       "type": "string"
     },
-    "module": {
+    "parentMethod": {
       "type": "string"
+    },
+    "access": {
+      "type": "boolean"
     }
   },
   "validations": [],
-  "relations": {
-    "accessRights": {
-      "type": "embedsMany",
-      "model": "AccessRight",
-      "options": {
-        "validate": true,
-        "forceId": false
-      }
-    }
-  },
+  "relations": {},
   "acls": [],
   "methods": {}
 }

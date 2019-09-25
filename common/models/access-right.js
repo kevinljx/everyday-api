@@ -1,7 +1,8 @@
 'use strict';
 
-module.exports = function(Accessright) {
-  
+module.exports = function (Accessright) {
+
+    /*
    Accessright.beforeRemote( "**", async function( ctx) {
        if(ctx.method.name.includes("find")) {
             var token = ctx.req.accessToken;
@@ -41,4 +42,5 @@ module.exports = function(Accessright) {
         
         return;
     });
+    */
 };

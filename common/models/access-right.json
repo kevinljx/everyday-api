@@ -18,28 +18,19 @@
       "type": "string",
       "required": true
     },
-    "method": {
-      "type": "string",
-      "required": true,
-      "default": "read"
-    },
     "parentModel": {
       "type": "string"
-    },
-    "parentMethod": {
-      "type": "string"
-    },
-    "editable": {
-      "type": "boolean",
-      "default": true
     }
   },
   "validations": [],
   "relations": {
-    "category": {
-      "type": "belongsTo",
-      "model": "AccessRightCategory",
-      "foreignKey": ""
+    "methods": {
+      "type": "embedsMany",
+      "model": "AccessRightMethod",
+      "options": {
+        "validate": true,
+        "forceId": false
+      }
     }
   },
   "acls": [

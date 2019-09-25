@@ -47,32 +47,50 @@ module.exports = function (Accessrole) {
 
     Accessrole.viewall = async function (userId) {
         //get company from user
-        var data = [];
+        var data = {};
         var BaseUser = Accessrole.app.models.BaseUser;
-        var AccessGroupRole = Accessrole.app.models.AccessGroupRole;
-        var AccessGroup = Accessrole.app.models.AccessGroup;
         var AccessSetting = Accessrole.app.models.AccessSetting;
         var AccessRight = Accessrole.app.models.AccessRight;
 
-        var userobj = await BaseUser.findOne({ where: { id: userId } });
-        var companyUsers = await BaseUser.find({ where: { companyId: userobj.companyId } });
-
-        for (const user of companyUsers) {
-            var companyRoles = await Accessrole.find({ where: { userId: user.id } });
-            for (const role of companyRoles) {
-                var dataObj = { id: role.id, name: role.name, rights: [] };
-                var roleRights = await role.accessRights.find();
-                for (const rRights of roleRights) {
-                    var rightObj = { id: rRights.id, name: rRights.name, model: rRights.model }
-                    if (rRights.categoryName) {
-                        rightObj.categoryName = rRights.categoryName;
-                    }
-                    if (rRights.description) {
-                        rightObj.description = rRights.description;
-                    }
-                    dataObj.rights.push(rRights);
+        function findParent(siblings, pid) {
+            for (var i = 0; i < siblings.length; i++) {
+                if (siblings[i] == pid) {
+                    return siblings[i];
                 }
-                data.push(dataObj);
+                else {
+                    var foundchild = findParent(siblings[i].children, pid);
+                    if (foundchild) {
+                        return foundchild;
+                    }
+                }
+            }
+            return false;
+
+        }
+
+        //var userobj = await BaseUser.findOne({ where: { id: userId } });
+        //var companyUsers = await BaseUser.find({ where: { companyId: userobj.companyId } });
+        var companyRoles = await Accessrole.find({ where: { companyId: userobj.companyId }, order: 'tier asc' });
+        for (const role of companyRoles) {
+            currentObj = {};
+            currentObj.name = role.name;
+            currentObj.id = role.id;
+            currentObj.tier = role.tier;
+            currentObj.seePeer = role.seePeer;
+            currentObj.accessRights = [];
+            currentObj.children = [];
+            if (role.tier == 1) {
+                data = currentObj;
+            }
+            else {
+                //search for parent
+                var parent = data;
+                if (parent.id != role.parentId) {
+                    parent = findParent(parent.children, role.parentId);
+                }
+                parent.children.push(currentObj);
+
+
             }
         }
         return data;
@@ -80,15 +98,18 @@ module.exports = function (Accessrole) {
         /* return {
             id: role id
             name: rolename,
-            rights: [ 
+            accessRights: [ 
                 { id: rightid,
-                  name: right name,
-                  model: 
-                  method: 
+                  name: name,
+                  descripton: 
+                  methods: 
                   categoryName:
                   description:
                 }
-            ]
+            ],
+            tier: number
+            seePeer: true or false,
+            children: [array of sub roles] 
 
         } */
 
@@ -96,7 +117,7 @@ module.exports = function (Accessrole) {
 
     Accessrole.remoteMethod('viewall', {
         accepts: { arg: 'userId', type: 'any' },
-        returns: { arg: 'data', type: 'array' }
+        returns: { arg: 'data', type: 'object' }
     });
 
     Accessrole.remoteMethod('saveRights', {
@@ -107,7 +128,7 @@ module.exports = function (Accessrole) {
     Accessrole.saveRights = async function (userId, id, rights) {
         //check if role id is valid
         var BaseUser = Accessrole.app.models.BaseUser;
-        
+
         var userobj = await BaseUser.findOne({ where: { id: userId } });
         var companyUsers = await BaseUser.find({
             where: { companyId: userobj.companyId }
@@ -121,11 +142,11 @@ module.exports = function (Accessrole) {
         else {
             //delete all access role rights and update all
             var currentRights = await role.accessRights.find();
-            for(const rt of currentRights){
+            for (const rt of currentRights) {
                 await role.accessRights.remove(rt);
-            }                        
-            
-            for(const right of rights){
+            }
+
+            for (const right of rights) {
                 await role.accessRights.add(right.id);
             }
         }
