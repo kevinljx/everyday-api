@@ -19,11 +19,7 @@
     "DeleteHistory": true
   },
   "scope": {
-    "include": [
-      "events",
-      "notes",
-      "history"
-    ]
+    "include": ["events", "notes", "history"]
   },
   "properties": {
     "closingDate": {

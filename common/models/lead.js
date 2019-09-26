@@ -39,7 +39,7 @@ module.exports = function(Lead) {
   Lead.showSourceInfo = async function showSourceInfo(lead) {
     if (lead.sourceId) {
       var source = await Lead.app.models.LeadSource.findById(lead.sourceId);
-      return { name: source.name, color: source.color };
+      return source.name;
     }
   };
   Lead.showStatusInfo = async function showStatusInfo(lead) {
@@ -54,6 +54,67 @@ module.exports = function(Lead) {
       return ind.name;
     }
   };
+  Lead.showEventInfo = async function showEventInfo(lead) {
+    var participatedId = await Lead.app.models.EventParticipant.find({
+      where: { participantsId: lead.id }
+    }).map(obj => obj.eventId);
+    let participated = [];
+    for (let i = 0; i < participatedId.length; i++) {
+      var participatedEvent = await Lead.app.models.Event.findById(
+        participatedId[i]
+      );
+      participated.push(participatedEvent);
+    }
+    var related = await Lead.app.models.Event.find({
+      where: { eventableId: lead.id }
+    });
+    var allEvents = [...participated, ...related].sort(
+      (a, b) => a.start > b.start
+    );
+    return allEvents;
+  };
+
+  //===========================================
+  //===========================================
+  // Get All Lead
+  //===========================================
+  //===========================================
+  Lead.beforeRemote("customGet", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+  Lead.customGet = async function(userId) {
+    try {
+      var allLead = await Lead.find({ userId }).map(obj => ({
+        name: obj.name,
+        id: obj.id,
+        companyName: obj.companyName,
+        interest: obj.interest,
+        statusInfo: obj.statusInfo.name && obj.statusInfo,
+        source: obj.sourceInfo && obj.sourceInfo,
+        industry: obj.industryInfo && obj.industryInfo,
+        userInfo: obj.userInfo,
+        email: obj.baseContact.email,
+        mobile: obj.baseContact.mobile,
+        phone: obj.baseContact.phone,
+        fax: obj.baseContact.fax,
+        website: obj.baseContact.website
+      }));
+      return allLead;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Lead.remoteMethod("customGet", {
+    accepts: { arg: "userId", type: "any" },
+    http: { path: "/getall", verb: "get" },
+    returns: { arg: "data", type: "array" }
+  });
 
   //===========================================
   //===========================================
@@ -155,6 +216,28 @@ module.exports = function(Lead) {
       { arg: "newAcct", type: "object" },
       { arg: "newDeal", type: "object" }
     ]
+  });
+  // If Account exist (convert lead)
+  Lead.ifAccountExist = async function ifAccountExist(accountName) {
+    try {
+      var pattern = new RegExp(".*" + accountName + ".*", "i");
+      var existAccount = await Lead.app.models.Account.find({
+        where: { "baseContact.name": { like: pattern } },
+        fields: {
+          baseContact: true,
+          id: true,
+          name: true
+        }
+      });
+      return [existAccount.length, existAccount];
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Lead.remoteMethod("ifAccountExist", {
+    accepts: [{ arg: "accountName", type: "string", required: true }],
+    returns: [{ arg: "count", type: "number" }, { arg: "data", type: "array" }]
   });
 
   //===========================================
