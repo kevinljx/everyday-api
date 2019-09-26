@@ -8,7 +8,8 @@
     "strictObjectIDCoercion": true
   },
   "scope": {
-    "order": "createdAt DESC"
+    "order": "createdAt DESC",
+    "include": ["participants"]
   },
   "properties": {
     "title": {
@@ -30,12 +31,19 @@
     "location": {
       "type": "string"
     },
-    "color": {
+    "labelColor": {
       "type": "string"
     },
     "allDay": {
       "type": "boolean",
       "default": false
+    },
+    "isRecurring": {
+      "type": "boolean",
+      "default": false
+    },
+    "recurrence": {
+      "type": "string"
     }
   },
   "validations": [],
@@ -43,6 +51,15 @@
     "eventable": {
       "type": "belongsTo",
       "polymorphic": true
+    },
+    "reminders": {
+      "type": "hasMany",
+      "model": "Reminder",
+      "foreignKey": "reminderId"
+    },
+    "participants": {
+      "type": "hasMany",
+      "model": "EventParticipant"
     }
   },
   "acls": [],

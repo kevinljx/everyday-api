@@ -1,0 +1,36 @@
+{
+  "name": "FollowUp",
+  "plural": "FollowUps",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "type": {
+      "type": "string"
+    },
+    "callResult": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "followUp": {
+      "type": "belongsTo",
+      "polymorphic": true
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

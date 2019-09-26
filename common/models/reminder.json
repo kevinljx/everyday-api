@@ -1,0 +1,41 @@
+{
+  "name": "Reminder",
+  "plural": "Reminders",
+  "base": "BaseModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "reminderType": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "reminderTime": {
+      "type": "date",
+      "required": true
+    },
+    "isRecurring": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "recurringInterval": {
+      "type": "string"
+    },
+    "reminderMedium": {
+      "type": [
+        "string"
+      ]
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

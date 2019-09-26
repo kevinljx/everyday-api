@@ -217,5 +217,17 @@
   "AccountPayment": {
     "dataSource": "everyday",
     "public": true
+  },
+  "Reminder": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "FollowUp": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "EventParticipant": {
+    "dataSource": "everyday",
+    "public": false
   }
 }
