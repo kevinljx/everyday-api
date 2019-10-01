@@ -221,5 +221,9 @@
   "Notification": {
     "dataSource": "everyday",
     "public": true
+  },
+  "CreditNote": {
+    "dataSource": "everyday",
+    "public": true
   }
 }

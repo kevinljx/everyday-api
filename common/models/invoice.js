@@ -195,12 +195,24 @@ module.exports = function(Invoice) {
       const ReconcileSource = await AccountReconcile.find({where : {'debit_id': data, reconciled: true}}).map(
         source => {
           
+          let type = null
+          switch(source.credit_type){
+            case 1:
+                type = "Invoice"
+              break
+            case 2:
+                type = "Debit"
+              break
+            case 3:
+                type = "Credit"
+              break
+          }
           return { 
             amount: source.amount,
             credit_id: source.credit_id,
             updatedAt: source.updatedAt,
             reconciled: source.reconciled,
-
+            type: type
           };
         }
       );
