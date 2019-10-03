@@ -80,8 +80,8 @@ module.exports = function(Quotation) {
         objectToCopy.state = "Open"
         objectToCopy.latest = true
 
-        var Sequencesetting = Quotation.app.models.SequenceSetting
-        objectToCopy.quoteID = await Sequencesetting.generateNumber(objectToCopy.userId, "Quotation")
+        // var Sequencesetting = Quotation.app.models.SequenceSetting
+        // objectToCopy.quoteID = await Sequencesetting.generateNumber(objectToCopy.userId, "Quotation")
 
         let newQuotation = await Quotation.create(objectToCopy)
 
@@ -111,7 +111,7 @@ module.exports = function(Quotation) {
         let currentQuotation = await Quotation.findById(data.id)
         await Quotation.destroyById(data.id)
 
-        let previousQuotation = await Quotation.findOne({where: {version:currentQuotation.version-1, quoteID: data.quoteID,}})
+        let previousQuotation = await Quotation.findOne({where: {version:currentQuotation.version-1, quoteID: currentQuotation.quoteID,}})
         previousQuotation.state = "Open"
         previousQuotation.latest = true
         await previousQuotation.save()
