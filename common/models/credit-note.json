@@ -1,6 +1,6 @@
 {
-  "name": "AccountPayment",
-  "plural": "accountpayments",
+  "name": "CreditNote",
+  "plural": "creditnotes",
   "base": "BaseModel",
   "idInjection": true,
   "options": {
@@ -16,7 +16,7 @@
     "paid_amount": {
       "type": "number"
     },
-    "paid_date": {
+    "date": {
       "type": "date"
     },
     "payment_method": {
@@ -27,6 +27,9 @@
     },
     "memo": {
       "type": "string"
+    },
+    "reconciled":{
+      "type": "boolean"
     },
     "payment_differences": {
       "type": "string"

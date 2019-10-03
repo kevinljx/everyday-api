@@ -53,6 +53,7 @@ module.exports = function(Quotation) {
       
       // Sequencesetting
     }
+
     Quotation.remoteMethod("updateStatus", {
         accepts: [
           { arg: "data", type: "object" },
@@ -79,8 +80,9 @@ module.exports = function(Quotation) {
         objectToCopy.state = "Open"
         objectToCopy.latest = true
 
-        var Sequencesetting = Quotation.app.models.SequenceSetting
-        objectToCopy.quoteID = await Sequencesetting.generateNumber(objectToCopy.userId, "Quotation")
+        // var Sequencesetting = Quotation.app.models.SequenceSetting
+        // objectToCopy.quoteID = await Sequencesetting.generateNumber(objectToCopy.userId, "Quotation")
+
         let newQuotation = await Quotation.create(objectToCopy)
 
         return [1, newQuotation]
@@ -109,7 +111,7 @@ module.exports = function(Quotation) {
         let currentQuotation = await Quotation.findById(data.id)
         await Quotation.destroyById(data.id)
 
-        let previousQuotation = await Quotation.findOne({where: {version:currentQuotation.version-1, quoteID: data.quoteID,}})
+        let previousQuotation = await Quotation.findOne({where: {version:currentQuotation.version-1, quoteID: currentQuotation.quoteID,}})
         previousQuotation.state = "Open"
         previousQuotation.latest = true
         await previousQuotation.save()
@@ -144,14 +146,14 @@ module.exports = function(Quotation) {
 
         // create invoice
         var Invoice = Quotation.app.models.Invoice
-        var newInvoice = JSON.parse(JSON.stringify(currentQuotation))
+        var newInvoice = JSON.parse(JSON.stringify(currentQuotation))        
+
         delete newInvoice.id;
 
         newInvoice.quoteID = await Sequencesetting.generateNumber(newInvoice.userId, "Invoice")
         newInvoice.state = "Confirmed"
         newInvoice.terms = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id felis ut sapien finibus vestibulum. Ut eget faucibus ligula. Integer vitae vehicula est. Aenean id neque enim. Fusce tempus nibh at augue feugiat, at aliquet elit sollicitudin. Fusce tellus massa, sollicitudin sit amet malesuada nec, sagittis dignissim neque. Nunc lacinia placerat est, a euismod odio sagittis nec. Aenean rhoncus lorem eget felis tristique facilisis. Vivamus convallis, justo nec consectetur laoreet, felis ante euismod neque, sit amet condimentum dolor justo fringilla enim. Donec pulvinar nulla non malesuada sagittis."  
         await Invoice.create(newInvoice)
-
 
         return [1, currentQuotation]
 
@@ -247,8 +249,7 @@ module.exports = function(Quotation) {
 
         const QuotationSource = await Quotation.find({ userId }).map(
            (source) => {
-            // console.log("source")
-            console.log(source.companyName)
+
             return { 
               id:source.id,
               quoteID: source.quoteID, 

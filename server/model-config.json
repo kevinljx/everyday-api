@@ -217,5 +217,13 @@
   "AccountPayment": {
     "dataSource": "everyday",
     "public": true
+  },
+  "Notification": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "CreditNote": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
