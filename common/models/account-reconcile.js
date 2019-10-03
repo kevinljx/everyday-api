@@ -175,32 +175,6 @@ module.exports = function(Accountreconcile) {
         )
 
         return CompanySource
-
-        // for (const eachCompany of AccountList) { 
-
-        //   const allInvoices = await Invoice.find({where: {'accountId.value': String(eachCompany.id)}}) 
-        //   console.log('allInvoices')
-        //   console.log(allInvoices)
-
-        //   for (const eachCompany of AccountList) { 
-
-        //   }
-
-        // }
-
-        //  return company  with all invoices, confirmed and unpaid // imcomplete invoices
-        /*
-        
-          [
-            {
-              companyName : 'text',
-              invoices :[
-                {}
-              ]
-            }
-          ]
-        
-        */
         
       } catch (e) {
 
@@ -226,9 +200,7 @@ module.exports = function(Accountreconcile) {
       const id = data.id
       const key = data.key
       // const id = data
-      
-    
-
+  
       let getAllInvoicesPayment = []
 
       try {
@@ -254,8 +226,6 @@ module.exports = function(Accountreconcile) {
 
         }
 
-
-        
         let checkingBalancePayment = []
 
         let balanceArray 

@@ -9,10 +9,10 @@ module.exports = function(Accountpayment) {
           ctx.args.userId = userId;
         }
         return;
-      });
+    });
   
     Accountpayment.getAllPayments = async function (userId) {
-        console.log('getAllPayments')
+
         try {
   
           const PaymentSource = await Accountpayment.find({ userId }).map(
@@ -42,9 +42,7 @@ module.exports = function(Accountpayment) {
         accepts: [{ arg: "userId", type: "any" }],
         http: { path: "/getAllPayments", verb: "get" },
         returns: [{ arg: "fields", type: "any" }]
-      });
-  
-
+    });
 
     Accountpayment.payment = async function (datum) {
        

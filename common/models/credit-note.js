@@ -9,7 +9,7 @@ module.exports = function(Creditnote) {
   
           const CreditNoteSource = await Creditnote.find({where : {userId:userId}}).map(
             (item) => {
-             
+       
               return { 
 
                 id: item.id,
@@ -49,45 +49,27 @@ module.exports = function(Creditnote) {
     Creditnote.credit = async function(data) {
 
         const creditNote = data.creditNote
-        const creditNoteItem = data.creditNoteItem
 
         const Accountreconcile = Creditnote.app.models.AccountReconcile
-        const Invoice = Creditnote.app.models.Invoice
 
         try {
   
           const creditNoteObject = await Creditnote.create(creditNote)
 
-          if(creditNoteObject.paidOff){
-
-            await Accountreconcile.create({
-              debit_id : "",
-              debit_type: "",
-              credit_id : creditNoteObject.id,
-              credit_type: 3,
-              amount: creditNoteObject.amount,
-              reconciled : true,
-              accountId: creditNoteObject.customer
-            })
-
-          } else {
-            
-            await Accountreconcile.create({
-              debit_id : "",
-              debit_type: "",
-              credit_id : creditNoteObject.id,
-              credit_type: 3,
-              amount: creditNoteObject.amount,
-              reconciled : creditNoteObject.reconciled,
-              accountId: creditNoteObject.customer
-            })
-
-          }
-
+          await Accountreconcile.create({
+            debit_id : "",
+            debit_type: "",
+            credit_id : creditNoteObject.id,
+            credit_type: 3,
+            amount: creditNoteObject.amount,
+            reconciled : false,
+            accountId: creditNoteObject.customer
+          })
 
           return [1, {}]
         
         } catch (e) {
+
           return [0, {}]
         }
     }
@@ -102,22 +84,35 @@ module.exports = function(Creditnote) {
         { arg: "data", type: "object" },
       ]
     });
-  
 
     Creditnote.getSingleCompanyCreditNotes = async function(data) {
       
       const Accountreconcile = Creditnote.app.models.AccountReconcile
-
-
+      const Invoice = Creditnote.app.models.Invoice
       try {
 
         const creditNote = await Creditnote.findById(data)
         
-
         const AccountReconcileSource = await Accountreconcile.find({where : {'credit_id': data}})
 
+        let reconcileSource = []
+        for (const reconcileObject of AccountReconcileSource) { 
 
-        return {creditNote, AccountReconcileSource}
+          let source = reconcileObject
+
+          if(reconcileObject.debit_id){
+            const invoice = await Invoice.findById(reconcileObject.debit_id)
+            source.__data.quoteID = invoice.quoteID
+            reconcileSource.push(source)
+          } else {
+            reconcileSource.push(source)
+          }
+
+        }
+
+        if(reconcileSource.length == AccountReconcileSource.length){
+          return {creditNote, reconcileSource}
+        }
       
       } catch (e) {
         return {}
@@ -135,5 +130,55 @@ module.exports = function(Creditnote) {
       ]
     });
     
+    Creditnote.convertcredit = async function(id) {
+
+        const Accountreconcile = Creditnote.app.models.AccountReconcile
+        const Invoice = Creditnote.app.models.Invoice
+
+        try {
+          
+          const SingleAccountReconcileSource = await Accountreconcile.findOne({where : {'credit_id': id, 'reconciled': false}})
+      
+          SingleAccountReconcileSource.reconciled = true
+          await SingleAccountReconcileSource.save()
+
+          const creditNoteObject = await Creditnote.findById(SingleAccountReconcileSource.credit_id)
+          creditNoteObject.reconciled = true
+          await creditNoteObject.save()
+          
+          const reconcileSource = await Accountreconcile.find({where : {'credit_id': id}})
+
+          let AccountReconcileSource = []
+          for (const reconcileObject of reconcileSource) { 
+  
+            let source = reconcileObject
+  
+            if(reconcileObject.debit_id){
+              const invoice = await Invoice.findById(reconcileObject.debit_id)
+              source.__data.quoteID = invoice.quoteID
+              AccountReconcileSource.push(source)
+            } else {
+              AccountReconcileSource.push(source)
+            }
+  
+          }
+
+          return {creditNoteObject, AccountReconcileSource}
+            
+        } catch (e) {
+          console.log(e)
+          return [0, {}]
+        }
+
+    }
+      
+    Creditnote.remoteMethod("convertcredit", {
+      accepts: [{ arg: "data", type: "any" }],
+      http: { path: "/convertcredit", verb: "post" },
+      returns: [
+        { arg: "data", type: "object" },
+      ]
+    });
+
 
 };

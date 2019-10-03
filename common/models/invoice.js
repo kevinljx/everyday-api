@@ -37,7 +37,6 @@ module.exports = function(Invoice) {
     });
 
     Invoice.updateStatus = async function (data) {
-      // console.log(data.value)
 
       try {
 
@@ -192,8 +191,11 @@ module.exports = function(Invoice) {
 
       const AccountReconcile = Invoice.app.models.AccountReconcile
      
+      const ReconcileSourceAmount = await AccountReconcile.findOne({where : {'debit_id': data, reconciled: false}})
+      const ReconcileAmount = ReconcileSourceAmount? ReconcileSourceAmount.amount : 0
+
       const ReconcileSource = await AccountReconcile.find({where : {'debit_id': data, reconciled: true}}).map(
-        source => {
+        async(source) => {
           
           let type = null
           switch(source.credit_type){
@@ -207,7 +209,9 @@ module.exports = function(Invoice) {
                 type = "Credit"
               break
           }
+
           return { 
+            debit_id: source.debit_id,
             amount: source.amount,
             credit_id: source.credit_id,
             updatedAt: source.updatedAt,
@@ -217,7 +221,7 @@ module.exports = function(Invoice) {
         }
       );
 
-      return {InvoiceSource, ReconcileSource}
+      return {InvoiceSource, ReconcileSource, ReconcileAmount}
 
     }
 
