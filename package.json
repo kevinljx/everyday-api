@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "posttest": "npm run lint && npm audit",
     "start": "NODE_ENV=production node .",
-    "dev": "NODE_ENV=development node .",
+    "dev": "nodemon  NODE_ENV=development server/server.js --watch common --watch server",
     "staging": "NODE_ENV=staging node ."
   },
   "dependencies": {
@@ -25,6 +25,7 @@
     "loopback-ds-computed-mixin": "^2.0.4",
     "loopback-ds-timestamp-mixin": "^3.4.1",
     "loopback-ds-user-mixin": "0.0.1",
+    "node-cron": "^2.0.3",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^3.0.0"
   },

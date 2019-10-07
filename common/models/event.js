@@ -18,17 +18,20 @@ module.exports = function(Event) {
    */
   Event.customCreate = async function(data, userId) {
     try {
-      const { participants, ...others } = data;
-
-      var newEvent = await Event.create({ ...others, userId });
-      if (participants.length > 0) {
-        for (let i = 0; i < participants.length; i++) {
-          var part = await Event.app.models.EventParticipant.create({
-            ...participants[i],
-            eventId: newEvent.id
-          });
-          console.log(part);
+      if (data.participants != null) {
+        const { participants, ...others } = data;
+        var newEvent = await Event.create({ ...others, userId });
+        if (participants.length > 0) {
+          for (let i = 0; i < participants.length; i++) {
+            var part = await Event.app.models.EventParticipant.create({
+              ...participants[i],
+              eventId: newEvent.id
+            });
+            console.log(part);
+          }
         }
+      } else {
+        var newEvent = await Event.create({ ...data, userId });
       }
     } catch (e) {
       console.log(e);

@@ -229,5 +229,9 @@
   "EventParticipant": {
     "dataSource": "everyday",
     "public": false
+  },
+  "CreditNote": {
+    "dataSource": "everyday",
+    "public": true
   }
 }
