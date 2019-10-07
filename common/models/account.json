@@ -18,12 +18,7 @@
     }
   },
   "scope": {
-    "include": [
-      "parent",
-      "subaccount",
-      "notes",
-      "events"
-    ]
+    "include": ["parent", "subaccount", "notes", "events"]
   },
   "properties": {
     "isActive": {

@@ -13,16 +13,14 @@
         "name": "showFullName",
         "sourceInfo": "showSourceInfo",
         "statusInfo": "showStatusInfo",
-        "industryInfo": "showIndustryInfo"
+        "industryInfo": "showIndustryInfo",
+        "eventInfo": "showEventInfo"
       }
     },
     "DeleteHistory": true
   },
   "scope": {
-    "include": [
-      "notes",
-      "events"
-    ]
+    "include": ["notes", "followUps"]
   },
   "properties": {
     "companyName": {
@@ -36,12 +34,6 @@
     },
     "fullAddress": {
       "type": "string"
-    },
-    "upcomingEvents": {
-      "type": "array"
-    },
-    "pastEvents": {
-      "type": "array"
     },
     "isConverted": {
       "type": "boolean",
@@ -78,10 +70,20 @@
       "model": "Event",
       "polymorphic": "eventable"
     },
+    "followUps": {
+      "type": "hasMany",
+      "model": "FollowUp",
+      "polymorphic": "followUp"
+    },
     "notes": {
       "type": "hasMany",
       "model": "Note",
       "polymorphic": "noteable"
+    },
+    "participatedEvents": {
+      "type": "hasMany",
+      "model": "EventParticipant",
+      "polymorphic": "participants"
     }
   },
   "acls": [],

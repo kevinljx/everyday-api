@@ -1,0 +1,30 @@
+{
+  "name": "EventParticipant",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "email": {
+      "type": "string"
+    },
+    "rsvp": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "event": {
+      "type": "belongsTo",
+      "model": "Event",
+      "scope": "participants",
+      "participants": {
+        "type": "belongsTo",
+        "polymorphic": true
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

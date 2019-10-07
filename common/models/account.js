@@ -66,6 +66,20 @@ module.exports = function(Account) {
     }
   };
 
+  //===========================================
+  //===========================================
+  // Get All Account
+  //===========================================
+  //===========================================
+  Account.beforeRemote("customGet", async function(ctx) {
+    var token = ctx.req.accessToken;
+    var userId = token && token.userId;
+    if (userId) {
+      ctx.args.userId = userId;
+    }
+    return;
+  });
+
   Account.showAllCustomer = async function showAllCustomer(acct) {
     var allCustomer = await Account.app.models.Customer.find({
       where: {
@@ -105,7 +119,31 @@ module.exports = function(Account) {
     return allDeal;
   };
 
-  // If Account exist
+  Account.customGet = async function(userId) {
+    try {
+      var allAccount = await Account.find({ userId }).map(obj => ({
+        name: obj.name,
+        id: obj.id,
+        industry: obj.industryInfo && obj.industryInfo,
+        isActive: obj.isActive,
+        userInfo: obj.userInfo,
+        phone: obj.baseContact.phone,
+        website: obj.baseContact.website,
+        fax: obj.baseContact.fax
+      }));
+      return allAccount;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+  Account.remoteMethod("customGet", {
+    accepts: { arg: "userId", type: "any" },
+    http: { path: "/getall", verb: "get" },
+    returns: { arg: "data", type: "array" }
+  });
+
+  // If Account exist (convert lead)
   Account.accountExist = async function accountExist(accountName) {
     try {
       var pattern = new RegExp(".*" + accountName + ".*", "i");
