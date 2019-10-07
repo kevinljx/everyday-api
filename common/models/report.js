@@ -195,7 +195,7 @@ module.exports = function(Report) {
         var deals = await Report.app.models.Deal.find({
           where: {
             and: [
-              { createdAt: { between: [startDate, endDate] } },
+              { closingDate: { between: [startDate, endDate] } },
               { userId: companyUsers[i].id },
               { stageId: { nin: closedStages } }
             ]
@@ -253,7 +253,7 @@ module.exports = function(Report) {
         var deals = await Report.app.models.Deal.find({
           where: {
             and: [
-              { createdAt: { between: [startDate, endDate] } },
+              { closingDate: { between: [startDate, endDate] } },
               { typeId: type[i].id }
             ]
           }
@@ -310,7 +310,7 @@ module.exports = function(Report) {
           userId: userId,
           where: {
             and: [
-              { createdAt: { between: [startDate, endDate] } },
+              { closingDate: { between: [startDate, endDate] } },
               { stageId: stage[i].id }
             ]
           }
@@ -562,13 +562,11 @@ module.exports = function(Report) {
       var pipeline = [];
       for (let i = 0; i < dealStages.length; i++) {
         var pipelineReport = {};
-        pipelineReport.name = `${dealStages[i].name} - ${
-          dealStages[i].chance
-        }%`;
+        pipelineReport.name = `${dealStages[i].name} - ${dealStages[i].chance}%`;
         var deals = await Report.app.models.Deal.find({
           where: {
             and: [
-              { createdAt: { between: [startDate, endDate] } },
+              { closingDate: { between: [startDate, endDate] } },
               { stageId: dealStages[i].id },
               { userId: userId }
             ]
@@ -680,7 +678,7 @@ module.exports = function(Report) {
         var deals = await Report.app.models.Deal.find({
           where: {
             and: [
-              { createdAt: { between: [startDate, endDate] } },
+              { closingDate: { between: [startDate, endDate] } },
               { userId: companyUsers[i].id },
               { stageId: closedStages.id }
             ]

@@ -69,7 +69,7 @@ module.exports = function(Deal) {
         name: obj.name,
         id: obj.id,
         amount: obj.amount,
-        closingDate: obj.closingDate,
+        closingDate: obj.closingDate && obj.closingDate,
         type: obj.typeInfo && obj.typeInfo,
         source: obj.sourceInfo && obj.sourceInfo,
         stageInfo: obj.stageInfo,

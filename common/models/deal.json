@@ -23,8 +23,7 @@
   },
   "properties": {
     "closingDate": {
-      "type": "date",
-      "required": true
+      "type": "date"
     },
     "amount": {
       "type": "number",
