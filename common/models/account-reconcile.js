@@ -24,7 +24,7 @@ module.exports = function(Accountreconcile) {
                 const companyName = item.baseContact.name
             
                 // findall confirmed invoices and id with key.id
-                const confirmedInvoices = await Invoice.find({where : {'accountId.value': String(id), state: "Confirmed", }})
+                const confirmedInvoices = await Invoice.find({where : {'accountId.value': String(id), state: { inq: ["Confirmed", "Payment In Progress"]}}})
 
                     // let i = 0
                     let totalInvoicesAmt = 0
@@ -207,7 +207,7 @@ module.exports = function(Accountreconcile) {
 
         const Invoice = Accountreconcile.app.models.Invoice
 
-        const InvoiceSource = await Invoice.find({where : {'accountId.value': id, state: "Confirmed"}})
+        const InvoiceSource = await Invoice.find({where : {'accountId.value': id, state: { inq: ["Confirmed", "Payment In Progress"]}}})
      
         for (const perInvoice of InvoiceSource) { 
 

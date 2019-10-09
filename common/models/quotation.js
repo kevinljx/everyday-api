@@ -93,6 +93,7 @@ module.exports = function(Quotation) {
       }
 
     }
+
     Quotation.remoteMethod("newVersion", {
         accepts: [
           { arg: "data", type: "object" },
@@ -123,6 +124,7 @@ module.exports = function(Quotation) {
       }
 
     }
+
     Quotation.remoteMethod("revertQuotation", {
       accepts: [
         { arg: "data", type: "object" },
@@ -163,6 +165,7 @@ module.exports = function(Quotation) {
       }
 
     }
+
     Quotation.remoteMethod("convertInvoice", {
       accepts: [
         { arg: "data", type: "object" },
@@ -230,10 +233,6 @@ module.exports = function(Quotation) {
       returns: [{ arg: "fields", type: "any" }]
     });
 
-
-
-
-
     Quotation.beforeRemote("getAllQuotations", async function (ctx) {
       var token = ctx.req.accessToken;
       var userId = token && token.userId;
@@ -249,7 +248,7 @@ module.exports = function(Quotation) {
 
         const QuotationSource = await Quotation.find({ userId }).map(
            (source) => {
-
+            
             return { 
               quoteID: source.quoteID, 
               id: source.id,  

@@ -9,7 +9,8 @@
   },
   "scope": {
     "include": [
-      "notes"
+      "notes",
+      "account"
     ]
   },
   "properties": {
@@ -91,7 +92,7 @@
     "account": {
       "type": "belongsTo",
       "model": "Account",
-      "foreignKey": "id"
+      "foreignKey": "account"
     },
     "attn_toId": {
       "type": "belongsTo",
