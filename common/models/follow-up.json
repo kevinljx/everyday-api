@@ -1,34 +1,45 @@
 {
   "name": "FollowUp",
-  "plural": "FollowUps",
+  "plural": "followups",
   "base": "BaseModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "DeleteHistory": true
+  },
+  "scope": {
+    "include": ["type", "result", "reminders"]
+  },
+
   "properties": {
     "title": {
-      "type": "string"
-    },
-    "description": {
       "type": "string"
     },
     "date": {
       "type": "date",
       "required": true
-    },
-    "type": {
-      "type": "string"
-    },
-    "callResult": {
-      "type": "string"
     }
   },
   "validations": [],
   "relations": {
-    "followUp": {
+    "followupable": {
       "type": "belongsTo",
       "polymorphic": true
+    },
+    "type": {
+      "type": "belongsTo",
+      "model": "FollowUpType"
+    },
+    "result": {
+      "type": "belongsTo",
+      "model": "FollowUpResult"
+    },
+    "reminders": {
+      "type": "hasMany",
+      "model": "Reminder",
+      "polymorphic": "Remindable"
     }
   },
   "acls": [],

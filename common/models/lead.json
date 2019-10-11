@@ -73,7 +73,7 @@
     "followUps": {
       "type": "hasMany",
       "model": "FollowUp",
-      "polymorphic": "followUp"
+      "polymorphic": "followupable"
     },
     "notes": {
       "type": "hasMany",

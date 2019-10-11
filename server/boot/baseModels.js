@@ -6,6 +6,15 @@ module.exports = function(server) {
    * DEVELOPMENT ONLY
    * ==================================
    */
+  // var followUpResult = server.models.FollowUpResult;
+  // followUpResult.create([
+  //   { name: "No Answer" },
+  //   { name: "Busy" },
+  //   { name: "Left Voicemail" },
+  //   { name: "Connected" }
+  // ]);
+  // var followUpType = server.models.FollowUpType;
+  // followUpType.create([{ name: "call" }, { name: "email" }]);
   /*
   Access Rights. Create default access rights
   */

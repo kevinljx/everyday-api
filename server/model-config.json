@@ -233,5 +233,13 @@
   "CreditNote": {
     "dataSource": "everyday",
     "public": true
+  },
+  "FollowUpResult": {
+    "dataSource": "everyday",
+    "public": true
+  },
+  "FollowUpType": {
+    "dataSource": "everyday",
+    "public": true
   }
 }

@@ -9,7 +9,9 @@
   },
   "scope": {
     "order": "createdAt DESC",
-    "include": ["participants"]
+    "include": [
+      "participants"
+    ]
   },
   "properties": {
     "title": {
