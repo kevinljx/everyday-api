@@ -20,9 +20,6 @@
       "type": "boolean",
       "default": true
     },
-    "quote_days": {
-      "type": "number"
-    },
     "state": {
       "type": "string",
       "default": "Draft"
@@ -30,9 +27,6 @@
     "sent_date": {
       "type": "date",
       "default": "$now"
-    },
-    "tnc": {
-      "type": "string"
     },
     "quoteID": {
       "type": "string"
@@ -56,49 +50,63 @@
     "discount_total": {
       "type": "number"
     },
-    "total": {
-      "type": "number"
-    },
-    "shipping_cost": {
-      "type": "number"
-    },
-    "custinfo": {
-      "type": "string"
-    },
-    "shipinfo": {
-      "type": "string"
-    },
     "reconcile": {
       "type": "boolean",
       "default": false
+    },
+    "tnc": {
+      "type": "string"
+    },
+    "attn_toId":{
+      "type": "string"
+    },
+    "totalAmt": {
+      "type": "number"
+    },
+    "discount_rate": {
+      "type": "number"
+    },
+    "description": {
+      "type": "string"
+    },
+    "shipping": {
+      "type": "string"
+    },
+    "billing": {
+      "type": "string"
+    },
+    "sentOn": {
+      "type": "date"
+    },
+    "dueDate": {
+      "type": "date"
+    },
+    "account":{
+      "type": "string"
     }
+    
   },
   "validations": [],
   "relations": {
     "account": {
       "type": "belongsTo",
       "model": "Account",
-      "foreignKey": ""
+      "foreignKey": "id"
     },
-    "attn_to": {
+    "attn_toId": {
       "type": "belongsTo",
       "model": "Customer",
-      "foreignKey": ""
-    },
-    "accountId": {
-      "type": "belongsTo",
-      "model": "Account",
-      "foreignKey": ""
+      "foreignKey": "id"
     },
     "ship_to": {
       "type": "belongsTo",
       "model": "Account",
-      "foreignKey": ""
+      "foreignKey": "id"
     },
     "tax": {
       "type": "belongsTo",
       "model": "Tax",
-      "foreignKey": ""
+      "foreignKey": "id"
     },
     "discount": {
       "type": "belongsTo",

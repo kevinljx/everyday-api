@@ -5,6 +5,7 @@ module.exports = function(Invoice) {
 
 
     Invoice.invoices = async function (data) {
+        console.log('invoice ', data)
         try {
   
           let datum = {...data}      
@@ -150,22 +151,19 @@ module.exports = function(Invoice) {
     });
     
     Invoice.getAllInvoices = async function (userId) {
-     
       try {
         const InvoiceSource = await Invoice.find({ userId }).map(
           source => {
-            
             return { 
               quoteID: source.quoteID, 
               id: source.id,  
-              attn_toId: 
-              source.attn_toId, 
+              attn_toId: source.attn_toId, 
               totalAmt: source.totalAmt, 
               sent_date:source.sent_date, 
               dueDate:source.dueDate, 
               version:source.version, 
               state:source.state,
-              companyName: source.companyName
+              companyName: source.accountId.name
             };
           }
         );
@@ -191,8 +189,13 @@ module.exports = function(Invoice) {
 
       const AccountReconcile = Invoice.app.models.AccountReconcile
      
+      let ReconcileAmount = 0
       const ReconcileSourceAmount = await AccountReconcile.findOne({where : {'debit_id': data, reconciled: false}})
-      const ReconcileAmount = ReconcileSourceAmount? ReconcileSourceAmount.amount : 0
+      if(ReconcileSourceAmount){
+        ReconcileAmount = ReconcileSourceAmount.amount
+      } else {
+        ReconcileAmount = InvoiceSource.totalAmt
+      }
 
       const ReconcileSource = await AccountReconcile.find({where : {'debit_id': data, reconciled: true}}).map(
         async(source) => {

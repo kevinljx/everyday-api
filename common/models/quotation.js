@@ -251,14 +251,15 @@ module.exports = function(Quotation) {
            (source) => {
 
             return { 
-              id:source.id,
               quoteID: source.quoteID, 
-              sent_date: source.sentOn, 
-              dueDate:source.dueDate,
-              totalAmt:source.totalAmt, 
-              version: source.version,
-              state : source.state,
-              companyName: source.companyName
+              id: source.id,  
+              attn_toId: source.attn_toId, 
+              totalAmt: source.totalAmt, 
+              sent_date:source.sent_date, 
+              dueDate:source.dueDate, 
+              version:source.version, 
+              state:source.state,
+              companyName: source.accountId.name
             };
           }
         );
