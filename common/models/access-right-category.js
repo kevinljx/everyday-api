@@ -1,5 +1,5 @@
 'use strict';
 
-module.exports = function(Accessrightcategory) {
+module.exports = function (Accessrightcategory) {
 
 };

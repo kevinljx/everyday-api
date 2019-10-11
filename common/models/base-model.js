@@ -17,77 +17,94 @@ module.exports = function (Basemodel) {
         var whereClause = { userId: userId };
 
         var AccessSetting = Basemodel.app.models.AccessSetting;
+        var AccessRole = Basemodel.app.models.AccessRole;
+        var BaseUser = Basemodel.app.models.BaseUser;
         //get user setting
         var settings = await AccessSetting.find({ where: { userId: userId } });
         //get roles
-        var setRoles = settings.map(e => { return e.grouproleId });
-        var AccessGroupRole = Basemodel.app.models.AccessGroupRole;
-        var accessgrpRoles = await AccessGroupRole.find({ where: { id: { inq: setRoles } } });
-
-        var roleIds = [[], [], []];
-        var groupIds = [[], [], []];
-        for (const groupRole of accessgrpRoles) {
-            roleIds[groupRole.tier - 1].push(groupRole.accessRoleId);
-            groupIds[groupRole.tier - 1].push(groupRole.accessGroupId);
+        var roles = [];
+        for (const setting of settings) {
+            await setting.role.get();
+            role.push(setting.role())
         }
-        //which role has the model
-        var allOwnerIds = [];
-        //find Company Group id
-        var BaseUser = Basemodel.app.models.BaseUser;
-        var AccessRole = Basemodel.app.models.AccessRole;
-        var AccessGroup = Basemodel.app.models.AccessGroup;
-        var AccessGroupUser = Basemodel.app.models.AccessGroupUser;
-        //ignore tier 1 because can only see own
-        //console.log(ctx.Model.name);
-        var user = await BaseUser.findById(userId);
-        for (var i = 1; i < roleIds.length; i++) {
-            var isCompany = false;
-            if (roleIds[i].length > 0) {
-                var roles = await AccessRole.find({ where: { id: { inq: roleIds[i] } } });
-                for (var j = 0; j < roles.length; j++) {
-                    var rights = await roles[j].accessRights({ where: { model: ctx.Model.name } });
-                    if (rights && rights.length > 0) {
-                        var groupObj = await AccessGroup.findById(groupIds[i][j]);
-                        if (groupObj.name == "Company") {
-                            isCompany = true;
-                            break;
-                        }
-
-                        var groupUsers = await AccessGroupUser.find({ where: { and: [{ tier: { lt: i + 2 } }, { accessGroupId: groupIds[i][j] }] } });
-                        var ownerIds = groupUsers.map(e => { return e.userId });
-                        allOwnerIds = allOwnerIds.concat(ownerIds);
+        var modelFound = false;
+        var validroles = [];
+        //find if role has model, if not find out if has parent model and check if user has model
+        for (const role of roles) {
+            var rightCats = await role.accessCategories();
+            for (var i = 0; i < rightCats.length; i++) {
+                var rights = rightCats[i].accessrights;
+                for (var j = 0; j < rights.length; j++) {
+                    if (rights[j].model == ctx.Model.name) {
+                        modelFound = true;
+                        validroles.push(role);
+                        j = rights.length;
+                        i = rightCats.length;
                     }
-                }
-                if (isCompany) {
-                    var groupUsers = await AccessGroupUser.find({ where: { and: [{ tier: { lt: i + 2 } }, { companyId: user.companyId }] } });
-                    var ownerIds = await groupUsers.map(e => { return e.userId });
-                    allOwnerIds = allOwnerIds.concat(ownerIds);
                 }
             }
         }
+        if (!modelFound) {
+            //get company admin and find model
+            var user = BaseUser.findById(userId);
+            var companyAdmin = await AccessRole.find({ where: { and: [{ companyId: user.companyId }, { tier: 0 }] } });
+            var rightCats = await companyAdmin.accessCategories();
+            //find the parent model
+            var parentModel = "";
+            for (var i = 0; i < rightCats.length; i++) {
+                var rights = rightCats[i].accessrights;
+                for (var j = 0; j < rights.length; j++) {
+                    if (rights[j].model == ctx.Model.name) {
+                        if (rights[j].parentModel) {
+                            parentModel = rights[j].parentModel;
+                        }
+                        j = rights.length;
+                        i = rightCats.length;
+                    }
+                }
+            }
+
+            for (const role of roles) {
+                var rightCats = await role.accessCategories();
+                for (var i = 0; i < rightCats.length; i++) {
+                    var rights = rightCats[i].accessrights;
+                    for (var j = 0; j < rights.length; j++) {
+                        if (rights[j].model == ctx.Model.name) {
+                            modelFound = true;
+                            validroles.push(role);
+                            j = rights.length;
+                            i = rightCats.length;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        //if has peer, select all users with the same role
+        var allOwnerIds = [userId];
+        for (const vrole of validroles) {
+            if (vrole.hasPeer) {
+                var usersettings = await AccessSetting.find({ where: { and: [{ roleId: vrole.id }, { neq: { userId: userId } }] } });
+                for (const setting of usersettings) {
+                    allOwnerIds.push(setting.id);
+                }
+            }
+            //find children
+            var childRoles = await AccessRole.find({ where: { parentId: vrole.id } });
+            for (const child of childRoles) {
+                var usersettings = await AccessSetting.find({ where: { roleId: child.id } });
+                for (const setting of usersettings) {
+                    allOwnerIds.push(setting.id);
+                }
+            }
+        }
+
+
         if (allOwnerIds.length > 0) {
             whereClause = { userId: { inq: allOwnerIds } };
         }
 
-        /*
-        if(roleIds[2].length > 0){
-            var roles = await AccessRole.find({where: {id: {inq: roleIds[2]}}});
-
-            for(var i=0; i < roles.length; i++){
-                var rights = await roles[i].accessRights.find({where: {model: ctx.modelName}});
-                if(rights && rights.length > 0){
-                    var groupObj = await AccessGroup.findById(groupIds[2][i]);
-
-                    var agroupRoles = await AccessGroupRole.find({where: {and: [ {accessGroupId: groupIds[2][i]}, {tier: {lt: 4}} ]}});
-                    var agroupRoleIds = agroupRoles.map(function (e) { return e.id; });
-                    var groupSettings = await AccessSetting.find({where: {id: {inq: agroupRoleIds}}});
-                    var ownerIds = groupSettings.map(function(e) { return e.id});
-                    allOwnerIds.concat(ownerIds);
-
-                }
-            }
-        }
-         */
 
         // this part is tricky because you may need to add
         // the userId filter to an existing where-clause

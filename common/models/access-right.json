@@ -2,7 +2,7 @@
   "name": "AccessRight",
   "plural": "accessrights",
   "base": "PersistedModel",
-  "idInjection": true,
+  "idInjection": false,
   "options": {
     "validateUpsert": true
   },

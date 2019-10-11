@@ -286,48 +286,57 @@ module.exports = function (Baseuser) {
 
         //duplicate the role for company
         var allroles = [];
-        pRoles.forEach(async element => {
-
+        for (var i = 0; i < pRoles.length; i++) {
+          var element = pRoles[i];
           var categories = [];
+
           var rightCats = await element.accessCategories();
-          for (var i = 0; i < rightCats.length; i++) {
+
+          for (var j = 0; j < rightCats.length; j++) {
+
             var accCatObj = {
-              name: rightCats[i].name,
-              module: rightCats[i].module,
-              description: rightCats[i].description,
+              name: rightCats[j].name,
+              module: rightCats[j].module,
+              description: rightCats[j].description,
               accessrights: []
             };
-            var rights = await rightCats[i].accessRights();
-            for (var j = 0; j < rights.length; j++) {
+            //console.log(rightCats[i]);
+            var rights = rightCats[j].accessrights;
+
+            for (var k = 0; k < rights.length; k++) {
               var rightObj = {
-                name: rights[j].name,
-                description: rights[j].description,
-                model: rights[j].model,
-                parentModel: rights[j].parentModel,
+                name: rights[k].name,
+                description: rights[k].description,
+                model: rights[k].model,
+                parentModel: rights[k].parentModel,
                 accessRightMethods: []
               }
 
-              var methods = await rights[j].methods();
-              for (var k = 0; k < methods.length; k++) {
+              var methods = await rights[k].methods();
+              for (var m = 0; m < methods.length; m++) {
                 var methodObj = {
-                  name: methods[k].name,
-                  editable: methods[k].editable,
-                  parentModel: methods[k].parentModel,
-                  parentMethod: methods[k].parentMethod,
-                  access: methods[k].access
+                  name: methods[m].name,
+                  editable: methods[m].editable,
+                  parentModel: methods[m].parentModel,
+                  parentMethod: methods[m].parentMethod,
+                  access: methods[m].access
                 }
                 var methodSave = await AccessRightMethod.create(methodObj);
                 rightObj.accessRightMethods.push(methodSave);
               }
 
+
               var rightSave = await AccessRight.create(rightObj);
               accCatObj.accessrights.push(rightSave);
+
             }
+
 
             var cat1 = await AccessRightCategory.create(accCatObj);
             categories.push(cat1);
 
           }
+
 
           var r1 = await AccessRole.create({
             name: element.name,
@@ -337,18 +346,20 @@ module.exports = function (Baseuser) {
             accessRightCategories: categories
           });
           allroles.push(r1);
-          await AccessSetting.create({ user: newuser, role: r1 });
+          await AccessSetting.create({ user: newuser, role: r1, company: comp });
 
-        });
-
+        };
 
         for (var i = 0; i < pRoles.length; i++) {
           var element = pRoles[i];
           if (element.parentId != undefined) {
-            var parent = element.parent();
+            var parent = await element.parent.get();
+
             for (var j = 0; j < allroles.length; j++) {
+
               if (parent.name == allroles[j].name && parent.tier == allroles[j].tier) {
-                allroles[i].parent(allroles[j]);
+
+                allroles[i].updateAttribute("parentId", allroles[j].id);
               }
             }
           }

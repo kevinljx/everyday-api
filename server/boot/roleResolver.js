@@ -61,16 +61,10 @@ module.exports = function (app) {
       if (err) return reject();
       var setRoles = [];
       for (var i = 0; i < settings.length; i++) {
-        setRoles.push(settings[i].grouproleId);
+        setRoles.push(settings[i].roleId);
       }
-      var AccessGroupRole = app.models.AccessGroupRole;
-      AccessGroupRole.find({ where: { id: { inq: setRoles } } }, function (err, grpRoles) {
-        var roleIds = [];
-        for (var j = 0; j < grpRoles.length; j++) {
-          roleIds.push(grpRoles[j].accessRoleId)
-        }
-        //check if role has the rights
-        var AccessRole = app.models.AccessRole;
+      var AccessRole = app.models.AccessRole;
+      AccessRole.find({ where: { id: { inq: setRoles } } }, function (err, accRoles) {
 
         var methodName = context.method.toLowerCase();
         if (context.accessType == "READ") {
@@ -82,6 +76,11 @@ module.exports = function (app) {
         else if (methodName.includes("destroy")) {
           methodName = "delete";
         }
+        //find model and method name
+        checkSize = accRoles.length;
+        //if not found get company admin and find parent
+
+
         AccessRole.find({ where: { id: { inq: roleIds } } }, function (err, accRoles) {
           checkSize = accRoles.length;
           accRoles.forEach(element => {

@@ -163,8 +163,8 @@
     "public": true
   },
   "AccessRight": {
-    "dataSource": "everyday",
-    "public": true
+    "dataSource": "transient",
+    "public": false
   },
   "AccessRole": {
     "dataSource": "everyday",
@@ -207,11 +207,11 @@
     "public": true
   },
   "AccessRightCategory": {
-    "dataSource": "everyday",
-    "public": true
+    "dataSource": "transient",
+    "public": false
   },
   "AccessRightMethod": {
-    "dataSource": "everyday",
+    "dataSource": "transient",
     "public": false
   }
 }
