@@ -1,0 +1,51 @@
+{
+  "name": "Reminder",
+  "plural": "reminders",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string",
+      "required": true
+    },
+    "reminderMedium": {
+      "type": "object",
+      "required": true
+    },
+    "reminderTime": {
+      "type": "date",
+      "required": true
+    },
+    "status": {
+      "type": "object",
+      "required": true
+    },
+    "reminderType": {
+      "type": "string",
+      "required": true
+    },
+    "created_at": {
+      "type": "date",
+      "required": true,
+      "default": "$now"
+    },
+    "isRecurring": {
+      "type": "boolean",
+      "required": true
+    },
+    "recurringInterval":{
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

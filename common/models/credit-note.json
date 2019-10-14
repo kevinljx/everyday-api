@@ -28,7 +28,7 @@
     "memo": {
       "type": "string"
     },
-    "reconciled":{
+    "reconciled": {
       "type": "boolean"
     },
     "payment_differences": {

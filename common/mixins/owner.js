@@ -42,7 +42,9 @@ module.exports = function (Model, bootOptions = {}) {
         mongodb: {dataType: 'ObjectId'}
     });
     */
+ 
   Model.observe('loaded', async function (ctx) {
+
     const BaseUser = Model.app.models.BaseUser;
     if (ctx.data.userId != null && typeof ctx.data.userId != "string") {
       var userobj = await BaseUser.findById(ctx.data.userId);
@@ -84,7 +86,6 @@ module.exports = function (Model, bootOptions = {}) {
       return next();
     }
 
-
     if (!userId) {
       return next();
     }
@@ -101,10 +102,22 @@ module.exports = function (Model, bootOptions = {}) {
     } else {
       ctx.data[options.updatedBy] = userId;
     }
+
     return next();
   });
 
+
   Model.observe('after save', async function (ctx) {
+
+    // console.log('after save')
+    // if(ctx.instance.reminder){
+    //   console.log('got reminder')
+    //   console.log(ctx.instance.reminder)
+    // } else {
+    //   console.log('no reminder')
+    // }
+
+
     const BaseUser = Model.app.models.BaseUser;
     if (ctx.instance) {
       if (ctx.instance.userId != null) {

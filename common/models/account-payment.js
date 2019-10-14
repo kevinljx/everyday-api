@@ -48,12 +48,12 @@ module.exports = function(Accountpayment) {
     Accountpayment.payment = async function (datum) {
        
         const balancePayment = datum.balance
-        console.log('datum.balance')
-        console.log(datum.balance)
+        // console.log('datum.balance')
+        // console.log(datum.balance)
 
         const data = datum.payment
-        console.log('datum.payment')
-        console.log(datum.payment)
+        // console.log('datum.payment')
+        // console.log(datum.payment)
 
         const Accountreconcile = Accountpayment.app.models.AccountReconcile
         const Invoice = Accountpayment.app.models.Invoice

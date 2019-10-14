@@ -7,6 +7,9 @@
     "validateUpsert": true,
     "strictObjectIDCoercion": true
   },
+  "mixins": {
+    "Reminder": true
+  },
   "scope": {
     "include": [
       "notes",
@@ -58,7 +61,7 @@
     "tnc": {
       "type": "string"
     },
-    "attn_toId":{
+    "attn_toId": {
       "type": "string"
     },
     "totalAmt": {
@@ -82,10 +85,9 @@
     "dueDate": {
       "type": "date"
     },
-    "account":{
+    "account": {
       "type": "string"
     }
-    
   },
   "validations": [],
   "relations": {

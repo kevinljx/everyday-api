@@ -225,5 +225,9 @@
   "CreditNote": {
     "dataSource": "everyday",
     "public": true
+  },
+  "Reminder": {
+    "dataSource": "everyday",
+    "public": false
   }
 }
