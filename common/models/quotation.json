@@ -7,9 +7,13 @@
     "validateUpsert": true,
     "strictObjectIDCoercion": true
   },
+  "mixins": {
+    "Reminder": true
+  },
   "scope": {
     "include": [
-      "notes"
+      "notes",
+      "account"
     ]
   },
   "properties": {
@@ -57,7 +61,7 @@
     "tnc": {
       "type": "string"
     },
-    "attn_toId":{
+    "attn_toId": {
       "type": "string"
     },
     "totalAmt": {
@@ -81,17 +85,16 @@
     "dueDate": {
       "type": "date"
     },
-    "account":{
+    "account": {
       "type": "string"
     }
-    
   },
   "validations": [],
   "relations": {
     "account": {
       "type": "belongsTo",
       "model": "Account",
-      "foreignKey": "id"
+      "foreignKey": "account"
     },
     "attn_toId": {
       "type": "belongsTo",

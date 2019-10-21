@@ -20,6 +20,7 @@ module.exports = function(Deal) {
       return { name: customer.name, id: customer.id };
     }
   };
+  
   Deal.showAccountInfo = async function showAccountInfo(deal) {
     if (deal.accountId) {
       var acct = await Deal.app.models.Account.findById(deal.accountId);

@@ -38,7 +38,7 @@
   "relations": {
     "parent": {
       "type": "belongsTo",
-      "model": "Account",
+      "model": "BaseCompany",
       "foreignKey": ""
     },
     "contact": {

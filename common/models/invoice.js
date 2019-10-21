@@ -5,8 +5,8 @@ module.exports = function(Invoice) {
 
 
     Invoice.invoices = async function (data) {
-        console.log('invoice ', data)
-        try {
+
+      try {
   
           let datum = {...data}      
       
@@ -15,7 +15,9 @@ module.exports = function(Invoice) {
           datum.terms = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id felis ut sapien finibus vestibulum. Ut eget faucibus ligula. Integer vitae vehicula est. Aenean id neque enim. Fusce tempus nibh at augue feugiat, at aliquet elit sollicitudin. Fusce tellus massa, sollicitudin sit amet malesuada nec, sagittis dignissim neque. Nunc lacinia placerat est, a euismod odio sagittis nec. Aenean rhoncus lorem eget felis tristique facilisis. Vivamus convallis, justo nec consectetur laoreet, felis ante euismod neque, sit amet condimentum dolor justo fringilla enim. Donec pulvinar nulla non malesuada sagittis."  
   
           await Invoice.create(datum)
-  
+    
+          console.log('Invoice created!')
+          
           return [1, {}]
   
         } catch (e) {

@@ -412,7 +412,7 @@ Baseuser.afterRemote("signup", function (context, user, next) {
       // BaseUser.deleteById(user.id);
       return next(err);
     }
-
+    console.log(response)
     // No error, send new user email verification
   });
 
