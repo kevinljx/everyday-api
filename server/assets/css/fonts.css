@@ -1,0 +1,11 @@
+@font-face {
+    font-family: "Roboto";
+    src: url("../../docs/font/roboto/Roboto-Regular.eot");
+    src: url("../../docs/font/roboto/Roboto-Regular.woff") format("woff"), url("../../docs/font/roboto/Roboto-Regular.ttf") format("ttf");
+}
+
+@font-face {
+    font-family: "Roboto-Bold";
+    src: url("../../docs/font/roboto/Roboto-Bold.eot");
+    src: url("../../docs/font/roboto/Roboto-Bold.woff") format("woff"), url("../../docs/font/roboto/Roboto-Bold.ttf") format("ttf");
+}
